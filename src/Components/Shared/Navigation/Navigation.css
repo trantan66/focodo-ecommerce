@@ -1,3 +1,18 @@
-.Navigation .ant-menu-item {
+.Navigation {
+    height: 46px;
+    background-color: #2E2E2E;
+}
+.Navigation .ant-menu {
+    background-color: #2E2E2E;
+    color: white;
+}
+.Navigation .ant-menu-item,
+.Navigation .ant-menu-submenu-title {
     width: 234px;
+    background-color: #2E2E2E;
+    color: white;
+}
+.Navigation .ant-menu-item:hover, 
+.Navigation .ant-menu-item-selected {
+    color: white; /* Màu chữ khi hover hoặc được chọn */
 }

@@ -26,9 +26,6 @@ function Header() {
           </div>
         </div>
       </div>
-      <div className="navigation">
-
-      </div>
     </div>
   )
 }
