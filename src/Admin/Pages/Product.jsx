@@ -1,9 +1,12 @@
-import React from 'react'
+import React from "react";
+import ProductList from "../Components/Product/ProductList";
 
 function Product() {
   return (
-    <div>this is admin Product page</div>
-  )
+    <div className="">
+      <ProductList/>
+    </div>
+  );
 }
 
-export default Product
+export default Product;
