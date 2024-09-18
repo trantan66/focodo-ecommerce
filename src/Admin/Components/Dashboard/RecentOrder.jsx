@@ -97,7 +97,7 @@ function RecentOrder() {
       <div className="mt-3">
         <table className="w-full text-gray-700 border-x-gray-400">
           <thead>
-            <tr>
+            <tr className="bg-[#FAFAFA] h-10">
               <td>ORDER</td>
               <td>Thời gian đặt</td>
               <td>Khách hàng</td>
@@ -105,9 +105,9 @@ function RecentOrder() {
               <td>Trạng thái</td>
             </tr>
           </thead>
-          <tbody>
+          <tbody className="h-[50vh]">
             {data.map((order) => (
-              <tr key={order.id}>
+              <tr key={order.id} className="border-b-2">
                 <td>
                   <Link
                     to={`order/orderdetail/${order.orderid}`}
@@ -118,7 +118,7 @@ function RecentOrder() {
                 </td>
                 <td>{order.order_datetime}</td>
                 <td>
-                  <BoxWrapper>
+                  <div className="bg-white rounded-sm flex-1 flex items-center">
                     <img
                       src={order.customer.image_link}
                       alt="User Avatar"
@@ -137,7 +137,7 @@ function RecentOrder() {
                         </strong>
                       </div>
                     </div>
-                  </BoxWrapper>
+                  </div>
                 </td>
                 <td>{getPaymentStatus(order.payment)}</td>
                 <td>{getOrderStatus(order.status)}</td>
@@ -151,11 +151,3 @@ function RecentOrder() {
 }
 
 export default RecentOrder;
-
-function BoxWrapper({ children }) {
-  return (
-    <div className="bg-white rounded-sm flex-1 flex items-center">
-      {children}
-    </div>
-  );
-}
