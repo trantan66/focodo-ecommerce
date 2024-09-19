@@ -4,6 +4,7 @@ import Header from "./Header";
 import Navigation from "./Navigation";
 import Slider from "./Slider";
 import Intro from "./Intro";
+import ListProduct from "./ListProduct";
 
 
 export default function Layout() {
@@ -13,6 +14,7 @@ export default function Layout() {
       <Navigation />
       <Intro />
       <Slider />
+      <ListProduct />
       <div className="p-40">
         <div></div>
         <div>{<Outlet />}</div>
