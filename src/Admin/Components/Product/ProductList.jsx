@@ -1,109 +1,108 @@
-import React from "react";
+import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import classNames from "classnames";
 import { Pagination } from "antd";
+import ProductTableHeader from "./ProductTableHeader";
 
-const data = [
-  {
-    product: {
-      name: "Doraemon Plush Toy",
-      imagelink:
-        "https://cdn.tuoitre.vn/471584752817336320/2024/6/3/doraemon-3-17173722166781704981911.jpeg",
-      description:
-        "A cute plush toy of Doraemon, the famous robot cat from the future.",
-    },
-    category: {
-      name: "Toys",
-      imagelink:
-        "https://cdn.tuoitre.vn/471584752817336320/2024/6/3/doraemon-3-17173722166781704981911.jpeg",
-      description: "Fun and entertaining toys for all ages.",
-    },
-    originalprice: 55000, // Random price between 20000 and 90000
-    discount: 15, // Discount in percentage
-    saleprice: 46750, // originalprice * (1 - discount / 100)
-    quantity: 20,
-  },
-  {
-    product: {
-      name: "Doraemon Action Figure",
-      imagelink:
-        "https://cdn.tuoitre.vn/471584752817336320/2024/6/3/doraemon-3-17173722166781704981911.jpeg",
-      description: "A collectible Doraemon action figure with moving parts.",
-    },
-    category: {
-      name: "Collectibles",
-      imagelink:
-        "https://cdn.tuoitre.vn/471584752817336320/2024/6/3/doraemon-3-17173722166781704981911.jpeg",
-      description: "High-quality collectibles from your favorite characters.",
-    },
-    originalprice: 78000,
-    discount: 10, // Discount in percentage
-    saleprice: 70200,
-    quantity: 15,
-  },
-  {
-    product: {
-      name: "Doraemon Puzzle Set",
-      imagelink:
-        "https://cdn.tuoitre.vn/471584752817336320/2024/6/3/doraemon-3-17173722166781704981911.jpeg",
-      description: "A fun puzzle set featuring Doraemon and his friends.",
-    },
-    category: {
-      name: "Puzzles",
-      imagelink:
-        "https://cdn.tuoitre.vn/471584752817336320/2024/6/3/doraemon-3-17173722166781704981911.jpeg",
-      description: "Challenging puzzles for all puzzle lovers.",
-    },
-    originalprice: 64000,
-    discount: 20, // Discount in percentage
-    saleprice: 51200,
-    quantity: 100,
-  },
-  {
-    product: {
-      name: "Doraemon Keychain",
-      imagelink:
-        "https://cdn.tuoitre.vn/471584752817336320/2024/6/3/doraemon-3-17173722166781704981911.jpeg",
-      description: "A small Doraemon keychain for your bags or keys.",
-    },
-    category: {
-      name: "Accessories",
-      imagelink:
-        "https://cdn.tuoitre.vn/471584752817336320/2024/6/3/doraemon-3-17173722166781704981911.jpeg",
-      description: "Cute and stylish accessories for everyday use.",
-    },
-    originalprice: 30000,
-    discount: 5, // Discount in percentage
-    saleprice: 28500,
-    quantity: 500,
-  },
-  {
-    product: {
-      name: "Doraemon Notebook",
-      imagelink:
-        "https://cdn.tuoitre.vn/471584752817336320/2024/6/3/doraemon-3-17173722166781704981911.jpeg",
-      description: "A cute Doraemon-themed notebook for writing and drawing.",
-    },
-    category: {
-      name: "Stationery",
-      imagelink:
-        "https://cdn.tuoitre.vn/471584752817336320/2024/6/3/doraemon-3-17173722166781704981911.jpeg",
-      description: "Fun and functional stationery for school or office.",
-    },
-    originalprice: 45000,
-    discount: 10, // Discount in percentage
-    saleprice: 40500,
-    quantity: 0,
-  },
-];
+const data = [];
 
-const onShowSizeChange = (current, pageSize) => {
-  console.log(current, pageSize);
-};
+function generateRandomProduct(index) {
+  const productNames = [
+    "Plush Toy",
+    "Action Figure",
+    "Puzzle Set",
+    "Keychain",
+    "Notebook",
+    "Mug",
+    "Pen",
+  ];
+  const categories = [
+    "Toys",
+    "Collectibles",
+    "Puzzles",
+    "Accessories",
+    "Stationery",
+    "Merchandise",
+  ];
+
+  const randomProductName = `Doraemon ${
+    productNames[Math.floor(Math.random() * productNames.length)]
+  } ${index}`;
+  const randomCategoryName =
+    categories[Math.floor(Math.random() * categories.length)];
+
+  const originalPrice = Math.floor(Math.random() * (90000 - 20000 + 1)) + 20000;
+  const discount = Math.floor(Math.random() * (30 - 5 + 1)) + 5;
+  const salePrice = originalPrice * (1 - discount / 100);
+  const quantity = Math.floor(Math.random() * 501);
+
+  return {
+    product: {
+      name: randomProductName,
+      imagelink:
+        "https://cdn.tuoitre.vn/471584752817336320/2024/6/3/doraemon-3-17173722166781704981911.jpeg",
+      description: `A unique ${randomProductName.toLowerCase()} featuring Doraemon.`,
+    },
+    category: {
+      name: randomCategoryName,
+      imagelink:
+        "https://cdn.tuoitre.vn/471584752817336320/2024/6/3/doraemon-3-17173722166781704981911.jpeg",
+      description: `${randomCategoryName} for fans of Doraemon.`,
+    },
+    originalprice: originalPrice,
+    discount: discount,
+    saleprice: Math.round(salePrice * 100) / 100,
+    quantity: quantity,
+  };
+}
+
+for (let i = 1; i <= 100; i++) {
+  data.push(generateRandomProduct(i));
+}
 
 function ProductList() {
+  const [currentPage, setCurrentPage] = useState(1);
+  // const productsPerPage = 6;
+
+  const [searchTerm, setSearchTerm] = useState("");
+  const [productsPerPage, setProductsPerPage] = useState(6);
+
+  const [selectedCategory, setSelectedCategory] = useState("");
+
+  const indexOfLastProduct = currentPage * productsPerPage;
+  const indexOfFirstProduct = indexOfLastProduct - productsPerPage;
+
+  const categories = [...new Set(data.map((product) => product.category.name))];
+
+  const filteredData = data
+    .filter((product) =>
+      product.product.name.toLowerCase().includes(searchTerm.toLowerCase())
+    )
+    .filter(
+      (product) =>
+        selectedCategory === "" || product.category.name === selectedCategory
+    );
+
+  const currentProducts = filteredData.slice(
+    indexOfFirstProduct,
+    indexOfLastProduct
+  );
+
+  const handlePageChange = (page) => {
+    setCurrentPage(page);
+  };
+
   return (
-    <div className="m-4 h-[22rem] bg-white p-4 rounded-sm border border-gray-200 flex flex-col flex-1">
+    <div className="m-4 bg-white p-4 rounded-sm border border-gray-200 flex flex-col flex-1">
+      <ProductTableHeader
+        searchTerm={searchTerm}
+        onSearchChange={setSearchTerm}
+        productsPerPage={productsPerPage}
+        onProductsPerPageChange={setProductsPerPage}
+        selectedCategory={selectedCategory}
+        setSelectedCategory={setSelectedCategory}
+        categories={categories}
+      />
       <div className="bg-white px-4 pt-3 pb-4 rounded-sm border border-gray-200 flex-1">
         <strong className="text-gray-700 font-medium">
           Danh sách sản phẩm
@@ -113,7 +112,7 @@ function ProductList() {
             <thead>
               <tr className="bg-[#FAFAFA] h-10">
                 <td>Sản phẩm</td>
-                <td>CATEGORY</td>
+                <td>Danh mục</td>
                 <td>Giá gốc</td>
                 <td>Discount</td>
                 <td>Giá bán</td>
@@ -121,41 +120,40 @@ function ProductList() {
               </tr>
             </thead>
             <tbody className="h-[50vh]">
-              {data.map((dataproduct) => (
-                <tr key={dataproduct.id} className="border-b-2">
+              {currentProducts.map((dataproduct, index) => (
+                <tr key={index} className="border-b-2">
                   <td>
                     <div className="bg-white rounded-sm flex-1 flex items-center">
                       <img
                         src={dataproduct.product.imagelink}
-                        alt="User Avatar"
+                        alt="Product"
                         className="w-10 h-10 rounded-sm object-cover"
                       />
                       <div className="pl-2">
                         <Link
-                          to={`customer/customerdetail/${dataproduct.product.name}`}
+                          to={`productdetail/${dataproduct.product.name}`}
                           className="text text-sm font-semibold text-[#787BFF]"
                         >
                           {dataproduct.product.name}
                         </Link>
-                        <div className="flex items-center">
-                          <strong className="text-xs textsize text-gray-700 font-light">
+                        <div classN ame="flex items-center">
+                          <strong className="text-xs text-gray-700 font-light">
                             {dataproduct.product.description}
                           </strong>
                         </div>
                       </div>
                     </div>
                   </td>
-
                   <td>
                     <div className="bg-white rounded-sm flex-1 flex items-center">
                       <img
                         src={dataproduct.category.imagelink}
-                        alt="User Avatar"
+                        alt="Category"
                         className="w-10 h-10 rounded-full object-cover"
                       />
                       <div className="pl-2">
                         <Link
-                          to={`customer/customerdetail/${dataproduct.category.name}`}
+                          to={`category/categorydetail/${dataproduct.category.name}`}
                           className="text text-sm font-semibold text-[#787BFF]"
                         >
                           {dataproduct.category.name}
@@ -163,7 +161,6 @@ function ProductList() {
                       </div>
                     </div>
                   </td>
-
                   <td>{dataproduct.originalprice} đ</td>
                   <td>{dataproduct.discount}%</td>
                   <td>{dataproduct.saleprice} đ</td>
@@ -187,11 +184,15 @@ function ProductList() {
               ))}
             </tbody>
           </table>
+        </div>
+
+        <div className="mt-4 flex justify-end">
           <Pagination
-            showSizeChanger
-            onShowSizeChange={onShowSizeChange}
-            defaultCurrent={3}
-            total={500}
+            showSizeChanger={false}
+            current={currentPage}
+            onChange={handlePageChange}
+            total={data.length}
+            pageSize={productsPerPage}
           />
         </div>
       </div>

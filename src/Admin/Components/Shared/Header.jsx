@@ -24,7 +24,7 @@ function Header() {
         />
         <input
           type="text"
-          placeholder="Search..."
+          placeholder="Tìm kiếm..."
           className="text-sm focus:outline-none border border-gray-300 w-[24rem] h-10 pl-10 pr-4 rounded-sm"
         />
       </div>
