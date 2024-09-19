@@ -3,6 +3,7 @@ import Footer from "./Footer";
 import Header from "./Header";
 import Navigation from "./Navigation";
 import Slider from "./Slider";
+import Intro from "./Intro";
 
 
 export default function Layout() {
@@ -10,6 +11,7 @@ export default function Layout() {
     <div>
       <Header />
       <Navigation />
+      <Intro />
       <Slider />
       <div className="p-40">
         <div></div>
