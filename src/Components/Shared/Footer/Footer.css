@@ -1,7 +1,17 @@
-
+.Footer {
+    background-color: #2E2E2E;
+}
 .Footer .inner-wrap {
     display: flex;
     align-items: flex-start;
+}
+.Footer .inner-wrap p
+{
+    font-style: italic;
+    color: white;
+}
+.ant-typography-title {
+    color: white;
 }
 .inner-footer-middle,
 .inner-footer-right {
@@ -16,4 +26,5 @@
 .footer-icon > * {
     margin-right: 50px;
     font-size: 30px;
+    color: white;
 }

@@ -15,7 +15,7 @@ function Footer () {
               <p>Hệ thống quảng bá và kinh doanh đặc sản Huế</p>
             </div>
             <div className="inner-footer-middle">
-              <Title level={4}>Liên Hệ</Title>
+              <Title level={4} style={{ color: 'white' }}>Liên Hệ</Title>
               <p>Địa chỉ: 54 Nguyễn Lương Bằng</p>
               <p>Email: focodo-ecommerce@gmail.com</p>
               <p>Hotline: 0123456789</p>
@@ -31,10 +31,10 @@ function Footer () {
           </div>
         </div>
         <div className="footer-icon">
-            <TwitterOutlined />
-            <FacebookOutlined />
-            <TikTokOutlined />
-            <InstagramOutlined />
+          <TwitterOutlined />
+          <FacebookOutlined />
+          <TikTokOutlined />
+          <InstagramOutlined />
         </div>
       </div>
     </>
