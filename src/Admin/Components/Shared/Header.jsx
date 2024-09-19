@@ -16,22 +16,22 @@ import { Link } from "react-router-dom";
 
 function Header() {
   return (
-    <div className="bg-white h-16 px-4 flex justify-between items-center border-b border-gray-200">
+    <div className="bg-[#282941] mr-4 ml-4 mb-4 mt-3 rounded-md h-16 px-4 flex justify-between items-center ">
       <div className="relative">
         <IoIosSearch
           fontSize={20}
-          className="text-gray-400 absolute left-3 top-1/2 -translate-y-1/2"
+          className="text-white absolute left-3 top-1/2 -translate-y-1/2"
         />
         <input
           type="text"
           placeholder="Tìm kiếm..."
-          className="text-sm focus:outline-none border border-gray-300 w-[24rem] h-10 pl-10 pr-4 rounded-sm"
+          className="bg-[#282941] text-sm text-white focus:outline-none w-[24rem] h-10 pl-10 pr-4 rounded-sm"
         />
       </div>
 
       <div className="flex items-center gap-4 mr-2">
         <Popover className="relative">
-          <PopoverButton className="p-1.5 rounded-sm inline-flex items-center text-gray-700 hover:text-gray-900 focus:outline-none active:bg-gray-100">
+          <PopoverButton className="p-1.5 rounded-sm inline-flex items-center text-white hover:text-gray-900 focus:outline-none active:bg-gray-600">
             <HiOutlineChatAlt fontSize={24} />
             <div className="absolute bottom-0 right-0 w-4 h-4 bg-red-500 rounded-full flex items-center justify-center text-white text-xs">
               3
@@ -84,30 +84,30 @@ function Header() {
         </Popover>
 
         <Popover className="relative">
-          <PopoverButton className="p-1.5 rounded-sm inline-flex items-center text-gray-700 hover:text-gray-900 focus:outline-none active:bg-gray-100">
+          <PopoverButton className="p-1.5 rounded-sm inline-flex items-center text-white hover:text-gray-900 focus:outline-none active:bg-gray-600">
             <HiOutlineBell fontSize={24} />
             <div className="absolute bottom-0 right-0 w-2.5 h-2.5 bg-red-500 rounded-full"></div>
           </PopoverButton>
 
-          <PopoverPanel className="absolute right-0 mt-2 w-48 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5">
+          <PopoverPanel className="absolute right-0 mt-2 w-48 rounded-md shadow-lg bg-[#282941] ring-1 ring-black ring-opacity-5">
             <div className="py-2">
               <Link
                 to="/notifications"
-                className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                className="block px-4 py-2 text-sm text-white hover:bg-[#434463]"
               >
                 New Notification
               </Link>
-              <p className="pl-8 text-xs text-gray-500">
+              <p className="pl-8 text-xs text-white">
                 You have 5 new notifications
               </p>
 
               <Link
                 to="/alerts"
-                className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                className="block px-4 py-2 text-sm text-white hover:bg-[#434463]"
               >
                 System Alerts
               </Link>
-              <p className="pl-8 text-xs text-gray-500">
+              <p className="pl-8 text-xs text-white hover:bg-[#434463]">
                 3 alerts from the system
               </p>
             </div>
@@ -123,14 +123,14 @@ function Header() {
             />
           </MenuButton>
 
-          <MenuItems className="absolute right-0 mt-2 w-48 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 z-10">
+          <MenuItems className="absolute right-0 mt-2 w-48 rounded-md shadow-lg bg-[#282941] ring-1 ring-black ring-opacity-5 z-10">
             <div className="py-2">
               <MenuItem>
                 {({ active }) => (
                   <Link
                     to="profile"
-                    className={`flex items-center px-4 py-2 text-sm text-gray-700 ${
-                      active ? "bg-gray-100" : ""
+                    className={`flex items-center px-4 py-2 text-sm text-white ${
+                      active ? "bg-[#434463]" : ""
                     }`}
                   >
                     <ImProfile className="mr-2" fontSize={18} />
@@ -142,8 +142,8 @@ function Header() {
                 {({ active }) => (
                   <Link
                     to="settings"
-                    className={`flex items-center px-4 py-2 text-sm text-gray-700 ${
-                      active ? "bg-gray-100" : ""
+                    className={`flex items-center px-4 py-2 text-sm text-white ${
+                      active ? "bg-[#434463]" : ""
                     }`}
                   >
                     <HiOutlineCog className="mr-2" fontSize={18} />
@@ -155,8 +155,8 @@ function Header() {
                 {({ active }) => (
                   <Link
                     to="/"
-                    className={`flex items-center px-4 py-2 text-sm text-gray-700 ${
-                      active ? "bg-gray-100" : ""
+                    className={`flex items-center px-4 py-2 text-sm text-white ${
+                      active ? "bg-[#434463]" : ""
                     }`}
                   >
                     <RiLogoutBoxRLine className="mr-2" fontSize={18} />

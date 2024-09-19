@@ -4,7 +4,7 @@ import { Outlet } from "react-router-dom";
 
 export default function Layout() {
   return (
-    <div className="flex flex-row bg-neutral-100 h-screen w-screen overflow-y-scroll">
+    <div className="flex flex-row bg-[#232333] h-screen w-screen overflow-y-scroll">
         <Sidebar />
       <div className="flex-1">
         <Header />
