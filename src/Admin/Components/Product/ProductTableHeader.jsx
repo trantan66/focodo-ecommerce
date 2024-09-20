@@ -1,5 +1,6 @@
 import React from "react";
 import { MdOutlineAddToPhotos } from "react-icons/md";
+import { Link } from "react-router-dom";
 
 function ProductTableHeader({
   searchTerm,
@@ -50,10 +51,10 @@ function ProductTableHeader({
           <option value={50}>50</option>
           <option value={100}>100</option>
         </select>
-        <button className="bg-blue-500 ml-2 rounded-md p-2 text-white flex justify-items-center items-center">
+        <Link to={"addproduct"} className="bg-blue-500 ml-2 rounded-md p-2 text-white flex justify-items-center items-center">
           <MdOutlineAddToPhotos className="mr-1" />
           Thêm sản phẩm
-        </button>
+        </Link>
       </div>
     </div>
   );

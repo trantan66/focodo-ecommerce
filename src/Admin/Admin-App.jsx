@@ -6,7 +6,7 @@ import Order from "./Pages/Order";
 import Customer from "./Pages/Customer";
 import Transaction from "./Pages/Transaction";
 import Message from "./Pages/Message";
-
+import AddProduct from "./Components/Product/AddProduct";
 
 function AdminApp() {
   return (
@@ -20,6 +20,7 @@ function AdminApp() {
           <Route path="transaction" element={<Transaction />} />
           <Route path="message" element={<Message />} />
           <Route path="product" element={<Product />} />
+          <Route path="product/addproduct" element={<AddProduct />} />
         </Route>
       </Routes>
     </Router>
