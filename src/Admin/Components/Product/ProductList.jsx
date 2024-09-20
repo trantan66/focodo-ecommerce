@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import classNames from "classnames";
 import { Pagination } from "antd";
 import ProductTableHeader from "./ProductTableHeader";
+import "./CustomCss/CustomPagination.css"
 
 const data = [];
 
@@ -93,109 +94,111 @@ function ProductList() {
   };
 
   return (
-    <div className="m-4 bg-white p-4 rounded-sm border border-gray-200 flex flex-col flex-1">
-      <ProductTableHeader
-        searchTerm={searchTerm}
-        onSearchChange={setSearchTerm}
-        productsPerPage={productsPerPage}
-        onProductsPerPageChange={setProductsPerPage}
-        selectedCategory={selectedCategory}
-        setSelectedCategory={setSelectedCategory}
-        categories={categories}
-      />
-      <div className="bg-white px-4 pt-3 pb-4 rounded-sm border border-gray-200 flex-1">
-        <strong className="text-gray-700 font-medium">
-          Danh sách sản phẩm
-        </strong>
-        <div className="mt-3">
-          <table className="w-full text-gray-700 border-x-gray-400">
-            <thead>
-              <tr className="bg-[#FAFAFA] h-10">
-                <td>Sản phẩm</td>
-                <td>Danh mục</td>
-                <td>Giá gốc</td>
-                <td>Discount</td>
-                <td>Giá bán</td>
-                <td>Số lượng</td>
-              </tr>
-            </thead>
-            <tbody className="h-[50vh]">
-              {currentProducts.map((dataproduct, index) => (
-                <tr key={index} className="border-b-2">
-                  <td>
-                    <div className="bg-white rounded-sm flex-1 flex items-center">
-                      <img
-                        src={dataproduct.product.imagelink}
-                        alt="Product"
-                        className="w-10 h-10 rounded-sm object-cover"
-                      />
-                      <div className="pl-2">
-                        <Link
-                          to={`productdetail/${dataproduct.product.name}`}
-                          className="text text-sm font-semibold text-[#787BFF]"
-                        >
-                          {dataproduct.product.name}
-                        </Link>
-                        <div classN ame="flex items-center">
-                          <strong className="text-xs text-gray-700 font-light">
-                            {dataproduct.product.description}
-                          </strong>
+    <div>
+      <div className="mx-4 bg-[#282941] p-4 rounded-md  flex flex-col flex-1">
+        <ProductTableHeader
+          searchTerm={searchTerm}
+          onSearchChange={setSearchTerm}
+          productsPerPage={productsPerPage}
+          onProductsPerPageChange={setProductsPerPage}
+          selectedCategory={selectedCategory}
+          setSelectedCategory={setSelectedCategory}
+          categories={categories}
+        />
+        <div className="bg-[#282941] pt-3 pb-4 rounded-sm  flex-1">
+          <strong className="text-white font-medium">Danh sách sản phẩm</strong>
+          <div className="mt-3">
+            <table className="w-full text-white border-x-gray-400">
+              <thead>
+                <tr className="bg-[#2E3044] h-10">
+                  <td className="pl-2">Sản phẩm</td>
+                  <td>Danh mục</td>
+                  <td>Giá gốc</td>
+                  <td>Discount</td>
+                  <td>Giá bán</td>
+                  <td>Số lượng</td>
+                </tr>
+              </thead>
+              <tbody className="h-[50vh]">
+                {currentProducts.map((dataproduct, index) => (
+                  <tr key={index} className="border-b-2">
+                    <td>
+                      <div className="bg-[#282941] rounded-sm flex-1 flex items-center">
+                        <img
+                          src={dataproduct.product.imagelink}
+                          alt="Product"
+                          className="w-10 h-10 rounded-sm object-cover"
+                        />
+                        <div className="pl-2">
+                          <Link
+                            to={`productdetail/${dataproduct.product.name}`}
+                            className="text text-sm font-semibold text-[#787BFF]"
+                          >
+                            {dataproduct.product.name}
+                          </Link>
+                          <div classN ame="flex items-center">
+                            <strong className="text-xs text-white font-light">
+                              {dataproduct.product.description}
+                            </strong>
+                          </div>
                         </div>
                       </div>
-                    </div>
-                  </td>
-                  <td>
-                    <div className="bg-white rounded-sm flex-1 flex items-center">
-                      <img
-                        src={dataproduct.category.imagelink}
-                        alt="Category"
-                        className="w-10 h-10 rounded-full object-cover"
-                      />
-                      <div className="pl-2">
-                        <Link
-                          to={`category/categorydetail/${dataproduct.category.name}`}
-                          className="text text-sm font-semibold text-[#787BFF]"
-                        >
-                          {dataproduct.category.name}
-                        </Link>
+                    </td>
+                    <td>
+                      <div className="bg-[#282941] rounded-sm flex-1 flex items-center">
+                        <img
+                          src={dataproduct.category.imagelink}
+                          alt="Category"
+                          className="w-10 h-10 rounded-full object-cover"
+                        />
+                        <div className="pl-2">
+                          <Link
+                            to={`category/categorydetail/${dataproduct.category.name}`}
+                            className="text text-sm font-semibold text-[#787BFF]"
+                          >
+                            {dataproduct.category.name}
+                          </Link>
+                        </div>
                       </div>
-                    </div>
-                  </td>
-                  <td>{dataproduct.originalprice} đ</td>
-                  <td>{dataproduct.discount}%</td>
-                  <td>{dataproduct.saleprice} đ</td>
-                  <td>
-                    <span
-                      className={classNames(
-                        dataproduct.quantity === 0
-                          ? "capitalize py-1 px-2 rounded-md text-xs bg-red-300 text-red-500"
-                          : dataproduct.quantity > 50
-                          ? "capitalize py-1 px-2 rounded-md text-xs bg-green-300 text-green-500"
-                          : "capitalize py-1 px-2 rounded-md text-xs bg-amber-100 text-amber-300",
-                        "text-xs font-medium"
-                      )}
-                    >
-                      {dataproduct.quantity === 0
-                        ? "Hết hàng"
-                        : dataproduct.quantity}
-                    </span>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
+                    </td>
+                    <td>{dataproduct.originalprice} đ</td>
+                    <td>{dataproduct.discount}%</td>
+                    <td>{dataproduct.saleprice} đ</td>
+                    <td>
+                      <span
+                        className={classNames(
+                          dataproduct.quantity === 0
+                            ? "capitalize py-1 px-2 rounded-md text-xs bg-red-300 text-red-500"
+                            : dataproduct.quantity > 50
+                            ? "capitalize py-1 px-2 rounded-md text-xs bg-green-200 text-green-800"
+                            : "capitalize py-1 px-2 rounded-md text-xs bg-amber-100 text-amber-400",
+                          "text-xs font-medium"
+                        )}
+                      >
+                        {dataproduct.quantity === 0
+                          ? "Hết hàng"
+                          : dataproduct.quantity}
+                      </span>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
 
-        <div className="mt-4 flex justify-end">
-          <Pagination
-            showSizeChanger={false}
-            current={currentPage}
-            onChange={handlePageChange}
-            total={data.length}
-            pageSize={productsPerPage}
-          />
+          <div className="mt-4 flex justify-end">
+            <Pagination
+              showSizeChanger={false}
+              current={currentPage}
+              onChange={handlePageChange}
+              total={data.length}
+              pageSize={productsPerPage}
+              className="custom-pagination"
+            />
+          </div>
         </div>
       </div>
+      <div>.</div>
     </div>
   );
 }
