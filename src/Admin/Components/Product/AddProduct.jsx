@@ -12,8 +12,6 @@ const AddProduct = () => {
   const [images, setImages] = useState([]);
   const [imagePreviews, setImagePreviews] = useState([]);
 
-  const [message, setMessage] = useState('');
-
   const handleSubmit = (e) => {
     e.preventDefault();
     const productData = {
@@ -30,7 +28,6 @@ const AddProduct = () => {
     
     // Xử lý logic gửi sản phẩm lên server ở đây
 
-    setMessage('Sản phẩm đã được thêm thành công!');
     resetForm();
   };
 
@@ -61,7 +58,6 @@ const AddProduct = () => {
     setCategory('');
     setImages([]);
     setImagePreviews([]);
-    setMessage('');
   };
 
   return (
@@ -134,7 +130,7 @@ const AddProduct = () => {
           </div>
 
           <div className="mb-4">
-            <label className="block text-white mb-2">Mô tả ngắn gọn</label>
+            <span className="block text-white mb-2">Mô tả ngắn gọn</span>
             <textarea
               value={subdescription}
               onChange={(e) => setSubDescription(e.target.value)}
@@ -145,7 +141,7 @@ const AddProduct = () => {
             />
           </div>
           <div className="mb-4">
-            <label className="block text-white mb-2">Mô tả chi tiết</label>
+            <span className="block text-white mb-2">Mô tả chi tiết</span>
             <textarea
               value={description}
               onChange={(e) => setDescription(e.target.value)}
@@ -157,7 +153,7 @@ const AddProduct = () => {
           </div>
 
           <div className="mb-6">
-            <label className="block text-white mb-2">Hình ảnh sản phẩm</label>
+            <span className="block text-white mb-2">Hình ảnh sản phẩm</span>
             <input
               type="file"
               accept="image/*"
@@ -169,7 +165,7 @@ const AddProduct = () => {
           </div>
 
           {imagePreviews.length > 0 && (
-            <div className="mb-4 grid grid-cols-3 gap-4">
+            <div className="mb-4 grid grid-cols-4 gap-4">
               {imagePreviews.map((preview, index) => (
                 <div key={index} className="relative">
                   <img
@@ -180,7 +176,7 @@ const AddProduct = () => {
 
                   <button
                     type="button"
-                    className="absolute top-0 right-20 bg-red-500 text-white p-2 rounded-full"
+                    className="absolute top-0 right-0 bg-red-500 text-white p-2 rounded-md"
                     onClick={() => handleRemoveImage(index)}
                   >
                     X
@@ -197,11 +193,6 @@ const AddProduct = () => {
             Thêm sản phẩm
           </button>
         </form>
-        {message && (
-        <div className="mt-4 text-green-500">
-          {message}
-        </div>
-      )}
       </div>
     </div>
   );
