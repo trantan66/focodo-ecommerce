@@ -6,6 +6,7 @@ function Product() {
     <div className="">
       <ProductList/>
     </div>
+    
   );
 }
 

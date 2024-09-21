@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import classNames from "classnames";
 import { Pagination } from "antd";
 import ProductTableHeader from "./ProductTableHeader";
-import "./CustomCss/CustomPagination.css"
+import "./CustomCss/CustomPagination.css";
 
 const data = [];
 
@@ -26,11 +26,8 @@ function generateRandomProduct(index) {
     "Merchandise",
   ];
 
-  const randomProductName = `Doraemon ${
-    productNames[Math.floor(Math.random() * productNames.length)]
-  } ${index}`;
-  const randomCategoryName =
-    categories[Math.floor(Math.random() * categories.length)];
+  const randomProductName = `Doraemon ${productNames[Math.floor(Math.random() * productNames.length)]} ${index}`;
+  const randomCategoryName = categories[Math.floor(Math.random() * categories.length)];
 
   const originalPrice = Math.floor(Math.random() * (90000 - 20000 + 1)) + 20000;
   const discount = Math.floor(Math.random() * (30 - 5 + 1)) + 5;
@@ -38,16 +35,15 @@ function generateRandomProduct(index) {
   const quantity = Math.floor(Math.random() * 501);
 
   return {
+    id: index,
     product: {
       name: randomProductName,
-      imagelink:
-        "https://cdn.tuoitre.vn/471584752817336320/2024/6/3/doraemon-3-17173722166781704981911.jpeg",
+      imagelink: "https://cdn.tuoitre.vn/471584752817336320/2024/6/3/doraemon-3-17173722166781704981911.jpeg",
       description: `A unique ${randomProductName.toLowerCase()} featuring Doraemon.`,
     },
     category: {
       name: randomCategoryName,
-      imagelink:
-        "https://cdn.tuoitre.vn/471584752817336320/2024/6/3/doraemon-3-17173722166781704981911.jpeg",
+      imagelink: "https://cdn.tuoitre.vn/471584752817336320/2024/6/3/doraemon-3-17173722166781704981911.jpeg",
       description: `${randomCategoryName} for fans of Doraemon.`,
     },
     originalprice: originalPrice,
@@ -60,6 +56,9 @@ function generateRandomProduct(index) {
 for (let i = 1; i <= 100; i++) {
   data.push(generateRandomProduct(i));
 }
+
+console.log(data);
+
 
 function ProductList() {
   const [currentPage, setCurrentPage] = useState(1);
@@ -131,7 +130,7 @@ function ProductList() {
                         />
                         <div className="pl-2">
                           <Link
-                            to={`productdetail/${dataproduct.product.name}`}
+                            to={`productdetail/${dataproduct.id}`}
                             className="text text-sm font-semibold text-[#787BFF]"
                           >
                             {dataproduct.product.name}

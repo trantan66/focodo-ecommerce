@@ -7,6 +7,7 @@ import Customer from "./Pages/Customer";
 import Transaction from "./Pages/Transaction";
 import Message from "./Pages/Message";
 import AddProduct from "./Components/Product/AddProduct";
+import ProductDetail from "./Components/Product/ProductDetail";
 
 function AdminApp() {
   return (
@@ -21,6 +22,7 @@ function AdminApp() {
           <Route path="message" element={<Message />} />
           <Route path="product" element={<Product />} />
           <Route path="product/addproduct" element={<AddProduct />} />
+          <Route path="product/productdetail/:productId" element={<ProductDetail />} />
         </Route>
       </Routes>
     </Router>
