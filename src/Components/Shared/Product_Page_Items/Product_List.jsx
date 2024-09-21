@@ -10,11 +10,11 @@ const ArrangeFilter = [
   },
   {
     key: "Ascending",
-    value: "giá từ thấp đến cao",
+    value: "Giá từ thấp đến cao",
   },
   {
     key: "Descending",
-    value: "giá từ cao đến thấp",
+    value: "Giá từ cao đến thấp",
   },
 ];
 
@@ -54,15 +54,15 @@ function Product_List() {
     setCurrentPage(page);
   };
   const filterProducts = (products, value) => {
-    if (value === "Gia tang dan") {
+    if (value === "Giá từ thấp đến cao") {
       return products.sort((a, b) => parseFloat(a.price) - parseFloat(b.price));
     }
 
-    if (value === "Gia giam dan") {
+    if (value === "Giá từ cao đến thấp") {
       return products.sort((a, b) => parseFloat(b.price) - parseFloat(a.price));
     }
 
-    if (value === "Theo danh gia") {
+    if (value === "Theo đánh giá") {
       return products.sort((a, b) => b.rate - a.rate);
     }
 
@@ -76,14 +76,13 @@ function Product_List() {
   return (
     <div className="">
       <div className="flex ml-10">
-        <p>
-          Số lượng sản phẩm: <span class="font-bold">85</span>
-        </p>
+        <span>Số lượng sản phẩm: </span>
+        <span className="font-bold ml-1">85</span>
 
         <select
           value={selectedCategory}
           onChange={(e) => setSelectedCategory(e.target.value)}
-          className="border border-gray-300 p-2 rounded ml-[600px]"
+          className="border border-gray-300 p-2 rounded ml-[500px]"
         >
           <option value="">Tất cả</option>
           {ArrangeFilter.map((item) => (
