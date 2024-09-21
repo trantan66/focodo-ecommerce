@@ -6,15 +6,15 @@ import { Pagination } from "antd";
 const ArrangeFilter = [
   {
     key: "ByRating",
-    value: "Theo danh gia",
+    value: "Theo đánh giá",
   },
   {
     key: "Ascending",
-    value: "Gia tang dan",
+    value: "giá từ thấp đến cao",
   },
   {
     key: "Descending",
-    value: "Gia giam dan",
+    value: "giá từ cao đến thấp",
   },
 ];
 
@@ -46,16 +46,10 @@ function Product_List() {
   const [currentPage, setCurrentPage] = useState(1);
   const [selectedCategory, setSelectedCategory] = useState("");
   const [productsPerPage, setProductsPerPage] = useState(6);
-  const filteredData = Product_Items.filter(
-    (product) => selectedCategory === ""
-  );
+
   const indexOfLastProduct = currentPage * productsPerPage;
   const indexOfFirstProduct = indexOfLastProduct - productsPerPage;
 
-  const currentProducts = filteredData.slice(
-    indexOfFirstProduct,
-    indexOfLastProduct
-  );
   const handlePageChange = (page) => {
     setCurrentPage(page);
   };
@@ -72,19 +66,11 @@ function Product_List() {
       return products.sort((a, b) => b.rate - a.rate);
     }
 
-    return products; // Trường hợp không có filter, trả về danh sách sản phẩm gốc
+    return products;
   };
-  const filteredProductsByPriceAsc = filterProducts(
-    Product_Items,
-    "Gia tang dan"
-  );
-  const filteredProductsByPriceDesc = filterProducts(
-    Product_Items,
-    "Gia giam dan"
-  );
-  const filteredProductsByRateDesc = filterProducts(
-    Product_Items,
-    "Theo danh gia"
+  const currentProducts = filterProducts(Product_Items, selectedCategory).slice(
+    indexOfFirstProduct,
+    indexOfLastProduct
   );
 
   return (
@@ -93,12 +79,13 @@ function Product_List() {
         <p>
           Số lượng sản phẩm: <span class="font-bold">85</span>
         </p>
+
         <select
           value={selectedCategory}
           onChange={(e) => setSelectedCategory(e.target.value)}
           className="border border-gray-300 p-2 rounded ml-[600px]"
         >
-          <option value="">Tat ca </option>
+          <option value="">Tất cả</option>
           {ArrangeFilter.map((item) => (
             <option key={item.key} value={item.value}>
               {item.value}
