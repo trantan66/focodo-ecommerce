@@ -57,8 +57,6 @@ for (let i = 1; i <= 100; i++) {
   data.push(generateRandomProduct(i));
 }
 
-console.log(data);
-
 
 function ProductList() {
   const [currentPage, setCurrentPage] = useState(1);
