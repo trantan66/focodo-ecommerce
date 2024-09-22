@@ -3,7 +3,8 @@ import { Link } from "react-router-dom";
 import classNames from "classnames";
 import { Pagination } from "antd";
 import ProductTableHeader from "./ProductTableHeader";
-import "./CustomCss/CustomPagination.css";
+import "../CustomCss/CustomPagination.css"; 
+
 
 const data = [];
 
