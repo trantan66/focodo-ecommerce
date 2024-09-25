@@ -106,7 +106,7 @@ function OrderList() {
                   <tr key={index} className="border-b-2">
                     <td>
                       <Link
-                        to={`order/orderdetail/${order.orderid}`}
+                        to={`orderdetail/${order.orderid}`}
                         className="text-[#787BFF]"
                       >
                         #{order.orderid}

@@ -8,6 +8,7 @@ import Transaction from "./Pages/Transaction";
 import Message from "./Pages/Message";
 import AddProduct from "./Components/Product/AddProduct";
 import ProductDetail from "./Components/Product/ProductDetail";
+import OrderDetail from "./Pages/OrderDetail";
 
 function AdminApp() {
   return (
@@ -23,6 +24,7 @@ function AdminApp() {
           <Route path="product" element={<Product />} />
           <Route path="product/addproduct" element={<AddProduct />} />
           <Route path="product/productdetail/:productId" element={<ProductDetail />} />
+          <Route path="order/orderdetail/:orderId" element={<OrderDetail />} />
         </Route>
       </Routes>
     </Router>
