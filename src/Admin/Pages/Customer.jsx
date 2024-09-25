@@ -1,8 +1,9 @@
 import React from 'react'
+import CustomerList from '../Components/Customer/CustomerList'
 
 function Customer() {
   return (
-    <div>this is admin Customer</div>
+    <div><CustomerList/></div>
   )
 }
 

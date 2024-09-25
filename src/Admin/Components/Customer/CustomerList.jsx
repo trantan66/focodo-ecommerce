@@ -1,13 +1,11 @@
 import React, { useState } from "react";
-import OrderTableHeader from "./OrderTableHeader";
+import CustomerTableHeader from "./CustomerTableHeader";
 import { Link } from "react-router-dom";
 import { Pagination } from "antd";
-import { getPaymentStatus } from "../../Lib/Utils/PaymentStatus";
-import { getOrderStatus } from "../../Lib/Utils/OrderStatus";
 
 const data = [];
 
-function generateRandomOrder(index) {
+function generateRandomCustomer(index) {
   const customerNames = [
     "Charles Kelley",
     "Laura Montoya",
@@ -16,7 +14,7 @@ function generateRandomOrder(index) {
     "Jason Gentry",
     "Lisa Peterson",
   ];
-  
+
   const emails = [
     "mark45@yahoo.com",
     "gentryjason@hotmail.com",
@@ -25,68 +23,82 @@ function generateRandomOrder(index) {
     "montoya22@gmail.com",
     "charles.kelley@abc.com",
   ];
-  
-  const statuses = ["ĐÃ ĐẶT", "ĐÃ XÁC NHẬN", "ĐANG GIAO HÀNG", "ĐÃ GIAO HÀNG", "ĐÃ HỦY"];
-  const payments = ["ĐÃ THANH TOÁN", "CHƯA THANH TOÁN", "ĐÃ HỦY"];
-  
-  const randomCustomerName = customerNames[Math.floor(Math.random() * customerNames.length)];
+
+  const phones = [
+    "0901234567",
+    "0987654321",
+    "0912345678",
+    "0932123456",
+    "0921234567",
+    "0909876543",
+  ];
+
+  const addresses = [
+    "123 Main St, Huế",
+    "456 Oak St, Đà Nẵng",
+    "789 Pine St, Hồ Chí Minh",
+    "321 Maple St, Hà Nội",
+    "654 Cedar St, Đà Lạt",
+    "987 Birch St, Nha Trang",
+  ];
+
+  const randomCustomerName =
+    customerNames[Math.floor(Math.random() * customerNames.length)];
   const randomEmail = emails[Math.floor(Math.random() * emails.length)];
-  const randomStatus = statuses[Math.floor(Math.random() * statuses.length)];
-  const randomPayment = payments[Math.floor(Math.random() * payments.length)];
-  
-  const orderDatetime = new Date(Date.now() - Math.floor(Math.random() * 10000000000)).toISOString().slice(0, 19).replace('T', ' ');
+  const randomPhone = phones[Math.floor(Math.random() * phones.length)];
+  const randomAddress = addresses[Math.floor(Math.random() * addresses.length)];
+
+  const randomOrdered = Math.floor(Math.random() * 100);
+  const randomTotalSpent = (Math.random() * 1000000).toFixed(2);
 
   return {
-    orderid: (5748 + index).toString(),
-    order_datetime: orderDatetime,
-    customer: {
-      id: (5748 + index).toString(),
-      name: randomCustomerName,
-      email: randomEmail,
-      image_link: "https://cdn.tuoitre.vn/471584752817336320/2024/6/3/doraemon-3-17173722166781704981911.jpeg",
-    },
-    payment: randomPayment,
-    status: randomStatus,
+    id: (5748 + index).toString(),
+    name: randomCustomerName,
+    email: randomEmail,
+    phone: randomPhone,
+    address: randomAddress,
+    image_link:
+      "https://cdn.tuoitre.vn/471584752817336320/2024/6/3/doraemon-3-17173722166781704981911.jpeg",
+    ordered: randomOrdered,
+    totalspent: randomTotalSpent,
   };
 }
 
 for (let i = 1; i <= 100; i++) {
-  data.push(generateRandomOrder(i));
+  data.push(generateRandomCustomer(i));
 }
 
-
-function OrderList() {
+function CustomerList() {
   const [currentPage, setCurrentPage] = useState(1);
   const [searchTerm, setSearchTerm] = useState("");
-  const [ordersPerPage, setOrdersPerPage] = useState(6);
+  const [customersPerPage, setCustomersPerPage] = useState(6);
 
-  const indexOfLastOrder = currentPage * ordersPerPage;
-  const indexOfFirstOrder = indexOfLastOrder - ordersPerPage;
+  const indexOfLastCustomer = currentPage * customersPerPage;
+  const indexOfFirstCustomer = indexOfLastCustomer - customersPerPage;
 
   const filteredOrders = data.filter(
-    (order) =>
-      order.customer.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      order.customer.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      order.orderid.includes(searchTerm)
+    (customer) =>
+      customer.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      customer.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      customer.id.includes(searchTerm)
   );
 
-  const currentOrders = filteredOrders.slice(
-    indexOfFirstOrder,
-    indexOfLastOrder
+  const currentCustomers = filteredOrders.slice(
+    indexOfFirstCustomer,
+    indexOfLastCustomer
   );
 
   const handlePageChange = (page) => {
     setCurrentPage(page);
   };
-
   return (
     <div>
       <div className="mx-4 bg-[#282941] p-4 rounded-md flex flex-col flex-1">
-        <OrderTableHeader
+        <CustomerTableHeader
           searchTerm={searchTerm}
           onSearchChange={setSearchTerm}
-          ordersPerPage={ordersPerPage}
-          onOrdersPerPageChange={setOrdersPerPage}
+          CustomersPerPage={customersPerPage}
+          onCustomersPerPageChange={setCustomersPerPage}
         />
 
         <div className="bg-[#282941] pt-3 pb-4 rounded-sm flex-1">
@@ -95,48 +107,45 @@ function OrderList() {
             <table className="w-full text-white border-x-gray-400">
               <thead>
                 <tr className="bg-[#2E3044] h-10">
-                  <td className="pl-2">Mã đơn hàng</td>
-                  <td>Ngày đặt</td>
+                  <td className="pl-2">ID khách hàng</td>
                   <td>Khách hàng</td>
-                  <td>Thanh toán</td>
-                  <td>Trạng thái</td>
+                  <td>Số hóa đơn</td>
+                  <td>Tổng chi tiêu</td>
                 </tr>
               </thead>
               <tbody className="h-[50vh]">
-                {currentOrders.map((order, index) => (
+                {currentCustomers.map((customer, index) => (
                   <tr key={index} className="border-b-2">
                     <td>
                       <Link
-                        to={`orderdetail/${order.orderid}`}
+                        to={`customerdetail/${customer.id}`}
                         className="text-[#787BFF]"
                       >
-                        #{order.orderid}
+                        #{customer.id}
                       </Link>
                     </td>
-                    <td>{order.order_datetime}</td>
-
                     <td>
                       <div className="bg-[#282941] rounded-sm flex-1 flex items-center">
                         <img
-                          src={order.customer.image_link}
+                          src={customer.image_link}
                           alt="Customer"
                           className="w-10 h-10 rounded-full object-cover"
                         />
                         <div className="pl-2">
                           <Link
-                            to={`/admin/product/productdetail/${order.customer.id}`}
+                            to={`customerdetail/${customer.id}`}
                             className="text text-sm font-semibold text-[#787BFF]"
                           >
-                            {order.customer.name}
+                            {customer.name}
                           </Link>
                           <div className="text-xs text-white font-light">
-                            {order.customer.email}
+                            {customer.email}
                           </div>
                         </div>
                       </div>
                     </td>
-                    <td>{getPaymentStatus(order.payment)}</td>
-                    <td>{getOrderStatus(order.status)}</td>
+                    <td>{customer.ordered}</td>
+                    <td>đ{customer.totalspent}</td>
                   </tr>
                 ))}
               </tbody>
@@ -149,7 +158,7 @@ function OrderList() {
               current={currentPage}
               onChange={handlePageChange}
               total={filteredOrders.length}
-              pageSize={ordersPerPage}
+              pageSize={customersPerPage}
               className="custom-pagination"
             />
           </div>
@@ -159,4 +168,4 @@ function OrderList() {
   );
 }
 
-export default OrderList;
+export default CustomerList;

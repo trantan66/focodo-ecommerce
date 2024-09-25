@@ -16,7 +16,7 @@ function CustomerDetail({ customerdata }) {
             />
             <div className="pl-2">
               <Link
-                to={`customer/${items.customer.customerId}`}
+                to={`/admin/customer/customerdetail/${items.customer.customerId}`}
                 className="text text-sm font-semibold text-[#787BFF]"
               >
                 {items.customer.name}

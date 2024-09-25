@@ -8,6 +8,7 @@ const data = [
     orderid: "5748",
     order_datetime: "2024-05-25 19:17:37",
     customer: {
+      id: "5748",
       name: "Charles Kelley",
       email: "mark45@yahoo.com",
       image_link:
@@ -20,6 +21,7 @@ const data = [
     orderid: "3829",
     order_datetime: "2022-12-06 15:05:05",
     customer: {
+      id: "5748",
       name: "Laura Montoya",
       email: "gentryjason@hotmail.com",
       image_link:
@@ -32,6 +34,7 @@ const data = [
     orderid: "7068",
     order_datetime: "2022-11-13 03:10:44",
     customer: {
+      id: "5748",
       name: "Deanna Meyer",
       email: "jacksonsarah@yahoo.com",
       image_link:
@@ -44,6 +47,7 @@ const data = [
     orderid: "8856",
     order_datetime: "2024-04-21 19:12:12",
     customer: {
+      id: "5748",
       name: "Elaine Walls",
       email: "petersonlisa@carter.com",
       image_link:
@@ -56,6 +60,7 @@ const data = [
     orderid: "3829",
     order_datetime: "2022-12-06 15:05:05",
     customer: {
+      id: "5748",
       name: "Laura Montoya",
       email: "gentryjason@hotmail.com",
       image_link:
@@ -68,6 +73,7 @@ const data = [
     orderid: "8856",
     order_datetime: "2024-04-21 19:12:12",
     customer: {
+      id: "5748",
       name: "Elaine Walls",
       email: "petersonlisa@carter.com",
       image_link:
@@ -80,6 +86,7 @@ const data = [
     orderid: "5748",
     order_datetime: "2024-05-25 19:17:37",
     customer: {
+      id: "5748",
       name: "Charles Kelley",
       email: "mark45@yahoo.com",
       image_link:
@@ -126,7 +133,7 @@ function RecentOrder() {
                     />
                     <div className="pl-2">
                       <Link
-                        to={`customer/customerdetail/${order.customer.name}`}
+                        to={`customer/customerdetail/${order.customer.id}`}
                         className="text text-sm font-semibold text-[#787BFF]"
                       >
                         {order.customer.name}

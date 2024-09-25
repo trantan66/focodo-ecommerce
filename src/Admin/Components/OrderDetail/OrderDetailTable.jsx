@@ -30,7 +30,7 @@ function OrderDetailTable({ productdata, data }) {
                     />
                     <div className="pl-2">
                       <Link
-                        to={`productdetail/${items.id}`}
+                        to={`/admin/product/productdetail/${items.id}`}
                         className="text text-sm font-semibold text-[#787BFF]"
                       >
                         {items.name}
