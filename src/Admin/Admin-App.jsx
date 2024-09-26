@@ -9,6 +9,7 @@ import Message from "./Pages/Message";
 import AddProduct from "./Components/Product/AddProduct";
 import ProductDetail from "./Components/Product/ProductDetail";
 import OrderDetail from "./Pages/OrderDetail";
+import CustomerDetail from "./Pages/CustomerDetail";
 
 function AdminApp() {
   return (
@@ -19,6 +20,7 @@ function AdminApp() {
           <Route path="product" element={<Product />} />
           <Route path="order" element={<Order />} />
           <Route path="customer" element={<Customer />} />
+          <Route path="customer/customerdetail/:customerId" element={<CustomerDetail />} />
           <Route path="transaction" element={<Transaction />} />
           <Route path="message" element={<Message />} />
           <Route path="product" element={<Product />} />
