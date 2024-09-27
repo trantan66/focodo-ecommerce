@@ -1,12 +1,32 @@
-import React from "react";
+import React, { useState } from "react";
 import { GiPayMoney } from "react-icons/gi";
 import { IoCart } from "react-icons/io5";
+import { Dialog, DialogPanel, DialogTitle } from "@headlessui/react";
 
 function CustomerInfo({ customerdata }) {
+  const [isOpen, setIsOpen] = useState(false);
+  const [selectedCustomer, setSelectedCustomer] = useState(null);
+
+  function openDialog(customer) {
+    setSelectedCustomer(customer);
+    setIsOpen(true);
+  }
+
+  function closeDialog() {
+    setIsOpen(false);
+    setSelectedCustomer(null);
+  }
+
+  function handleSubmit() {
+    // Xử lý gửi dữ liệu ở đây
+    console.log("Data submitted:", selectedCustomer);
+    closeDialog();
+  }
+
   return (
     <div className="bg-[#282941] p-4 mr-4 rounded-sm text-white">
       {customerdata.map((items) => (
-        <div className="flex flex-col ">
+        <div key={items.id} className="flex flex-col ">
           <div className="flex flex-col items-center">
             <img
               src={items.image_link}
@@ -26,7 +46,6 @@ function CustomerInfo({ customerdata }) {
                 <strong className="text text-xl text-white font-semibold">
                   {items.ordered}
                 </strong>
-
                 <div className="flex items-center">
                   <span className="text text-sm text-white font-light">
                     Hóa đơn
@@ -43,7 +62,6 @@ function CustomerInfo({ customerdata }) {
                 <strong className="text text-xl text-white font-semibold">
                   đ{items.totalspent}
                 </strong>
-
                 <div className="flex items-center">
                   <span className="text text-sm text-white font-light">
                     Chi tiêu
@@ -70,13 +88,122 @@ function CustomerInfo({ customerdata }) {
                 {items.status}
               </span>
             </div>
-
-            <span>Số điện thoại: {items.phonenumber}</span>
+            <span>Số điện thoại: {items.phone}</span>
           </div>
 
-          <button className="bg-blue-600 mt-4 rounded-md p-2">Cập nhật</button>
+          <button
+            className="bg-blue-600 mt-4 rounded-md p-2"
+            onClick={() => openDialog(items)}
+          >
+            Cập nhật
+          </button>
         </div>
       ))}
+
+      <Dialog
+        open={isOpen}
+        as="div"
+        className="relative z-10"
+        onClose={closeDialog}
+      >
+        <div className="fixed inset-0 bg-black/30" />
+        <div className="fixed inset-0 z-10 overflow-y-auto">
+          <div className="flex min-h-full items-center justify-center p-4">
+            <DialogPanel className="w-full max-w-md rounded-xl bg-[#282941] p-6 backdrop-blur-2xl">
+              <DialogTitle
+                as="h3"
+                className="text-lg font-medium leading-6 text-white"
+              >
+                Cập nhật thông tin khách hàng
+              </DialogTitle>
+              {selectedCustomer && (
+                <form className="mt-4 space-y-4">
+                  <div>
+                    <label className="block text-sm font-medium text-white">
+                      Tên khách hàng
+                    </label>
+                    <input
+                      type="text"
+                      value={selectedCustomer.name}
+                      onChange={(e) =>
+                        setSelectedCustomer({
+                          ...selectedCustomer,
+                          name: e.target.value,
+                        })
+                      }
+                      className="ext-sm focus:outline-none border border-gray-300 mt-1 p-2 w-full rounded-md bg-[#282941] text-white"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-white">
+                      Email
+                    </label>
+                    <input
+                      type="email"
+                      value={selectedCustomer.email}
+                      onChange={(e) =>
+                        setSelectedCustomer({
+                          ...selectedCustomer,
+                          email: e.target.value,
+                        })
+                      }
+                      className="ext-sm focus:outline-none border border-gray-300 mt-1 p-2 w-full rounded-md bg-[#282941] text-white"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-white">
+                      Số điện thoại
+                    </label>
+                    <input
+                      type="text"
+                      value={selectedCustomer.phone}
+                      onChange={(e) =>
+                        setSelectedCustomer({
+                          ...selectedCustomer,
+                          phone: e.target.value,
+                        })
+                      }
+                      className="ext-sm focus:outline-none border border-gray-300 mt-1 p-2 w-full rounded-md bg-[#282941] text-white"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-white">
+                      Địa chỉ
+                    </label>
+                    <input
+                      type="text"
+                      value={selectedCustomer.address}
+                      onChange={(e) =>
+                        setSelectedCustomer({
+                          ...selectedCustomer,
+                          address: e.target.value,
+                        })
+                      }
+                      className="ext-sm focus:outline-none border border-gray-300 mt-1 p-2 w-full rounded-md bg-[#282941] text-white"
+                    />
+                  </div>
+                  <div className="flex justify-end">
+                    <button
+                      type="button"
+                      className="bg-blue-600 text-white py-2 px-4 rounded-md"
+                      onClick={handleSubmit}
+                    >
+                      Xác nhận
+                    </button>
+                    <button
+                      type="button"
+                      className="ml-2 bg-gray-600 text-white py-2 px-4 rounded-md"
+                      onClick={closeDialog}
+                    >
+                      Hủy
+                    </button>
+                  </div>
+                </form>
+              )}
+            </DialogPanel>
+          </div>
+        </div>
+      </Dialog>
     </div>
   );
 }

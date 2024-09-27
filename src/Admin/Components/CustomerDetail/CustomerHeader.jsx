@@ -19,7 +19,7 @@ function CustomerHeader({ customerdata }) {
         </div>
       </div>
       <button className="text-red-500  bg-[#4D2F3A] px-6 mb-3 rounded-md hover:bg-red-800">
-        Xóa đơn hàng
+        Xóa khách hàng
       </button>
     </div>
   );

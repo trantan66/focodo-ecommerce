@@ -5,7 +5,6 @@ import {
   HiOutlineUsers,
   HiOutlineDocumentText,
   HiOutlineAnnotation,
-  HiOutlineQuestionMarkCircle,
   HiOutlineCog,
 } from "react-icons/hi";
 
@@ -18,32 +17,32 @@ export const DASHBOARD_SIDEBAR_LINKS = [
   },
   {
     key: "products",
-    label: "Products",
+    label: "Sản phẩm",
     path: "product",
     icon: <HiOutlineCube />,
   },
   {
     key: "orders",
-    label: "Orders",
+    label: "Hóa đơn",
     path: "order",
     icon: <HiOutlineShoppingCart />,
   },
   {
     key: "customers",
-    label: "Customers",
+    label: "Khách hàng",
     path: "customer",
     icon: <HiOutlineUsers />,
   },
   {
-    key: "transactions",
-    label: "Transactions",
-    path: "transaction",
+    key: "categories",
+    label: "Danh mục",
+    path: "category",
     icon: <HiOutlineDocumentText />,
   },
   {
-    key: "messages",
-    label: "Messages",
-    path: "message",
+    key: "reviews",
+    label: "Đánh giá",
+    path: "review",
     icon: <HiOutlineAnnotation />,
   },
 ];
@@ -51,14 +50,14 @@ export const DASHBOARD_SIDEBAR_LINKS = [
 export const DASHBOARD_SIDEBAR_BOTTOM_LINKS = [
   {
     key: "settings",
-    label: "Settings",
+    label: "Cài đặt",
     path: "setting",
     icon: <HiOutlineCog />,
   },
-  {
-    key: "support",
-    label: "Help & Support",
-    path: "support",
-    icon: <HiOutlineQuestionMarkCircle />,
-  },
+  // {
+  //   key: "support",
+  //   label: "Help & Support",
+  //   path: "support",
+  //   icon: <HiOutlineQuestionMarkCircle />,
+  // },
 ];

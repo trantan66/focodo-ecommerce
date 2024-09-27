@@ -102,7 +102,7 @@ function CustomerList() {
         />
 
         <div className="bg-[#282941] pt-3 pb-4 rounded-sm flex-1">
-          <strong className="text-white font-medium">Danh sách đơn hàng</strong>
+          <strong className="text-white font-medium">Danh sách khách hàng</strong>
           <div className="mt-3">
             <table className="w-full text-white border-x-gray-400">
               <thead>

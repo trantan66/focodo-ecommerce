@@ -71,7 +71,7 @@ function CustomerOrderedTable({ data }) {
                 <tr key={order.id} className="border-b-2">
                   <td>
                     <Link
-                      to={`order/orderdetail/${order.orderid}`}
+                      to={`/admin/order/orderdetail/${order.orderid}`}
                       className="text-[#787BFF]"
                     >
                       #{order.orderid}

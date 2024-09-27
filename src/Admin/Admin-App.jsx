@@ -4,12 +4,12 @@ import Product from "./Pages/Product";
 import Dashboard from "./Pages/Dashboard";
 import Order from "./Pages/Order";
 import Customer from "./Pages/Customer";
-import Transaction from "./Pages/Transaction";
-import Message from "./Pages/Message";
 import AddProduct from "./Components/Product/AddProduct";
 import ProductDetail from "./Components/Product/ProductDetail";
 import OrderDetail from "./Pages/OrderDetail";
 import CustomerDetail from "./Pages/CustomerDetail";
+import Category from "./Pages/Category";
+import Review from "./Pages/Review";
 
 function AdminApp() {
   return (
@@ -21,12 +21,12 @@ function AdminApp() {
           <Route path="order" element={<Order />} />
           <Route path="customer" element={<Customer />} />
           <Route path="customer/customerdetail/:customerId" element={<CustomerDetail />} />
-          <Route path="transaction" element={<Transaction />} />
-          <Route path="message" element={<Message />} />
           <Route path="product" element={<Product />} />
           <Route path="product/addproduct" element={<AddProduct />} />
           <Route path="product/productdetail/:productId" element={<ProductDetail />} />
           <Route path="order/orderdetail/:orderId" element={<OrderDetail />} />
+          <Route path="category" element={<Category />} />
+          <Route path="review" element={<Review />} />
         </Route>
       </Routes>
     </Router>

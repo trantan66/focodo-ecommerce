@@ -44,6 +44,13 @@ const popularProducts = [
 		product_thumbnail: 'https://bepnhamo.vn/wp-content/uploads/2023/02/maxresdefault.jpg',
 		product_price: '₫80000',
 		product_stock: 453
+	},
+	{
+		id: '4342',
+		product_name: 'Bánh bột lọc',
+		product_thumbnail: 'https://bepnhamo.vn/wp-content/uploads/2023/02/maxresdefault.jpg',
+		product_price: '₫80000',
+		product_stock: 453
 	}
 ];
 

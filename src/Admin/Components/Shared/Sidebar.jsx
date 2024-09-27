@@ -30,7 +30,7 @@ function Sidebar() {
         <div className={linkClass}>
           <span className="flex items-center text-red-700">
             <RiLogoutBoxRLine className="text-red-700 mr-1.5" />
-            Logout
+            Đăng xuất
           </span>
         </div>
       </div>
