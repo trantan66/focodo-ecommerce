@@ -1,3 +1,5 @@
+import ClassicEditor from "@ckeditor/ckeditor5-build-classic";
+import { CKEditor } from "@ckeditor/ckeditor5-react";
 import React, { useState } from "react";
 
 const AddProduct = () => {
@@ -142,13 +144,16 @@ const AddProduct = () => {
           </div>
           <div className="mb-4">
             <span className="block text-white mb-2">Mô tả chi tiết</span>
-            <textarea
-              value={description}
-              onChange={(e) => setDescription(e.target.value)}
-              className="w-full p-3 border rounded-sm bg-[#282941] text-white focus:outline-none"
-              placeholder="Nhập mô tả sản phẩm"
-              rows="4"
-              required
+            <CKEditor
+              editor={ClassicEditor}
+              data={description}
+              onChange={(event, editor) => {
+                const data = editor.getData();
+                setDescription(data);
+              }}
+              config={{
+                placeholder: "Nhập mô tả chi tiết sản phẩm...",
+              }}
             />
           </div>
 
