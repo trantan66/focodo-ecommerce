@@ -1,15 +1,9 @@
-import { Link } from "react-router-dom";
+import Slider from "../Components/Shared/Slider";
 
 export default function Home() {
   return (
     <div>
-      <p>this is HomePage</p>
-      <Link className="underline mr-20" to="/product">
-        to product
-      </Link>
-      <Link className="underline" to="/presentation">
-        to present
-      </Link>
+      <Slider />
     </div>
   );
 }
