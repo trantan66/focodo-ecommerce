@@ -14,6 +14,8 @@ function ProductList() {
   const [selectedCategory, setSelectedCategory] = useState("");
   const [totalProducts, setTotalProducts] = useState(0);
 
+  const [cachedProducts, setCachedProducts] = useState({});
+
   const categories = [
     "Toys",
     "Collectibles",
@@ -25,24 +27,48 @@ function ProductList() {
   // const randomCategoryName =
   //   categories[Math.floor(Math.random() * categories.length)];
 
+  // const fetchProducts = useCallback(async () => {
+  //   try {
+  //     const response = await axios.get(
+  //       `http://localhost:8080/api/v1/products?page=${
+  //         currentPage - 1
+  //       }&size=${productsPerPage}`
+  //     );
+  //     setProducts(response.data.result.data);
+  //     setTotalProducts(response.data.result.pagination.total_records);
+  //   } catch (error) {
+  //     console.error("Error fetching the products:", error);
+  //   }
+  // }, [currentPage, productsPerPage]);
+
+  // useEffect(() => {
+  //   fetchProducts();
+  // }, [fetchProducts]);
+ 
   const fetchProducts = useCallback(async () => {
     try {
       const response = await axios.get(
-        `http://localhost:8080/api/v1/products?page=${
-          currentPage - 1
-        }&size=${productsPerPage}`
+        `http://localhost:8080/api/v1/products?page=${currentPage - 1}&size=${productsPerPage}`
       );
       setProducts(response.data.result.data);
       setTotalProducts(response.data.result.pagination.total_records);
+    
+      setCachedProducts((prev) => ({
+        ...prev,
+        [currentPage]: response.data.result.data,
+      }));
     } catch (error) {
       console.error("Error fetching the products:", error);
     }
   }, [currentPage, productsPerPage]);
 
   useEffect(() => {
-    fetchProducts();
-  }, [fetchProducts]);
- 
+    if (cachedProducts[currentPage]) {
+      setProducts(cachedProducts[currentPage]);
+    } else {
+      fetchProducts();
+    }
+  }, [currentPage, fetchProducts, cachedProducts]);
 
   const filteredData = products
     .filter((product) =>
