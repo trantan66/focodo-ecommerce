@@ -45,6 +45,7 @@ function ProductTableHeader({
           onChange={(e) => onProductsPerPageChange(parseInt(e.target.value))}
           className="p-2 pr-5 ml-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 bg-[#282941] text-white"
         >
+          <option value={3}>3</option>
           <option value={6}>6</option>
           <option value={10}>10</option>
           <option value={20}>20</option>

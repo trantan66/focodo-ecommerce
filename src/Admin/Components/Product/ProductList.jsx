@@ -1,23 +1,19 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { Link } from "react-router-dom";
 import classNames from "classnames";
 import { Pagination } from "antd";
+import axios from "axios";
 import ProductTableHeader from "./ProductTableHeader";
-import "../CustomCss/CustomPagination.css"; 
+import "../CustomCss/CustomPagination.css";
 
+function ProductList() {
+  const [products, setProducts] = useState([]);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [productsPerPage, setProductsPerPage] = useState(3);
+  const [selectedCategory, setSelectedCategory] = useState("");
+  const [totalProducts, setTotalProducts] = useState(0);
 
-const data = [];
-
-function generateRandomProduct(index) {
-  const productNames = [
-    "Plush Toy",
-    "Action Figure",
-    "Puzzle Set",
-    "Keychain",
-    "Notebook",
-    "Mug",
-    "Pen",
-  ];
   const categories = [
     "Toys",
     "Collectibles",
@@ -26,84 +22,58 @@ function generateRandomProduct(index) {
     "Stationery",
     "Merchandise",
   ];
+  // const randomCategoryName =
+  //   categories[Math.floor(Math.random() * categories.length)];
 
-  const randomProductName = `Doraemon ${productNames[Math.floor(Math.random() * productNames.length)]} ${index}`;
-  const randomCategoryName = categories[Math.floor(Math.random() * categories.length)];
+  const fetchProducts = useCallback(async () => {
+    try {
+      const response = await axios.get(
+        `http://localhost:8080/api/v1/products?page=${
+          currentPage - 1
+        }&size=${productsPerPage}`
+      );
+      setProducts(response.data.result.data);
+      setTotalProducts(response.data.result.pagination.total_records);
+    } catch (error) {
+      console.error("Error fetching the products:", error);
+    }
+  }, [currentPage, productsPerPage]);
 
-  const originalPrice = Math.floor(Math.random() * (90000 - 20000 + 1)) + 20000;
-  const discount = Math.floor(Math.random() * (30 - 5 + 1)) + 5;
-  const salePrice = originalPrice * (1 - discount / 100);
-  const quantity = Math.floor(Math.random() * 501);
+  useEffect(() => {
+    fetchProducts();
+  }, [fetchProducts]);
+ 
 
-  return {
-    id: index,
-    product: {
-      name: randomProductName,
-      imagelink: "https://cdn.tuoitre.vn/471584752817336320/2024/6/3/doraemon-3-17173722166781704981911.jpeg",
-      description: `A unique ${randomProductName.toLowerCase()} featuring Doraemon.`,
-    },
-    category: {
-      name: randomCategoryName,
-      imagelink: "https://cdn.tuoitre.vn/471584752817336320/2024/6/3/doraemon-3-17173722166781704981911.jpeg",
-      description: `${randomCategoryName} for fans of Doraemon.`,
-    },
-    originalprice: originalPrice,
-    discount: discount,
-    saleprice: Math.round(salePrice * 100) / 100,
-    quantity: quantity,
-  };
-}
-
-for (let i = 1; i <= 100; i++) {
-  data.push(generateRandomProduct(i));
-}
-
-
-function ProductList() {
-  const [currentPage, setCurrentPage] = useState(1);
-  // const productsPerPage = 6;
-
-  const [searchTerm, setSearchTerm] = useState("");
-  const [productsPerPage, setProductsPerPage] = useState(6);
-
-  const [selectedCategory, setSelectedCategory] = useState("");
-
-  const indexOfLastProduct = currentPage * productsPerPage;
-  const indexOfFirstProduct = indexOfLastProduct - productsPerPage;
-
-  const categories = [...new Set(data.map((product) => product.category.name))];
-
-  const filteredData = data
+  const filteredData = products
     .filter((product) =>
-      product.product.name.toLowerCase().includes(searchTerm.toLowerCase())
+      product.name.toLowerCase().includes(searchTerm.toLowerCase())
     )
     .filter(
       (product) =>
-        selectedCategory === "" || product.category.name === selectedCategory
+        selectedCategory === "" || categories.includes(selectedCategory)
     );
-
-  const currentProducts = filteredData.slice(
-    indexOfFirstProduct,
-    indexOfLastProduct
-  );
 
   const handlePageChange = (page) => {
     setCurrentPage(page);
   };
 
+  const handleProductsPerPageChange = (value) => {
+    setProductsPerPage(value);
+  };
+
   return (
     <div>
-      <div className="mx-4 bg-[#282941] p-4 rounded-md  flex flex-col flex-1">
+      <div className="mx-4 bg-[#282941] p-4 rounded-md flex flex-col flex-1">
         <ProductTableHeader
           searchTerm={searchTerm}
           onSearchChange={setSearchTerm}
           productsPerPage={productsPerPage}
-          onProductsPerPageChange={setProductsPerPage}
+          onProductsPerPageChange={handleProductsPerPageChange}
           selectedCategory={selectedCategory}
           setSelectedCategory={setSelectedCategory}
           categories={categories}
         />
-        <div className="bg-[#282941] pt-3 pb-4 rounded-sm  flex-1">
+        <div className="bg-[#282941] pt-3 pb-4 rounded-sm flex-1">
           <strong className="text-white font-medium">Danh sách sản phẩm</strong>
           <div className="mt-3">
             <table className="w-full text-white border-x-gray-400">
@@ -112,18 +82,19 @@ function ProductList() {
                   <td className="pl-2">Sản phẩm</td>
                   <td>Danh mục</td>
                   <td>Giá gốc</td>
-                  <td>Discount</td>
+                  <td>Giảm giá</td>
                   <td>Giá bán</td>
                   <td>Số lượng</td>
+                  <td>Số lượng / gói</td>
                 </tr>
               </thead>
               <tbody className="h-[50vh]">
-                {currentProducts.map((dataproduct, index) => (
+                {filteredData.map((dataproduct, index) => (
                   <tr key={index} className="border-b-2">
                     <td>
                       <div className="bg-[#282941] rounded-sm flex-1 flex items-center">
                         <img
-                          src={dataproduct.product.imagelink}
+                          src={dataproduct.images[0]}
                           alt="Product"
                           className="w-10 h-10 rounded-sm object-cover"
                         />
@@ -132,11 +103,11 @@ function ProductList() {
                             to={`productdetail/${dataproduct.id}`}
                             className="text text-sm font-semibold text-[#787BFF]"
                           >
-                            {dataproduct.product.name}
+                            {dataproduct.name}
                           </Link>
-                          <div classN ame="flex items-center">
+                          <div className="flex items-center">
                             <strong className="text-xs text-white font-light">
-                              {dataproduct.product.description}
+                              {dataproduct.sub_description}
                             </strong>
                           </div>
                         </div>
@@ -145,23 +116,23 @@ function ProductList() {
                     <td>
                       <div className="bg-[#282941] rounded-sm flex-1 flex items-center">
                         <img
-                          src={dataproduct.category.imagelink}
+                          src="https://cdn.tuoitre.vn/471584752817336320/2024/6/3/doraemon-3-17173722166781704981911.jpeg"
                           alt="Category"
                           className="w-10 h-10 rounded-full object-cover"
                         />
                         <div className="pl-2">
                           <Link
-                            to={`category/categorydetail/${dataproduct.category.name}`}
+                            to={`category/categorydetail/${categories[0]}`}
                             className="text text-sm font-semibold text-[#787BFF]"
                           >
-                            {dataproduct.category.name}
+                            {categories[0]}
                           </Link>
                         </div>
                       </div>
                     </td>
-                    <td>{dataproduct.originalprice} đ</td>
-                    <td>{dataproduct.discount}%</td>
-                    <td>{dataproduct.saleprice} đ</td>
+                    <td>{dataproduct.original_price} đ</td>
+                    <td>{dataproduct.discount * 100}%</td>
+                    <td>{dataproduct.sell_price} đ</td>
                     <td>
                       <span
                         className={classNames(
@@ -178,6 +149,8 @@ function ProductList() {
                           : dataproduct.quantity}
                       </span>
                     </td>
+                    <td>{dataproduct.package_quantity} cái / gói</td>
+
                   </tr>
                 ))}
               </tbody>
@@ -189,7 +162,7 @@ function ProductList() {
               showSizeChanger={false}
               current={currentPage}
               onChange={handlePageChange}
-              total={data.length}
+              total={totalProducts}
               pageSize={productsPerPage}
               className="custom-pagination"
             />
