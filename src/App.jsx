@@ -3,6 +3,7 @@ import Layout from "./Components/Shared/Layout";
 import Product from "./Pages/Product";
 import Home from "./Pages/Home";
 import Present from "./Pages/Presentation";
+import Authentication from "./Pages/Authentication";
 function App() {
   return (
     <Router>
@@ -12,6 +13,7 @@ function App() {
           <Route path="product" element={<Product />} />
           <Route path="presentation" element={<Present />} />
         </Route>
+          <Route path="auth" element={<Authentication />} />
       </Routes>
     </Router>
   );
