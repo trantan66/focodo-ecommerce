@@ -2,7 +2,7 @@ import { Product_Items } from "./Product_Items";
 import React, { useState } from "react";
 import { Rate } from "antd";
 import { Pagination } from "antd";
-
+import { useNavigate } from "react-router-dom";
 const ArrangeFilter = [
   {
     key: "ByRating",
@@ -19,10 +19,18 @@ const ArrangeFilter = [
 ];
 
 function ProductList(props) {
+  const navigate = useNavigate();
+  const handleButtonClick = () => {
+    navigate(`/productdetail`);
+    console.log(`${props.id}`);
+  };
   return (
     <div className="flex flex-col item-center justify-between border border-black rounded-lg w-[266.67px] h-[400px] bg-[#F6F6F6]">
+      <span className="ml-auto pr-2 text-[12px] text-red-600 font-semibold">
+        {props.sale}
+      </span>
       <div className="flex justify-center items-center mt-2">
-        <Rate defaultValue={props.rate}></Rate>
+        <Rate disabled defaultValue={props.rate}></Rate>
       </div>
       <img
         src={props.image}
@@ -35,7 +43,10 @@ function ProductList(props) {
       <span className="mx-auto italic font-semibold text-[24px]">
         {props.price}
       </span>
-      <button className="bg-black text-white mx-auto mb-3 w-[193px] h-[48px] rounded-lg hover:bg-[#3C3D37] transition duration-300">
+      <button
+        className="bg-black text-white mx-auto mb-3 w-[193px] h-[48px] rounded-lg hover:bg-[#3C3D37] transition duration-300"
+        onClick={handleButtonClick}
+      >
         Mua ngay
       </button>
     </div>
@@ -95,12 +106,15 @@ function Product_List() {
 
       <div className="grid grid-cols-3 ml-10 mt-3 gap-4 ">
         {currentProducts.map((item, index) => (
+          
           <ProductList
+            id={item.id}
             key={item.id}
             rate={item.rate}
             image={item.image}
             name={item.name}
             price={item.price}
+            sale={item.sale}
           ></ProductList>
         ))}
       </div>
