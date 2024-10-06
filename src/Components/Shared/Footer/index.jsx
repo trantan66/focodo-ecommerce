@@ -11,7 +11,7 @@ function Footer () {
         <div className="container">
           <div className="inner-wrap">
             <div className="inner-footer-left">
-              <img src={logo} alt="logo" />
+              <div className="w-[150px] h-[150px]"><img src={logo} alt="logo" /></div>
               <p>Hệ thống quảng bá và kinh doanh đặc sản Huế</p>
             </div>
             <div className="inner-footer-middle">
