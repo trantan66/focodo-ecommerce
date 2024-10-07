@@ -18,7 +18,7 @@ const ArrangeFilter = [
   },
 ];
 
-function ProductList(props) {
+function Productlist(props) {
   const navigate = useNavigate();
   const handleButtonClick = () => {
     navigate(`/productdetail`);
@@ -53,7 +53,7 @@ function ProductList(props) {
   );
 }
 
-function Product_List() {
+function ProductList() {
   const [currentPage, setCurrentPage] = useState(1);
   const [selectedCategory, setSelectedCategory] = useState("");
   const [productsPerPage, setProductsPerPage] = useState(6);
@@ -107,7 +107,7 @@ function Product_List() {
       <div className="grid grid-cols-3 ml-10 mt-3 gap-4 ">
         {currentProducts.map((item, index) => (
           
-          <ProductList
+          <Productlist
             id={item.id}
             key={item.id}
             rate={item.rate}
@@ -115,7 +115,7 @@ function Product_List() {
             name={item.name}
             price={item.price}
             sale={item.sale}
-          ></ProductList>
+          />
         ))}
       </div>
       <div className="mt-5">
@@ -132,4 +132,4 @@ function Product_List() {
   );
 }
 
-export default Product_List;
+export default ProductList;

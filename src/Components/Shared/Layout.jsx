@@ -8,7 +8,7 @@ export default function Layout() {
     <div>
       <Header />
       <Navigation />
-      <div className="py-4">{<Outlet />}</div>
+      <div>{<Outlet />}</div>
       <Footer />
     </div>
   );

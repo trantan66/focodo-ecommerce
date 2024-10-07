@@ -5,7 +5,7 @@ import payment from "../image/payment.jpg";
 
 function PrePage() {
   return (
-    <div className="justify-center items-centers">
+    <div className="justify-center items-centers my-4">
       <h2 className="text-center text-[42px] font-bold  ">VỀ CỬA HÀNG</h2>
       <p className="max-w-[700px] mt-2 mb-5 text-[18px] text-center mx-auto  ">
         FoCoDo là hệ thống chuyên cung cấp các sản phẩm đặc sản đến từ Cố Đô

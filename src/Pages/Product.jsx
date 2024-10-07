@@ -1,14 +1,15 @@
 import React from "react";
-import Filter from "../Components/Shared/Product_Page_Items/Filter";
-import ProductList from "../Components/Shared/Product_Page_Items/Product_List";
+import Filter from "../Components/Product/Filter";
+import ProductList from "../Components/Product/Product_List";
+
 
 function Product() {
   return (
     
     <div>
-      <div className="flex justify-center">
-        <Filter></Filter>
-        <ProductList></ProductList>
+      <div className="flex justify-center my-4">
+        <Filter/>
+        <ProductList/>
       </div>
     </div>
   );
