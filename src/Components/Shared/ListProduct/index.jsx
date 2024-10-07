@@ -32,9 +32,9 @@ function ListProduct() {
                         <div class="w-[160px] h-[160px] mt-[25px]">
                             <img src={banhbeo} alt="Bánh bèo" class="w-full h-full object-cover" />
                         </div>
-                        <p class="flex italic mt-[15px]">Bánh bèo Huế</p>
+                        <p class="flex italic mt-[15px] font-medium">Bánh bèo Huế</p>
                         <p class="flex italic mt-[15px]">10.000đ</p>
-                        <button class="flex items-center justify-center mt-[25px] w-[200px] h-[50px] bg-black text-white text-center rounded border border-black border-[1px]">Mua ngay</button>
+                        <button class="flex items-center justify-center mt-[25px] w-[200px] h-[50px] bg-black text-white text-center rounded border border-black">Mua ngay</button>
                     </div>
 
                     <div class="w-[268px] h-[408px] bg-red-500 flex flex-col items-center" style={{ backgroundColor: '#F6F6F6' }}>
@@ -48,9 +48,9 @@ function ListProduct() {
                         <div class="w-[160px] h-[160px] mt-[25px]">
                             <img src={banhbeo} alt="Bánh bèo" class="w-full h-full object-cover" />
                         </div>
-                        <p class="flex italic mt-[15px]">Bánh bèo Huế</p>
+                        <p class="flex italic mt-[15px] font-medium">Bánh bèo Huế</p>
                         <p class="flex italic mt-[15px]">10.000đ</p>
-                        <button class="flex items-center justify-center mt-[25px] w-[200px] h-[50px] bg-black text-white text-center rounded border border-black border-[1px]">Mua ngay</button>
+                        <button class="flex items-center justify-center mt-[25px] w-[200px] h-[50px] bg-black text-white text-center rounded border border-black">Mua ngay</button>
                     </div>
 
                     <div class="w-[268px] h-[408px] bg-red-500 flex flex-col items-center" style={{ backgroundColor: '#F6F6F6' }}>
@@ -64,9 +64,9 @@ function ListProduct() {
                         <div class="w-[160px] h-[160px] mt-[25px]">
                             <img src={banhbeo} alt="Bánh bèo" class="w-full h-full object-cover" />
                         </div>
-                        <p class="flex italic mt-[15px]">Bánh bèo Huế</p>
+                        <p class="flex italic mt-[15px] font-medium">Bánh bèo Huế</p>
                         <p class="flex italic mt-[15px]">10.000đ</p>
-                        <button class="flex items-center justify-center mt-[25px] w-[200px] h-[50px] bg-black text-white text-center rounded border border-black border-[1px]">Mua ngay</button>
+                        <button class="flex items-center justify-center mt-[25px] w-[200px] h-[50px] bg-black text-white text-center rounded border border-black">Mua ngay</button>
                     </div>
 
                     <div class="w-[268px] h-[408px] bg-red-500 flex flex-col items-center" style={{ backgroundColor: '#F6F6F6' }}>
@@ -80,9 +80,9 @@ function ListProduct() {
                         <div class="w-[160px] h-[160px] mt-[25px]">
                             <img src={banhbeo} alt="Bánh bèo" class="w-full h-full object-cover" />
                         </div>
-                        <p class="flex italic mt-[15px]">Bánh bèo Huế</p>
+                        <p class="flex italic mt-[15px] font-medium">Bánh bèo Huế</p>
                         <p class="flex italic mt-[15px]">10.000đ</p>
-                        <button class="flex items-center justify-center mt-[25px] w-[200px] h-[50px] bg-black text-white text-center rounded border border-black border-[1px]">Mua ngay</button>
+                        <button class="flex items-center justify-center mt-[25px] w-[200px] h-[50px] bg-black text-white text-center rounded border border-black">Mua ngay</button>
                     </div>
 
                     <div class="w-[268px] h-[408px] bg-red-500 flex flex-col items-center" style={{ backgroundColor: '#F6F6F6' }}>
@@ -96,9 +96,9 @@ function ListProduct() {
                         <div class="w-[160px] h-[160px] mt-[25px]">
                             <img src={banhbeo} alt="Bánh bèo" class="w-full h-full object-cover" />
                         </div>
-                        <p class="flex italic mt-[15px]">Bánh bèo Huế</p>
+                        <p class="flex italic mt-[15px] font-medium">Bánh bèo Huế</p>
                         <p class="flex italic mt-[15px]">10.000đ</p>
-                        <button class="flex items-center justify-center mt-[25px] w-[200px] h-[50px] bg-black text-white text-center rounded border border-black border-[1px]">Mua ngay</button>
+                        <button class="flex items-center justify-center mt-[25px] w-[200px] h-[50px] bg-black text-white text-center rounded border border-black">Mua ngay</button>
                     </div>
 
                     <div class="w-[268px] h-[408px] bg-red-500 flex flex-col items-center" style={{ backgroundColor: '#F6F6F6' }}>
@@ -112,9 +112,9 @@ function ListProduct() {
                         <div class="w-[160px] h-[160px] mt-[25px]">
                             <img src={banhbeo} alt="Bánh bèo" class="w-full h-full object-cover" />
                         </div>
-                        <p class="flex italic mt-[15px]">Bánh bèo Huế</p>
+                        <p class="flex italic mt-[15px] font-medium">Bánh bèo Huế</p>
                         <p class="flex italic mt-[15px]">10.000đ</p>
-                        <button class="flex items-center justify-center mt-[25px] w-[200px] h-[50px] bg-black text-white text-center rounded border border-black border-[1px]">Mua ngay</button>
+                        <button class="flex items-center justify-center mt-[25px] w-[200px] h-[50px] bg-black text-white text-center rounded border border-black">Mua ngay</button>
                     </div>
 
                     <div class="w-[268px] h-[408px] bg-red-500 flex flex-col items-center" style={{ backgroundColor: '#F6F6F6' }}>
@@ -128,9 +128,9 @@ function ListProduct() {
                         <div class="w-[160px] h-[160px] mt-[25px]">
                             <img src={banhbeo} alt="Bánh bèo" class="w-full h-full object-cover" />
                         </div>
-                        <p class="flex italic mt-[15px]">Bánh bèo Huế</p>
+                        <p class="flex italic mt-[15px] font-medium">Bánh bèo Huế</p>
                         <p class="flex italic mt-[15px]">10.000đ</p>
-                        <button class="flex items-center justify-center mt-[25px] w-[200px] h-[50px] bg-black text-white text-center rounded border border-black border-[1px]">Mua ngay</button>
+                        <button class="flex items-center justify-center mt-[25px] w-[200px] h-[50px] bg-black text-white text-center rounded border border-black">Mua ngay</button>
                     </div>
 
                     <div class="w-[268px] h-[408px] bg-red-500 flex flex-col items-center" style={{ backgroundColor: '#F6F6F6' }}>
@@ -144,9 +144,9 @@ function ListProduct() {
                         <div class="w-[160px] h-[160px] mt-[25px]">
                             <img src={banhbeo} alt="Bánh bèo" class="w-full h-full object-cover" />
                         </div>
-                        <p class="flex italic mt-[15px]">Bánh bèo Huế</p>
+                        <p class="flex italic mt-[15px] font-medium">Bánh bèo Huế</p>
                         <p class="flex italic mt-[15px]">10.000đ</p>
-                        <button class="flex items-center justify-center mt-[25px] w-[200px] h-[50px] bg-black text-white text-center rounded border border-black border-[1px]">Mua ngay</button>
+                        <button class="flex items-center justify-center mt-[25px] w-[200px] h-[50px] bg-black text-white text-center rounded border border-black">Mua ngay</button>
                     </div>
 
                 </div>

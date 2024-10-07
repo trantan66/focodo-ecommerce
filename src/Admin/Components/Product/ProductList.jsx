@@ -28,23 +28,26 @@ function ProductList() {
   );
 
   const fetchProducts = useCallback(async () => {
-    if (cachedProducts[currentPage]) {
-      setProducts(cachedProducts[currentPage]);
+    const cacheKey = `${currentPage}-${productsPerPage}`;
+    
+    if (cachedProducts[cacheKey]) {
+      setProducts(cachedProducts[cacheKey]);
     } else {
       try {
         const { data, total } = await fetchProductsFromAPI(currentPage, productsPerPage);
         setProducts(data);
         setTotalProducts(total);
-
+  
         setCachedProducts((prev) => ({
           ...prev,
-          [currentPage]: data,
+          [cacheKey]: data,
         }));
       } catch (error) {
-        console.error("Error fetching the products:", error);
+        console.error("Lỗi khi lấy sản phẩm:", error);
       }
     }
   }, [currentPage, productsPerPage, cachedProducts]);
+  
 
   useEffect(() => {
     fetchProducts();
@@ -70,6 +73,8 @@ function ProductList() {
   const handleProductsPerPageChange = useCallback((value) => {
     setProductsPerPage(value);
   }, []);
+
+  console.log(productsPerPage);
 
   return (
     <div className="mx-4 bg-[#282941] p-4 rounded-md flex flex-col flex-1">
