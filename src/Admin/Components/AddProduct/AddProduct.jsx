@@ -5,11 +5,12 @@ import React, { useState } from "react";
 const AddProduct = () => {
   const [productName, setProductName] = useState("");
   const [productQuantity, setProductQuantity] = useState("");
-  const [description, setDescription] = useState("");
+  const [productPackageQuantity, setProductPackageQuantity] = useState("");
   const [subdescription, setSubDescription] = useState("");
-  const [price, setPrice] = useState("");
+  const [maindescription, setMainDescription] = useState("");
+  const [originalprice, setOriginalPrice] = useState("");
   const [discount, setDiscount] = useState("");
-  const salePrice = price - (price * discount) / 100;
+  const salePrice = originalprice - (originalprice * discount) / 100;
   const [category, setCategory] = useState("");
   const [images, setImages] = useState([]);
   const [imagePreviews, setImagePreviews] = useState([]);
@@ -18,16 +19,18 @@ const AddProduct = () => {
     e.preventDefault();
     const productData = {
       productName,
-      description,
-      subdescription,
-      price,
-      discount,
+      originalprice,
       salePrice,
+      subdescription,
+      maindescription,
+      discount,
+      productPackageQuantity,
+      productQuantity,
       category,
       images,
     };
     console.log("Product added:", productData);
-    
+
     // Xử lý logic gửi sản phẩm lên server ở đây
 
     resetForm();
@@ -51,15 +54,16 @@ const AddProduct = () => {
   };
 
   const resetForm = () => {
-    setProductName('');
-    setDescription('');
-    setSubDescription('');
-    setProductQuantity('');
-    setPrice('');
-    setDiscount('');
-    setCategory('');
+    setProductName("");
+    setMainDescription("");
+    setSubDescription("");
+    setProductQuantity("");
+    setOriginalPrice("");
+    setDiscount("");
+    setCategory("");
     setImages([]);
     setImagePreviews([]);
+    setProductPackageQuantity("");
   };
 
   return (
@@ -89,6 +93,19 @@ const AddProduct = () => {
                 placeholder="Số lượng"
               />
             </div>
+            <div className="flex items-center flex-col flex-[1]">
+              <span className=" text-white mb-1 self-start">
+                Số lượng / gói
+              </span>
+
+              <input
+                type="text"
+                value={productPackageQuantity}
+                onChange={(e) => setProductPackageQuantity(e.target.value)}
+                className="text-sm focus:outline-none border border-gray-300 w-full h-10 px-4 pr-4 rounded-sm bg-[#282941] text-white "
+                placeholder="Số lượng / gói"
+              />
+            </div>
           </div>
 
           <div className="flex items-center flex-col">
@@ -112,8 +129,8 @@ const AddProduct = () => {
               </span>
               <input
                 type="text"
-                value={price}
-                onChange={(e) => setPrice(e.target.value)}
+                value={originalprice}
+                onChange={(e) => setOriginalPrice(e.target.value)}
                 className="text-sm focus:outline-none border border-gray-300 w-full h-10 px-4 rounded-sm bg-[#282941] text-white mr-2 "
                 placeholder="Giá sản phẩm"
                 required
@@ -146,10 +163,10 @@ const AddProduct = () => {
             <span className="block text-white mb-2">Mô tả chi tiết</span>
             <CKEditor
               editor={ClassicEditor}
-              data={description}
+              data={maindescription}
               onChange={(event, editor) => {
                 const data = editor.getData();
-                setDescription(data);
+                setMainDescription(data);
               }}
               config={{
                 placeholder: "Nhập mô tả chi tiết sản phẩm...",

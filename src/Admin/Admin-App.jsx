@@ -4,12 +4,12 @@ import Product from "./Pages/Product";
 import Dashboard from "./Pages/Dashboard";
 import Order from "./Pages/Order";
 import Customer from "./Pages/Customer";
-import AddProduct from "./Components/Product/AddProduct";
 import ProductDetail from "./Components/Product/ProductDetail";
 import OrderDetail from "./Pages/OrderDetail";
 import CustomerDetail from "./Pages/CustomerDetail";
 import Category from "./Pages/Category";
 import Review from "./Pages/Review";
+import AddProduct from "./Components/AddProduct/AddProduct";
 
 function AdminApp() {
   return (

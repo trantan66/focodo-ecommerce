@@ -1,202 +1,194 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useCallback, useMemo } from "react";
 import { Link } from "react-router-dom";
 import classNames from "classnames";
 import { Pagination } from "antd";
 import ProductTableHeader from "./ProductTableHeader";
-import "../CustomCss/CustomPagination.css"; 
-
-
-const data = [];
-
-function generateRandomProduct(index) {
-  const productNames = [
-    "Plush Toy",
-    "Action Figure",
-    "Puzzle Set",
-    "Keychain",
-    "Notebook",
-    "Mug",
-    "Pen",
-  ];
-  const categories = [
-    "Toys",
-    "Collectibles",
-    "Puzzles",
-    "Accessories",
-    "Stationery",
-    "Merchandise",
-  ];
-
-  const randomProductName = `Doraemon ${productNames[Math.floor(Math.random() * productNames.length)]} ${index}`;
-  const randomCategoryName = categories[Math.floor(Math.random() * categories.length)];
-
-  const originalPrice = Math.floor(Math.random() * (90000 - 20000 + 1)) + 20000;
-  const discount = Math.floor(Math.random() * (30 - 5 + 1)) + 5;
-  const salePrice = originalPrice * (1 - discount / 100);
-  const quantity = Math.floor(Math.random() * 501);
-
-  return {
-    id: index,
-    product: {
-      name: randomProductName,
-      imagelink: "https://cdn.tuoitre.vn/471584752817336320/2024/6/3/doraemon-3-17173722166781704981911.jpeg",
-      description: `A unique ${randomProductName.toLowerCase()} featuring Doraemon.`,
-    },
-    category: {
-      name: randomCategoryName,
-      imagelink: "https://cdn.tuoitre.vn/471584752817336320/2024/6/3/doraemon-3-17173722166781704981911.jpeg",
-      description: `${randomCategoryName} for fans of Doraemon.`,
-    },
-    originalprice: originalPrice,
-    discount: discount,
-    saleprice: Math.round(salePrice * 100) / 100,
-    quantity: quantity,
-  };
-}
-
-for (let i = 1; i <= 100; i++) {
-  data.push(generateRandomProduct(i));
-}
-
+import "../CustomCss/CustomPagination.css";
+import { fetchProductsFromAPI } from "../../Services/ProductService";
 
 function ProductList() {
-  const [currentPage, setCurrentPage] = useState(1);
-  // const productsPerPage = 6;
+  // localStorage.setItem(
+  //   "access_token",
+  //   "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbiIsImlhdCI6MTcyODQ4OTc0NiwiZXhwIjoxNzI5MDk0NTQ2fQ.j8DbKktU_OGgPfScNPu-6EJSYsVyqZbKpknVaVIcQAg"
+  // );
 
+
+  const [products, setProducts] = useState([]);
+  const [currentPage, setCurrentPage] = useState(1);
   const [searchTerm, setSearchTerm] = useState("");
   const [productsPerPage, setProductsPerPage] = useState(6);
+  const [totalProducts, setTotalProducts] = useState(0);
+  const [cachedProducts, setCachedProducts] = useState({});
 
   const [selectedCategory, setSelectedCategory] = useState("");
 
-  const indexOfLastProduct = currentPage * productsPerPage;
-  const indexOfFirstProduct = indexOfLastProduct - productsPerPage;
-
-  const categories = [...new Set(data.map((product) => product.category.name))];
-
-  const filteredData = data
-    .filter((product) =>
-      product.product.name.toLowerCase().includes(searchTerm.toLowerCase())
-    )
-    .filter(
-      (product) =>
-        selectedCategory === "" || product.category.name === selectedCategory
-    );
-
-  const currentProducts = filteredData.slice(
-    indexOfFirstProduct,
-    indexOfLastProduct
+  const categories = useMemo(
+    () => [
+      "Toys",
+      "Collectibles",
+      "Puzzles",
+      "Accessories",
+      "Stationery",
+      "Merchandise",
+    ],
+    []
   );
 
-  const handlePageChange = (page) => {
+  const fetchProducts = useCallback(async () => {
+    const cacheKey = `${currentPage}-${productsPerPage}`;
+
+    if (cachedProducts[cacheKey]) {
+      setProducts(cachedProducts[cacheKey]);
+    } else {
+      try {
+        const { data, total } = await fetchProductsFromAPI(
+          currentPage,
+          productsPerPage
+        );
+        setProducts(data);
+        setTotalProducts(total);
+
+        setCachedProducts((prev) => ({
+          ...prev,
+          [cacheKey]: data,
+        }));
+      } catch (error) {
+        console.error("Lỗi khi lấy sản phẩm:", error);
+      }
+    }
+  }, [currentPage, productsPerPage, cachedProducts]);
+
+  useEffect(() => {
+    fetchProducts();
+  }, [fetchProducts]);
+
+  const filteredData = useMemo(
+    () =>
+      products
+        .filter((product) =>
+          product.name.toLowerCase().includes(searchTerm.toLowerCase())
+        )
+        .filter(
+          (product) =>
+            selectedCategory === "" || categories.includes(selectedCategory)
+        ),
+    [products, searchTerm, selectedCategory, categories]
+  );
+
+  const handlePageChange = useCallback((page) => {
     setCurrentPage(page);
-  };
+  }, []);
+
+  const handleProductsPerPageChange = useCallback((value) => {
+    setProductsPerPage(value);
+  }, []);
 
   return (
-    <div>
-      <div className="mx-4 bg-[#282941] p-4 rounded-md  flex flex-col flex-1">
-        <ProductTableHeader
-          searchTerm={searchTerm}
-          onSearchChange={setSearchTerm}
-          productsPerPage={productsPerPage}
-          onProductsPerPageChange={setProductsPerPage}
-          selectedCategory={selectedCategory}
-          setSelectedCategory={setSelectedCategory}
-          categories={categories}
-        />
-        <div className="bg-[#282941] pt-3 pb-4 rounded-sm  flex-1">
-          <strong className="text-white font-medium">Danh sách sản phẩm</strong>
-          <div className="mt-3">
-            <table className="w-full text-white border-x-gray-400">
-              <thead>
-                <tr className="bg-[#2E3044] h-10">
-                  <td className="pl-2">Sản phẩm</td>
-                  <td>Danh mục</td>
-                  <td>Giá gốc</td>
-                  <td>Discount</td>
-                  <td>Giá bán</td>
-                  <td>Số lượng</td>
-                </tr>
-              </thead>
-              <tbody className="h-[50vh]">
-                {currentProducts.map((dataproduct, index) => (
-                  <tr key={index} className="border-b-2">
-                    <td>
-                      <div className="bg-[#282941] rounded-sm flex-1 flex items-center">
-                        <img
-                          src={dataproduct.product.imagelink}
-                          alt="Product"
-                          className="w-10 h-10 rounded-sm object-cover"
-                        />
-                        <div className="pl-2">
-                          <Link
-                            to={`productdetail/${dataproduct.id}`}
-                            className="text text-sm font-semibold text-[#787BFF]"
-                          >
-                            {dataproduct.product.name}
-                          </Link>
-                          <div classN ame="flex items-center">
-                            <strong className="text-xs text-white font-light">
-                              {dataproduct.product.description}
-                            </strong>
-                          </div>
-                        </div>
-                      </div>
-                    </td>
-                    <td>
-                      <div className="bg-[#282941] rounded-sm flex-1 flex items-center">
-                        <img
-                          src={dataproduct.category.imagelink}
-                          alt="Category"
-                          className="w-10 h-10 rounded-full object-cover"
-                        />
-                        <div className="pl-2">
-                          <Link
-                            to={`category/categorydetail/${dataproduct.category.name}`}
-                            className="text text-sm font-semibold text-[#787BFF]"
-                          >
-                            {dataproduct.category.name}
-                          </Link>
-                        </div>
-                      </div>
-                    </td>
-                    <td>{dataproduct.originalprice} đ</td>
-                    <td>{dataproduct.discount}%</td>
-                    <td>{dataproduct.saleprice} đ</td>
-                    <td>
-                      <span
-                        className={classNames(
-                          dataproduct.quantity === 0
-                            ? "capitalize py-1 px-2 rounded-md text-xs bg-red-300 text-red-500"
-                            : dataproduct.quantity > 50
-                            ? "capitalize py-1 px-2 rounded-md text-xs bg-green-200 text-green-800"
-                            : "capitalize py-1 px-2 rounded-md text-xs bg-amber-100 text-amber-400",
-                          "text-xs font-medium"
-                        )}
-                      >
-                        {dataproduct.quantity === 0
-                          ? "Hết hàng"
-                          : dataproduct.quantity}
-                      </span>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
+    <div className="mx-4 bg-[#282941] p-4 rounded-md flex flex-col flex-1">
+      <ProductTableHeader
+        searchTerm={searchTerm}
+        onSearchChange={setSearchTerm}
+        productsPerPage={productsPerPage}
+        onProductsPerPageChange={handleProductsPerPageChange}
+        selectedCategory={selectedCategory}
+        setSelectedCategory={setSelectedCategory}
+        categories={categories}
+      />
 
-          <div className="mt-4 flex justify-end">
-            <Pagination
-              showSizeChanger={false}
-              current={currentPage}
-              onChange={handlePageChange}
-              total={data.length}
-              pageSize={productsPerPage}
-              className="custom-pagination"
-            />
-          </div>
+      <div className="bg-[#282941] pt-3 pb-4 rounded-sm flex-1">
+        <strong className="text-white font-medium">Danh sách sản phẩm</strong>
+        <div className="mt-3">
+          <table className="w-full text-white border-x-gray-400">
+            <thead>
+              <tr className="bg-[#2E3044] h-10">
+                <td className="pl-2">Sản phẩm</td>
+                <td>Danh mục</td>
+                <td>Giá gốc</td>
+                <td>Giảm giá</td>
+                <td>Giá bán</td>
+                <td>Số lượng</td>
+                <td>Số lượng / gói</td>
+              </tr>
+            </thead>
+            <tbody className="h-[50vh]">
+              {filteredData.map((dataproduct, index) => (
+                <tr key={index} className="border-b-2">
+                  <td>
+                    <div className="bg-[#282941] rounded-sm flex-1 flex items-center">
+                      <img
+                        src={dataproduct.images[0]}
+                        alt="Product"
+                        className="w-10 h-10 rounded-sm object-cover"
+                      />
+                      <div className="pl-2">
+                        <Link
+                          to={`productdetail/${dataproduct.id}`}
+                          className="text text-sm font-semibold text-[#787BFF]"
+                        >
+                          {dataproduct.name}
+                        </Link>
+                        <div className="flex items-center">
+                          <strong className="text-xs text-white font-light">
+                            {dataproduct.sub_description}
+                          </strong>
+                        </div>
+                      </div>
+                    </div>
+                  </td>
+                  <td>
+                    <div className="bg-[#282941] rounded-sm flex-1 flex items-center">
+                      <img
+                        src="https://cdn.tuoitre.vn/471584752817336320/2024/6/3/doraemon-3-17173722166781704981911.jpeg"
+                        alt="Category"
+                        className="w-10 h-10 rounded-full object-cover"
+                      />
+                      <div className="pl-2">
+                        <Link
+                          to={`category/categorydetail/${categories[0]}`}
+                          className="text text-sm font-semibold text-[#787BFF]"
+                        >
+                          {categories[0]}
+                        </Link>
+                      </div>
+                    </div>
+                  </td>
+                  <td>{dataproduct.original_price} đ</td>
+                  <td>{dataproduct.discount * 100}%</td>
+                  <td>{dataproduct.sell_price} đ</td>
+                  <td>
+                    <span
+                      className={classNames(
+                        dataproduct.quantity === 0
+                          ? "capitalize py-1 px-2 rounded-md text-xs bg-red-300 text-red-500"
+                          : dataproduct.quantity > 50
+                          ? "capitalize py-1 px-2 rounded-md text-xs bg-green-200 text-green-800"
+                          : "capitalize py-1 px-2 rounded-md text-xs bg-amber-100 text-amber-400",
+                        "text-xs font-medium"
+                      )}
+                    >
+                      {dataproduct.quantity === 0
+                        ? "Hết hàng"
+                        : dataproduct.quantity}
+                    </span>
+                  </td>
+                  <td>{dataproduct.package_quantity} cái / gói</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+
+        <div className="mt-4 flex justify-end">
+          <Pagination
+            showSizeChanger={false}
+            current={currentPage}
+            onChange={handlePageChange}
+            total={totalProducts}
+            pageSize={productsPerPage}
+            className="custom-pagination"
+          />
         </div>
       </div>
-      <div>.</div>
     </div>
   );
 }

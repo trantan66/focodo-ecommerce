@@ -1,30 +1,74 @@
-import React, { useState } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import ReviewTableHeader from "./ReviewTableHeader";
 import { Link } from "react-router-dom";
 import { Pagination, Rate } from "antd";
+import { fetchReviewsFromAPI } from "../../Services/ReviewService";
 
-function ReviewList({ dataReview }) {
+function ReviewList() {
+  const [reviews, setReviews] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [searchTerm, setSearchTerm] = useState("");
   const [reviewsPerPage, setReviewsPerPage] = useState(6);
+  const [totalReviews, setTotalReviews] = useState(0);
+  const [cachedReviews, setCachedReviews] = useState({});
 
-  const indexOfLastReview = currentPage * reviewsPerPage;
-  const indexOfFirstReview = indexOfLastReview - reviewsPerPage;
+  const fetchReviews = useCallback(async () => {
+    const cacheKey = `${currentPage}-${reviewsPerPage}`;
 
-  const filteredReviews = dataReview.filter(
-    (review) =>
-      review.customer.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      review.customer.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      review.product.name.toLowerCase().includes(searchTerm.toLowerCase())
+    if (cachedReviews[cacheKey]) {
+      setReviews(cachedReviews[cacheKey]);
+    } else {
+      try {
+        const { data, total } = await fetchReviewsFromAPI(
+          currentPage,
+          reviewsPerPage
+        );
+        setReviews(data);
+        setTotalReviews(total);
+
+        setCachedReviews((prev) => ({
+          ...prev,
+          [cacheKey]: data,
+        }));
+      } catch (error) {
+        console.error("Lỗi khi lấy đánh giá:", error);
+      }
+    }
+  }, [currentPage, reviewsPerPage, cachedReviews]);
+
+  useEffect(() => {
+    fetchReviews();
+  }, [fetchReviews]);
+
+  const filteredData = useMemo(
+    () =>
+      reviews
+        .filter((review) =>
+          review.user.username.toLowerCase().includes(searchTerm.toLowerCase())
+        )
+        .filter((review) =>
+          review.user.phone.toLowerCase().includes(searchTerm.toLowerCase())
+        ),
+    [reviews, searchTerm]
   );
 
-  const currentReviews = filteredReviews.slice(
-    indexOfFirstReview,
-    indexOfLastReview
-  );
-
-  const handlePageChange = (page) => {
+  const handlePageChange = useCallback((page) => {
     setCurrentPage(page);
+  }, []);
+
+  const handleProductsPerPageChange = useCallback((value) => {
+    setReviewsPerPage(value);
+  }, []);
+
+  const formatDate = (dateString) => {
+    const date = new Date(dateString);
+    return date.toLocaleString("vi-VN", {
+      day: "2-digit",
+      month: "2-digit",
+      year: "numeric",
+      hour: "2-digit",
+      minute: "2-digit",
+    });
   };
 
   return (
@@ -34,7 +78,7 @@ function ReviewList({ dataReview }) {
           searchTerm={searchTerm}
           onSearchChange={setSearchTerm}
           reviewsPerPage={reviewsPerPage}
-          onReviewsPerPageChange={setReviewsPerPage}
+          onReviewsPerPageChange={handleProductsPerPageChange}
         />
 
         <div className="bg-[#282941] pt-3 pb-4 rounded-sm flex-1">
@@ -50,24 +94,24 @@ function ReviewList({ dataReview }) {
                 </tr>
               </thead>
               <tbody className="h-[50vh]">
-                {currentReviews.map((review, index) => (
+                {filteredData.map((review, index) => (
                   <tr key={index} className="border-b-2">
                     <td>
                       <div className="bg-[#282941] rounded-sm flex-1 flex items-center">
                         <img
-                          src={review.product.image_link}
-                          alt="Customer"
+                          src={review.images[1]}
+                          alt="Product"
                           className="w-10 h-10 rounded-md object-cover"
                         />
                         <div className="pl-2">
                           <Link
-                            to={`/admin/product/productdetail/${review.product.id}`}
+                            to={`/admin/product/productdetail/${review.id_product}`}
                             className="text text-sm font-semibold text-[#787BFF]"
                           >
-                            {review.product.name}
+                            {review.id_product}
                           </Link>
                           <div className="text-xs text-white font-light">
-                            {review.product.description}
+                            {review.content}
                           </div>
                         </div>
                       </div>
@@ -76,19 +120,19 @@ function ReviewList({ dataReview }) {
                     <td>
                       <div className="bg-[#282941] rounded-sm flex-1 flex items-center">
                         <img
-                          src={review.customer.image_link}
+                          src={review.images[0]}
                           alt="Customer"
                           className="w-10 h-10 rounded-full object-cover"
                         />
                         <div className="pl-2">
                           <Link
-                            to={`/admin/customer/customerdetail/${review.customer.id}`}
+                            to={`/admin/customer/customerdetail/${review.user.id}`}
                             className="text text-sm font-semibold text-[#787BFF]"
                           >
-                            {review.customer.name}
+                            {review.user.full_name}
                           </Link>
                           <div className="text-xs text-white font-light">
-                            {review.customer.email}
+                            {review.user.username}
                           </div>
                         </div>
                       </div>
@@ -97,14 +141,14 @@ function ReviewList({ dataReview }) {
                     <td>
                       <div>
                         <Rate
-                          defaultValue={review.rate}
+                          defaultValue={review.rating}
                           disabled={true}
                           style={{ color: "#696CFF" }}
                         />
                       </div>
                       {review.content}
                     </td>
-                    <td>{review.review_datetime}</td>
+                    <td>{formatDate(review.date)}</td>
                   </tr>
                 ))}
               </tbody>
@@ -116,7 +160,7 @@ function ReviewList({ dataReview }) {
               showSizeChanger={false}
               current={currentPage}
               onChange={handlePageChange}
-              total={filteredReviews.length}
+              total={totalReviews}
               pageSize={reviewsPerPage}
               className="custom-pagination"
             />

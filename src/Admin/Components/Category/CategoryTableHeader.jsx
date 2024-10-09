@@ -6,6 +6,7 @@ function CategoryTableHeader({
   onSearchChange,
   categoriesPerPage,
   onCategoriesPerPageChange,
+  onSetIsDialogOpen,
 }) {
   return (
     <div className="flex justify-between items-center bg-[#282941] pb-2 ">
@@ -33,7 +34,10 @@ function CategoryTableHeader({
           <option value={50}>50</option>
           <option value={100}>100</option>
         </select>
-        <button className="bg-blue-500 ml-2 rounded-md p-2 text-white flex justify-items-center items-center">
+        <button
+          className="bg-blue-500 ml-2 rounded-md p-2 text-white flex justify-items-center items-center"
+          onClick={() => onSetIsDialogOpen(true)}
+        >
           <MdOutlineAddToPhotos className="mr-1" />
           Thêm danh mục
         </button>
