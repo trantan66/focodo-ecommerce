@@ -73,7 +73,7 @@ function ProductDetail() {
     e.preventDefault();
     const categoryIds = selectedCategories.map((category) => category.id);
     categoryIds.unshift(1);
-    
+
     const product = {
       name,
       original_price: parseInt(original_price, 10),
@@ -312,7 +312,7 @@ function ProductDetail() {
               <span className="block text-white mb-2">Mô tả chi tiết</span>
               <CKEditor
                 editor={ClassicEditor}
-                data={main_description || ''}
+                data={main_description || ""}
                 onChange={(event, editor) => {
                   const data = editor.getData();
                   setMainDescription(data);
