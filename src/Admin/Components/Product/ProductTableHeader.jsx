@@ -9,7 +9,7 @@ function ProductTableHeader({
   onProductsPerPageChange,
   selectedCategory,
   setSelectedCategory,
-  categories,
+  categories = [],
 }) {
   return (
     <div className="flex justify-between items-center bg-[#282941] pb-2 ">
@@ -25,18 +25,22 @@ function ProductTableHeader({
       </div>
 
       <div className="flex items-center ">
-        <select
+      <select
           id="categoryFilter"
           value={selectedCategory}
           onChange={(e) => setSelectedCategory(e.target.value)}
           className="p-2 pr-5 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-white bg-[#282941]"
         >
           <option value="">Tất cả danh mục</option>
-          {categories.map((category) => (
-            <option key={category} value={category}>
-              {category}
-            </option>
-          ))}
+          {Array.isArray(categories) && categories.length > 0 ? (
+            categories.map((category) => (
+              <option key={category.id} value={category.name}>
+                {category.name}
+              </option>
+            ))
+          ) : (
+            <option disabled>No categories available</option>
+          )}
         </select>
 
         <select

@@ -4,14 +4,17 @@ import classNames from "classnames";
 import { Pagination } from "antd";
 import ProductTableHeader from "./ProductTableHeader";
 import "../CustomCss/CustomPagination.css";
-import { fetchProductsFromAPI } from "../../Services/ProductService";
+import {
+  fetchCategoriesForProductFromAPI,
+  fetchProductsFromAPI,
+} from "../../../Services/ProductService";
 
 function ProductList() {
-  // localStorage.setItem(
-  //   "access_token",
-  //   "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbiIsImlhdCI6MTcyODQ4OTc0NiwiZXhwIjoxNzI5MDk0NTQ2fQ.j8DbKktU_OGgPfScNPu-6EJSYsVyqZbKpknVaVIcQAg"
-  // );
-
+  // localStorage.removeItem("access_token")
+  localStorage.setItem(
+    "access_token",
+    "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbiIsImlhdCI6MTcyODY2MTQxOSwiZXhwIjoxNzI5MjY2MjE5fQ.ZEmiXUhG97QP2QVtGCJo3CsT3ptTKNzNx9aSjNKXVPQ"
+  );
 
   const [products, setProducts] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
@@ -20,19 +23,23 @@ function ProductList() {
   const [totalProducts, setTotalProducts] = useState(0);
   const [cachedProducts, setCachedProducts] = useState({});
 
+  const [categories, setCategories] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("");
 
-  const categories = useMemo(
-    () => [
-      "Toys",
-      "Collectibles",
-      "Puzzles",
-      "Accessories",
-      "Stationery",
-      "Merchandise",
-    ],
-    []
-  );
+  useEffect(() => {
+    const fetchCategories = async () => {
+      try {
+        const { data } = await fetchCategoriesForProductFromAPI();
+        const filteredCategories = data.filter(
+          (category) => category.id !== 1 && category.id !== 2
+        );
+        setCategories(filteredCategories);
+      } catch (error) {
+        console.error("Lỗi khi lấy danh mục:", error);
+      }
+    };
+    fetchCategories();
+  }, []);
 
   const fetchProducts = useCallback(async () => {
     const cacheKey = `${currentPage}-${productsPerPage}`;
@@ -64,15 +71,10 @@ function ProductList() {
 
   const filteredData = useMemo(
     () =>
-      products
-        .filter((product) =>
-          product.name.toLowerCase().includes(searchTerm.toLowerCase())
-        )
-        .filter(
-          (product) =>
-            selectedCategory === "" || categories.includes(selectedCategory)
-        ),
-    [products, searchTerm, selectedCategory, categories]
+      products.filter((product) =>
+        product.name.toLowerCase().includes(searchTerm.toLowerCase())
+      ),
+    [products, searchTerm]
   );
 
   const handlePageChange = useCallback((page) => {
@@ -102,12 +104,11 @@ function ProductList() {
             <thead>
               <tr className="bg-[#2E3044] h-10">
                 <td className="pl-2">Sản phẩm</td>
-                <td>Danh mục</td>
+                <td>Đã bán</td>
                 <td>Giá gốc</td>
                 <td>Giảm giá</td>
                 <td>Giá bán</td>
                 <td>Số lượng</td>
-                <td>Số lượng / gói</td>
               </tr>
             </thead>
             <tbody className="h-[50vh]">
@@ -116,7 +117,7 @@ function ProductList() {
                   <td>
                     <div className="bg-[#282941] rounded-sm flex-1 flex items-center">
                       <img
-                        src={dataproduct.images[0]}
+                        src={dataproduct.image}
                         alt="Product"
                         className="w-10 h-10 rounded-sm object-cover"
                       />
@@ -135,25 +136,9 @@ function ProductList() {
                       </div>
                     </div>
                   </td>
-                  <td>
-                    <div className="bg-[#282941] rounded-sm flex-1 flex items-center">
-                      <img
-                        src="https://cdn.tuoitre.vn/471584752817336320/2024/6/3/doraemon-3-17173722166781704981911.jpeg"
-                        alt="Category"
-                        className="w-10 h-10 rounded-full object-cover"
-                      />
-                      <div className="pl-2">
-                        <Link
-                          to={`category/categorydetail/${categories[0]}`}
-                          className="text text-sm font-semibold text-[#787BFF]"
-                        >
-                          {categories[0]}
-                        </Link>
-                      </div>
-                    </div>
-                  </td>
+                  <td>{dataproduct.sold_quantity}</td>
                   <td>{dataproduct.original_price} đ</td>
-                  <td>{dataproduct.discount * 100}%</td>
+                  <td>{(dataproduct.discount * 100).toFixed(0)}%</td>
                   <td>{dataproduct.sell_price} đ</td>
                   <td>
                     <span
@@ -171,7 +156,6 @@ function ProductList() {
                         : dataproduct.quantity}
                     </span>
                   </td>
-                  <td>{dataproduct.package_quantity} cái / gói</td>
                 </tr>
               ))}
             </tbody>

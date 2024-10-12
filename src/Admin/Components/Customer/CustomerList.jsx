@@ -2,7 +2,7 @@ import React, { useCallback, useEffect, useMemo, useState } from "react";
 import CustomerTableHeader from "./CustomerTableHeader";
 import { Link } from "react-router-dom";
 import { Pagination } from "antd";
-import { fetchUsersFromAPI } from "../../Services/UserService";
+import { fetchUsersFromAPI } from "../../../Services/UserService";
 
 function CustomerList() {
   const [users, setUsers] = useState([]);

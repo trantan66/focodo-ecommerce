@@ -2,8 +2,8 @@ import React, { useCallback, useEffect, useMemo, useState } from "react";
 import CategoryTableHeader from "./CategoryTableHeader";
 import { Link } from "react-router-dom";
 import { Pagination } from "antd";
-import { fetchCategoriesFromAPI } from "../../Services/CategoryService";
 import { Dialog, DialogPanel, DialogTitle } from "@headlessui/react";
+import { fetchCategoriesForProductFromAPI } from "../../../Services/ProductService";
 
 function CategoryList() {
   const [categories, setCategories] = useState([]);
@@ -26,7 +26,7 @@ function CategoryList() {
       setCategories(cachedCategories[cacheKey]);
     } else {
       try {
-        const { data, total } = await fetchCategoriesFromAPI(
+        const { data, total } = await fetchCategoriesForProductFromAPI(
           currentPage,
           categoriesPerPage
         );

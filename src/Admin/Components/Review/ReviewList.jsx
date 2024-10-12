@@ -2,7 +2,7 @@ import React, { useCallback, useEffect, useMemo, useState } from "react";
 import ReviewTableHeader from "./ReviewTableHeader";
 import { Link } from "react-router-dom";
 import { Pagination, Rate } from "antd";
-import { fetchReviewsFromAPI } from "../../Services/ReviewService";
+import { fetchReviewsFromAPI } from "../../../Services/ReviewService";
 
 function ReviewList() {
   const [reviews, setReviews] = useState([]);

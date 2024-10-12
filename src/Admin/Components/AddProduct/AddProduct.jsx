@@ -1,39 +1,60 @@
+import React, { useEffect, useState } from "react";
 import ClassicEditor from "@ckeditor/ckeditor5-build-classic";
 import { CKEditor } from "@ckeditor/ckeditor5-react";
-import React, { useState } from "react";
+import { addProductToAPI, fetchCategoriesForProductFromAPI } from "../../../Services/ProductService";
 
 const AddProduct = () => {
-  const [productName, setProductName] = useState("");
-  const [productQuantity, setProductQuantity] = useState("");
-  const [productPackageQuantity, setProductPackageQuantity] = useState("");
-  const [subdescription, setSubDescription] = useState("");
-  const [maindescription, setMainDescription] = useState("");
-  const [originalprice, setOriginalPrice] = useState("");
-  const [discount, setDiscount] = useState("");
-  const salePrice = originalprice - (originalprice * discount) / 100;
-  const [category, setCategory] = useState("");
+  const [name, setProductName] = useState("");
+  const [quantity, setProductQuantity] = useState("");
+  const [package_quantity, setProductPackageQuantity] = useState("");
+  const [sub_description, setSubDescription] = useState("");
+  const [main_description, setMainDescription] = useState("");
+  const [original_price, setOriginalPrice] = useState("");
+  const [sell_price, setSalePrice] = useState("");
+  const discount = ((original_price - sell_price) / original_price).toFixed(2);
+  const [selectedCategories, setSelectedCategories] = useState([]);
+  const [categories, setCategories] = useState([]);
   const [images, setImages] = useState([]);
   const [imagePreviews, setImagePreviews] = useState([]);
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    const productData = {
-      productName,
-      originalprice,
-      salePrice,
-      subdescription,
-      maindescription,
-      discount,
-      productPackageQuantity,
-      productQuantity,
-      category,
-      images,
+  useEffect(() => {
+    const fetchCategories = async () => {
+      try {
+        const { data } = await fetchCategoriesForProductFromAPI();
+        const filteredCategories = data.filter(
+          (category) => category.id !== 1 && category.id !== 2
+        );
+        setCategories(filteredCategories);
+      } catch (error) {
+        console.error("Lỗi khi lấy danh mục:", error);
+      }
     };
-    console.log("Product added:", productData);
+    fetchCategories();
+  }, []);
 
-    // Xử lý logic gửi sản phẩm lên server ở đây
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    const categoryIds = selectedCategories.map((category) => category.id);
+    categoryIds.unshift(1);
 
-    resetForm();
+    const product = {
+      name,
+      original_price: parseInt(original_price, 10),
+      sell_price: parseInt(sell_price, 10),
+      sub_description,
+      main_description,
+      discount: parseFloat(discount),
+      package_quantity: parseInt(package_quantity, 10),
+      quantity: parseInt(quantity, 10),
+      categories: categoryIds,
+    };
+
+    try {
+      await addProductToAPI(product, images);
+      resetForm();
+    } catch (error) {
+      console.error("Error adding the product:", error);
+    }
   };
 
   const handleImageUpload = (e) => {
@@ -53,14 +74,36 @@ const AddProduct = () => {
     );
   };
 
+  const handleCategoryChange = (e) => {
+    const selectedCategoryId = parseInt(e.target.value);
+    const selectedCategory = categories.find(
+      (category) => category.id === selectedCategoryId
+    );
+
+    if (
+      selectedCategory &&
+      !selectedCategories.some((cat) => cat.id === selectedCategoryId)
+    ) {
+      setSelectedCategories([...selectedCategories, selectedCategory]);
+    }
+  };
+
+  const handleRemoveCategory = (categoryToRemove) => {
+    setSelectedCategories(
+      selectedCategories.filter(
+        (category) => category.id !== categoryToRemove.id
+      )
+    );
+  };
+
   const resetForm = () => {
     setProductName("");
     setMainDescription("");
     setSubDescription("");
     setProductQuantity("");
     setOriginalPrice("");
-    setDiscount("");
-    setCategory("");
+    setSalePrice("");
+    setSelectedCategories([]);
     setImages([]);
     setImagePreviews([]);
     setProductPackageQuantity("");
@@ -71,36 +114,37 @@ const AddProduct = () => {
       <div className="bg-[#282941] p-4 rounded-md  flex flex-col flex-[2]">
         <form onSubmit={handleSubmit}>
           <div className="flex flex-row gap-4 w-full p-1">
+            {/* Product Name */}
             <div className="flex items-center flex-col flex-[2]">
               <span className=" text-white mb-1 self-start">Tên sản phẩm</span>
               <input
                 type="text"
-                value={productName}
+                value={name}
                 onChange={(e) => setProductName(e.target.value)}
                 className="text-sm focus:outline-none border border-gray-300 w-full h-10 px-4 rounded-sm bg-[#282941] text-white mr-2 "
                 placeholder="Tên sản phẩm"
                 required
               />
             </div>
+            {/* Quantity */}
             <div className="flex items-center flex-col flex-[1]">
               <span className=" text-white mb-1 self-start">Số lượng</span>
-
               <input
                 type="text"
-                value={productQuantity}
+                value={quantity}
                 onChange={(e) => setProductQuantity(e.target.value)}
                 className="text-sm focus:outline-none border border-gray-300 w-full h-10 px-4 pr-4 rounded-sm bg-[#282941] text-white "
                 placeholder="Số lượng"
               />
             </div>
+            {/* Quantity per package */}
             <div className="flex items-center flex-col flex-[1]">
               <span className=" text-white mb-1 self-start">
                 Số lượng / gói
               </span>
-
               <input
                 type="text"
-                value={productPackageQuantity}
+                value={package_quantity}
                 onChange={(e) => setProductPackageQuantity(e.target.value)}
                 className="text-sm focus:outline-none border border-gray-300 w-full h-10 px-4 pr-4 rounded-sm bg-[#282941] text-white "
                 placeholder="Số lượng / gói"
@@ -108,50 +152,79 @@ const AddProduct = () => {
             </div>
           </div>
 
+          {/* Category selection */}
           <div className="flex items-center flex-col">
             <span className="text-white mb-1 self-start">Danh mục</span>
             <select
-              value={category}
-              onChange={(e) => setCategory(e.target.value)}
-              className="text-sm focus:outline-none border border-gray-300 w-full h-10 px-4 pr-4 rounded-sm bg-[#282941] text-white"
-              required
+              onChange={handleCategoryChange}
+              className="text-sm focus:outline-none border border-gray-300 w-full h-10 px-4 pr-4 rounded-sm bg-[#282941] text-white overflow-y-auto"
             >
               <option value="">Chọn danh mục</option>
-              <option value="Bánh">Bánh bột lọc</option>
-              <option value="Mắm">abcd</option>
+              {categories.map((category) => (
+                <option key={category.id} value={category.id}>
+                  {category.name}
+                </option>
+              ))}
             </select>
+
+            {/* Display selected categories */}
+            {selectedCategories.length > 0 && (
+              <div className="mt-2 flex flex-wrap gap-2 self-start">
+                {selectedCategories.map((category) => (
+                  <div
+                    key={category.id}
+                    className="bg-[#B1C1C0] text-gray-800 p-2 rounded-md flex items-center"
+                  >
+                    <span>{category.name}</span>
+                    <button
+                      type="button"
+                      onClick={() => handleRemoveCategory(category)}
+                      className="ml-2 text-red-400"
+                    >
+                      X
+                    </button>
+                  </div>
+                ))}
+              </div>
+            )}
           </div>
 
+          {/* Pricing fields */}
           <div className="flex flex-row gap-4 w-full p-1">
+            {/* Original Price */}
             <div className="flex items-center flex-col flex-1">
               <span className=" text-white mb-1 self-start">
-                Giá sản phẩm (VND)
+                Giá sản phẩm (VNĐ)
               </span>
               <input
                 type="text"
-                value={originalprice}
+                value={original_price}
                 onChange={(e) => setOriginalPrice(e.target.value)}
                 className="text-sm focus:outline-none border border-gray-300 w-full h-10 px-4 rounded-sm bg-[#282941] text-white mr-2 "
-                placeholder="Giá sản phẩm"
+                placeholder="Giá gốc"
                 required
               />
             </div>
+            {/* Sale Price */}
             <div className="flex items-center flex-col flex-1">
-              <span className=" text-white mb-1 self-start ">Discount (%)</span>
+              <span className=" text-white mb-1 self-start ">
+                Giá bán (VNĐ)
+              </span>
               <input
                 type="text"
-                value={discount}
-                onChange={(e) => setDiscount(e.target.value)}
+                value={sell_price}
+                onChange={(e) => setSalePrice(e.target.value)}
                 className="text-sm focus:outline-none border border-gray-300 w-full h-10 px-4 pr-4 rounded-sm bg-[#282941] text-white "
-                placeholder="Số lượng"
+                placeholder="Giá bán"
               />
             </div>
           </div>
 
+          {/* Descriptions and CKEditor */}
           <div className="mb-4">
             <span className="block text-white mb-2">Mô tả ngắn gọn</span>
             <textarea
-              value={subdescription}
+              value={sub_description}
               onChange={(e) => setSubDescription(e.target.value)}
               className="w-full p-3 border rounded-sm bg-[#282941] text-white focus:outline-none"
               placeholder="Nhập mô tả sản phẩm"
@@ -163,18 +236,17 @@ const AddProduct = () => {
             <span className="block text-white mb-2">Mô tả chi tiết</span>
             <CKEditor
               editor={ClassicEditor}
-              data={maindescription}
+              data={main_description}
               onChange={(event, editor) => {
                 const data = editor.getData();
                 setMainDescription(data);
               }}
-              config={{
-                placeholder: "Nhập mô tả chi tiết sản phẩm...",
-              }}
+              className="w-full p-3 border rounded-sm bg-[#282941] text-white focus:outline-none"
             />
           </div>
 
-          <div className="mb-6">
+          {/* Image upload */}
+          <div className="mb-4">
             <span className="block text-white mb-2">Hình ảnh sản phẩm</span>
             <input
               type="file"
@@ -186,6 +258,7 @@ const AddProduct = () => {
             />
           </div>
 
+          {/* Image Previews */}
           {imagePreviews.length > 0 && (
             <div className="mb-4 grid grid-cols-4 gap-4">
               {imagePreviews.map((preview, index) => (
@@ -198,7 +271,7 @@ const AddProduct = () => {
 
                   <button
                     type="button"
-                    className="absolute top-0 right-0 bg-red-500 text-white p-2 rounded-md"
+                    className="absolute top-0 right-0 text-red-500 pr-[2rem]"
                     onClick={() => handleRemoveImage(index)}
                   >
                     X
@@ -208,6 +281,7 @@ const AddProduct = () => {
             </div>
           )}
 
+          {/* Submit Button */}
           <button
             type="submit"
             className="w-full bg-blue-600 p-3 rounded-md text-white hover:bg-blue-500"
