@@ -6,6 +6,7 @@ import "../CustomCss/Slider.css";
 import {
   fetchCategoriesForProductFromAPI,
   fetchProductByIdFromAPI,
+  updateProductToAPI,
 } from "../../../Services/ProductService";
 import { CKEditor } from "@ckeditor/ckeditor5-react";
 import ClassicEditor from "@ckeditor/ckeditor5-build-classic";
@@ -22,6 +23,7 @@ function ProductDetail() {
   const [sell_price, setSalePrice] = useState("");
   const discount = ((original_price - sell_price) / original_price).toFixed(2);
   const [selectedCategories, setSelectedCategories] = useState([]);
+  const [removeSelectedCategories, setRemoveSelectedCategories] = useState([]);
   const [categories, setCategories] = useState([]);
   const [images, setImages] = useState([]);
   const [imagePreviews, setImagePreviews] = useState([]);
@@ -74,6 +76,8 @@ function ProductDetail() {
     const categoryIds = selectedCategories.map((category) => category.id);
     categoryIds.unshift(1);
 
+    const categoryRemovedIds = removeSelectedCategories.map((category) =>  category.id);
+
     const product = {
       name,
       original_price: parseInt(original_price, 10),
@@ -88,10 +92,11 @@ function ProductDetail() {
     console.log(product);
     console.log(images);
     console.log(currentImages);
+    console.log(categoryRemovedIds);
 
     try {
-      // await addProductToAPI(product, images);
-      resetForm();
+      const response = await updateProductToAPI(productId, product, images, currentImages, categoryRemovedIds);
+      console.log(response.code)
     } catch (error) {
       console.error("Error adding the product:", error);
     }
@@ -134,25 +139,16 @@ function ProductDetail() {
         (category) => category.id !== categoryToRemove.id
       )
     );
+    setRemoveSelectedCategories((prevCategories) => [
+      ...prevCategories,
+      categoryToRemove,
+    ]);
   };
 
   const handleRemoveCurrentImages = (imageToRemove) => {
     setCurrentImages((prevImages) =>
       prevImages.filter((image) => image !== imageToRemove)
     );
-  };
-
-  const resetForm = () => {
-    // setProductName("");
-    // setMainDescription("");
-    // setSubDescription("");
-    // setProductQuantity("");
-    // setOriginalPrice("");
-    // setSalePrice("");
-    // setSelectedCategories([]);
-    // setImages([]);
-    // setImagePreviews([]);
-    // setProductPackageQuantity("");
   };
 
   return (
@@ -330,7 +326,6 @@ function ProductDetail() {
                 multiple
                 onChange={handleImageUpload}
                 className="w-full p-3 border rounded-sm bg-[#282941] text-white focus:outline-none"
-                required
               />
             </div>
 
@@ -362,7 +357,7 @@ function ProductDetail() {
               type="submit"
               className="w-full bg-blue-600 p-3 rounded-md text-white hover:bg-blue-500"
             >
-              Thêm sản phẩm
+              Cập nhật
             </button>
           </form>
         </div>

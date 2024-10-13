@@ -76,3 +76,119 @@ export const fetchProductByIdFromAPI = async (id) => {
     throw error;
   }
 };
+export const updateProductToAPI = async (
+  id,
+  product,
+  images,
+  currentImages,
+  removeselectedCategories
+) => {
+  try {
+    const formData = new FormData();
+    const formDataForDescription = new FormData();
+
+    formDataForDescription.append("sub_description", product.sub_description);
+    formDataForDescription.append("main_description", product.main_description);
+
+    const formDataForCategory = new FormData();
+    formDataForCategory.append("id_product", id);
+    product.categories.forEach((element) => {
+      addProductToCategory(formDataForCategory, element, id);
+    });
+
+    removeselectedCategories.forEach((element) => {
+      removeProductFromCategory(element, id);
+    });
+
+    formData.append(
+      "product",
+      new Blob([JSON.stringify(product)], { type: "application/json" })
+    );
+    images.forEach((element) => {
+      formData.append("files", element);
+    });
+    currentImages.forEach((element) => {
+      formData.append("images", element);
+    });
+    const response = await axiosInstance.put(
+      `products/update/${id}`,
+      formData,
+      {
+        headers: {
+          ...getHeader(),
+          "Content-Type": "multipart/form-data",
+        },
+      }
+    );
+    await axiosInstance.put(
+      `products/updateDescription/${id}`,
+      formDataForDescription,
+      {
+        headers: {
+          ...getHeader(),
+          "Content-Type": "multipart/form-data",
+        },
+      }
+    );
+
+    return response;
+  } catch (error) {
+    if (error.response) {
+      console.error("Error response from server:", error.response.data);
+    } else if (error.request) {
+      console.error("No response received:", error.request);
+    } else {
+      console.error("Error setting up request:", error.message);
+    }
+    throw error;
+  }
+};
+export const addProductToCategory = async (formDataForCategory, CategoryId) => {
+  try {
+    const response = await axiosInstance.post(
+      `categories/addProductToCategory/${CategoryId}`,
+      formDataForCategory,
+      {
+        headers: {
+          ...getHeader(),
+          "Content-Type": "multipart/form-data",
+        },
+      }
+    );
+
+    return response.data;
+  } catch (error) {
+    if (error.response) {
+      console.error("Error response from server:", error.response.data);
+    } else if (error.request) {
+      console.error("No response received:", error.request);
+    } else {
+      console.error("Error setting up request:", error.message);
+    }
+    throw error;
+  }
+};
+export const removeProductFromCategory = async (categoryId, productId) => {
+  try {
+    const response = await axiosInstance.delete(
+      `categories/removeProductFromCategory/${categoryId}`,
+      {
+        params: { id_product: productId }, // Gửi id_product như query parameter
+        headers: {
+          ...getHeader(),
+        },
+      }
+    );
+
+    return response.data;
+  } catch (error) {
+    if (error.response) {
+      console.error("Error response from server:", error.response.data);
+    } else if (error.request) {
+      console.error("No response received:", error.request);
+    } else {
+      console.error("Error setting up request:", error.message);
+    }
+    throw error;
+  }
+};
