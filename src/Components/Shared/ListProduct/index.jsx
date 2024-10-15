@@ -1,7 +1,11 @@
-import { StarOutlined, StarFilled } from "@ant-design/icons"
+import { useState } from "react";
+import { StarOutlined, StarFilled } from "@ant-design/icons";
 import { Tabs } from "antd";
-import banhbeo from "../image/banhbeo.jpg"
+import products from './data'; // Import file data.js
+
 function ListProduct() {
+    const [visibleProducts, setVisibleProducts] = useState(8); // Mặc định hiển thị 8 sản phẩm
+
     const items = [
         {
             key: '1',
@@ -12,144 +16,94 @@ function ListProduct() {
             label: 'Khuyến mãi',
         }
     ];
+
+    // Định nghĩa hàm formatCurrency ở cấp độ của ListProduct
+    const formatCurrency = (amount) => {
+        return new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(amount);
+    };
+
+    // Hàm xử lý khi nhấn nút "Xem thêm"
+    const showMoreProducts = () => {
+        setVisibleProducts(prevVisible => prevVisible + 4); // Hiển thị thêm 4 sản phẩm
+    };
+
+    // Hàm xử lý khi nhấn nút "Ẩn bớt"
+    const showLessProducts = () => {
+        setVisibleProducts(8); // Quay lại hiển thị 8 sản phẩm ban đầu
+    };
+
     return (
         <>
-            <div class="mt-[100px] mb-[20px] flex justify-center items-center">
+            <div className="mt-[100px] mb-[20px] flex justify-center items-center">
                 <div className="w-[1200px] h-[40px]">
-                    <Tabs defaultActiveKey="1" items={items} />;
+                    <Tabs defaultActiveKey="1" items={items} />
                 </div>
             </div>
-            <div className="w-full h-[850px] flex justify-center items-center">
-                <div className="grid grid-cols-4 grid-rows-2 grid-flow-col w-[1200px] h-[850px] gap-4">
-                    <div class="w-[268px] h-[408px] bg-red-500 flex flex-col items-center" style={{ backgroundColor: '#F6F6F6' }}>
-                        <div class="flex mt-[25px]">
-                            <StarFilled class="text-yellow-500" />
-                            <StarFilled class="text-yellow-500" />
-                            <StarFilled class="text-yellow-500" />
-                            <StarFilled class="text-yellow-500" />
-                            <StarOutlined class="text-yellow-500" />
-                        </div>
-                        <div class="w-[160px] h-[160px] mt-[25px]">
-                            <img src={banhbeo} alt="Bánh bèo" class="w-full h-full object-cover" />
-                        </div>
-                        <p class="flex italic mt-[15px] font-medium">Bánh bèo Huế</p>
-                        <p class="flex italic mt-[15px]">10.000đ</p>
-                        <button class="flex items-center justify-center mt-[25px] w-[200px] h-[50px] bg-black text-white text-center rounded border border-black border-[1px]">Mua ngay</button>
-                    </div>
 
-                    <div class="w-[268px] h-[408px] bg-red-500 flex flex-col items-center" style={{ backgroundColor: '#F6F6F6' }}>
-                        <div class="flex mt-[25px]">
-                            <StarFilled class="text-yellow-500" />
-                            <StarFilled class="text-yellow-500" />
-                            <StarFilled class="text-yellow-500" />
-                            <StarFilled class="text-yellow-500" />
-                            <StarOutlined class="text-yellow-500" />
-                        </div>
-                        <div class="w-[160px] h-[160px] mt-[25px]">
-                            <img src={banhbeo} alt="Bánh bèo" class="w-full h-full object-cover" />
-                        </div>
-                        <p class="flex italic mt-[15px] font-medium">Bánh bèo Huế</p>
-                        <p class="flex italic mt-[15px]">10.000đ</p>
-                        <button class="flex items-center justify-center mt-[25px] w-[200px] h-[50px] bg-black text-white text-center rounded border border-black border-[1px]">Mua ngay</button>
-                    </div>
+            <div className="w-full h-auto flex justify-center items-center">
+                <div className="grid grid-cols-4 gap-4 w-[1200px]">
+                    {/* Hiển thị số lượng sản phẩm dựa trên visibleProducts */}
+                    {products.slice(0, visibleProducts).map(product => (
+                        <div key={product.id} className="w-[268px] h-[350px] bg-red-500 flex flex-col items-center" style={{ backgroundColor: '#F6F6F6' }}>
+                            {/* image */}
+                            <div className="w-[245px] h-[220px] mt-[12px]">
+                                <img src={product.image} alt={product.name} className="w-full h-full object-cover" />
+                            </div>
 
-                    <div class="w-[268px] h-[408px] bg-red-500 flex flex-col items-center" style={{ backgroundColor: '#F6F6F6' }}>
-                    <div class="flex mt-[25px]">
-                            <StarFilled class="text-yellow-500" />
-                            <StarFilled class="text-yellow-500" />
-                            <StarFilled class="text-yellow-500" />
-                            <StarFilled class="text-yellow-500" />
-                            <StarOutlined class="text-yellow-500" />
-                        </div>
-                        <div class="w-[160px] h-[160px] mt-[25px]">
-                            <img src={banhbeo} alt="Bánh bèo" class="w-full h-full object-cover" />
-                        </div>
-                        <p class="flex italic mt-[15px] font-medium">Bánh bèo Huế</p>
-                        <p class="flex italic mt-[15px]">10.000đ</p>
-                        <button class="flex items-center justify-center mt-[25px] w-[200px] h-[50px] bg-black text-white text-center rounded border border-black border-[1px]">Mua ngay</button>
-                    </div>
+                            {/* Description */}
+                            <div className="w-[225px] mt-[5px]">
+                                <p className="font-medium text-lg">{product.Name}</p>
+                            </div>
 
-                    <div class="w-[268px] h-[408px] bg-red-500 flex flex-col items-center" style={{ backgroundColor: '#F6F6F6' }}>
-                    <div class="flex mt-[25px]">
-                            <StarFilled class="text-yellow-500" />
-                            <StarFilled class="text-yellow-500" />
-                            <StarFilled class="text-yellow-500" />
-                            <StarFilled class="text-yellow-500" />
-                            <StarOutlined class="text-yellow-500" />
-                        </div>
-                        <div class="w-[160px] h-[160px] mt-[25px]">
-                            <img src={banhbeo} alt="Bánh bèo" class="w-full h-full object-cover" />
-                        </div>
-                        <p class="flex italic mt-[15px] font-medium">Bánh bèo Huế</p>
-                        <p class="flex italic mt-[15px]">10.000đ</p>
-                        <button class="flex items-center justify-center mt-[25px] w-[200px] h-[50px] bg-black text-white text-center rounded border border-black border-[1px]">Mua ngay</button>
-                    </div>
+                            {/* Price */}
+                            <div className="grid grid-cols-3 gap-4 p-3">
+                                <div className="flex flex-col items-center">
+                                    <span className="text-lg font-bold text-red-600">{formatCurrency(product.salePrice)}</span>
+                                    <span className="text-sm text-gray-600"></span>
+                                </div>
+                                <div className="flex flex-col items-center">
+                                    <span className="text-gray-500 line-through">{formatCurrency(product.OriginalPrice)}</span>
+                                    <span className="text-sm text-gray-600"></span>
+                                </div>
+                               
+                                <div className="flex flex-col items-center">
+                                    <span className="text-green-600 font-bold">{product.Discount}%</span>
+                                    <span className="text-sm text-gray-600"></span>
+                                </div>
+                            </div>
 
-                    <div class="w-[268px] h-[408px] bg-red-500 flex flex-col items-center" style={{ backgroundColor: '#F6F6F6' }}>
-                    <div class="flex mt-[25px]">
-                            <StarFilled class="text-yellow-500" />
-                            <StarFilled class="text-yellow-500" />
-                            <StarFilled class="text-yellow-500" />
-                            <StarFilled class="text-yellow-500" />
-                            <StarOutlined class="text-yellow-500" />
-                        </div>
-                        <div class="w-[160px] h-[160px] mt-[25px]">
-                            <img src={banhbeo} alt="Bánh bèo" class="w-full h-full object-cover" />
-                        </div>
-                        <p class="flex italic mt-[15px] font-medium">Bánh bèo Huế</p>
-                        <p class="flex italic mt-[15px]">10.000đ</p>
-                        <button class="flex items-center justify-center mt-[25px] w-[200px] h-[50px] bg-black text-white text-center rounded border border-black border-[1px]">Mua ngay</button>
-                    </div>
+                            {/* rating */}
+                            <div className="flex mt-[]">
+                                {[...Array(5)].map((_, index) => (
+                                    index < product.rating ? (
+                                        <StarFilled key={index} className="text-yellow-500" />
+                                    ) : (
+                                        <StarOutlined key={index} className="text-yellow-500" />
+                                    )
+                                ))}
+                            </div>
 
-                    <div class="w-[268px] h-[408px] bg-red-500 flex flex-col items-center" style={{ backgroundColor: '#F6F6F6' }}>
-                    <div class="flex mt-[25px]">
-                            <StarFilled class="text-yellow-500" />
-                            <StarFilled class="text-yellow-500" />
-                            <StarFilled class="text-yellow-500" />
-                            <StarFilled class="text-yellow-500" />
-                            <StarOutlined class="text-yellow-500" />
+                            
                         </div>
-                        <div class="w-[160px] h-[160px] mt-[25px]">
-                            <img src={banhbeo} alt="Bánh bèo" class="w-full h-full object-cover" />
-                        </div>
-                        <p class="flex italic mt-[15px] font-medium">Bánh bèo Huế</p>
-                        <p class="flex italic mt-[15px]">10.000đ</p>
-                        <button class="flex items-center justify-center mt-[25px] w-[200px] h-[50px] bg-black text-white text-center rounded border border-black border-[1px]">Mua ngay</button>
-                    </div>
-
-                    <div class="w-[268px] h-[408px] bg-red-500 flex flex-col items-center" style={{ backgroundColor: '#F6F6F6' }}>
-                    <div class="flex mt-[25px]">
-                            <StarFilled class="text-yellow-500" />
-                            <StarFilled class="text-yellow-500" />
-                            <StarFilled class="text-yellow-500" />
-                            <StarFilled class="text-yellow-500" />
-                            <StarOutlined class="text-yellow-500" />
-                        </div>
-                        <div class="w-[160px] h-[160px] mt-[25px]">
-                            <img src={banhbeo} alt="Bánh bèo" class="w-full h-full object-cover" />
-                        </div>
-                        <p class="flex italic mt-[15px] font-medium">Bánh bèo Huế</p>
-                        <p class="flex italic mt-[15px]">10.000đ</p>
-                        <button class="flex items-center justify-center mt-[25px] w-[200px] h-[50px] bg-black text-white text-center rounded border border-black border-[1px]">Mua ngay</button>
-                    </div>
-
-                    <div class="w-[268px] h-[408px] bg-red-500 flex flex-col items-center" style={{ backgroundColor: '#F6F6F6' }}>
-                        <div class="flex mt-[25px]">
-                            <StarFilled class="text-yellow-500" />
-                            <StarFilled class="text-yellow-500" />
-                            <StarFilled class="text-yellow-500" />
-                            <StarFilled class="text-yellow-500" />
-                            <StarOutlined class="text-yellow-500" />
-                        </div>
-                        <div class="w-[160px] h-[160px] mt-[25px]">
-                            <img src={banhbeo} alt="Bánh bèo" class="w-full h-full object-cover" />
-                        </div>
-                        <p class="flex italic mt-[15px] font-medium">Bánh bèo Huế</p>
-                        <p class="flex italic mt-[15px]">10.000đ</p>
-                        <button class="flex items-center justify-center mt-[25px] w-[200px] h-[50px] bg-black text-white text-center rounded border border-black border-[1px]">Mua ngay</button>
-                    </div>
-
+                    ))}
                 </div>
+            </div>
+
+            {/* Điều kiện hiển thị nút "Xem thêm" hoặc "Ẩn bớt" */}
+            <div className="flex justify-center mt-[20px]">
+                {visibleProducts < products.length ? (
+                    <button
+                        onClick={showMoreProducts}
+                        className="w-[200px] h-[50px] bg-blue-500 text-white text-center rounded">
+                        Xem thêm
+                    </button>
+                ) : (
+                    <button
+                        onClick={showLessProducts}
+                        className="w-[200px] h-[50px] bg-red-500 text-white text-center rounded">
+                        Ẩn bớt
+                    </button>
+                )}
             </div>
         </>
     );

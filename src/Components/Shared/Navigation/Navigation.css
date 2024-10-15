@@ -6,13 +6,15 @@
     background-color: #2E2E2E;
     color: white;
 }
-.Navigation .ant-menu-item,
-.Navigation .ant-menu-submenu-title {
+.Navigation .ant-menu-item {
     width: 234px;
     background-color: #2E2E2E;
     color: white;
 }
-.Navigation .ant-menu-item:hover, 
-.Navigation .ant-menu-item-selected {
-    color: white; /* Màu chữ khi hover hoặc được chọn */
+/* Thêm hiệu ứng hover */
+.Navigation .ant-menu-item:hover {
+    background-color: #fff !important; 
+    color: black !important; 
+    border-top: 1px solid black !important; 
+    cursor: pointer; 
 }

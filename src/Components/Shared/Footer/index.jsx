@@ -1,21 +1,30 @@
-import "./Footer.css"
-import logo from "../image/logo.png"
-import React from 'react';
-import { Typography } from 'antd';
-import { TwitterOutlined, FacebookOutlined, TikTokOutlined, InstagramOutlined } from "@ant-design/icons"
+import "./Footer.css";
+import logo from "../image/logo.png";
+import React from "react";
+import { Typography } from "antd";
+import {
+  TwitterOutlined,
+  FacebookOutlined,
+  TikTokOutlined,
+  InstagramOutlined,
+} from "@ant-design/icons";
 const { Title } = Typography;
-function Footer () {
+function Footer() {
   return (
     <>
       <div className="Footer">
         <div className="container">
           <div className="inner-wrap">
             <div className="inner-footer-left">
-              <div className="w-[150px] h-[150px]"><img src={logo} alt="logo" /></div>
+              <div className="w-[150px] h-[150px]">
+                <img src={logo} alt="logo" />
+              </div>
               <p>Hệ thống quảng bá và kinh doanh đặc sản Huế</p>
             </div>
             <div className="inner-footer-middle">
-              <Title level={4} style={{ color: 'white' }}>Liên Hệ</Title>
+              <Title level={4} style={{ color: "white" }}>
+                Liên Hệ
+              </Title>
               <p>Địa chỉ: 54 Nguyễn Lương Bằng</p>
               <p>Email: focodo-ecommerce@gmail.com</p>
               <p>Hotline: 0123456789</p>
@@ -31,14 +40,46 @@ function Footer () {
           </div>
         </div>
         <div className="footer-icon">
-          <TwitterOutlined />
-          <FacebookOutlined />
-          <TikTokOutlined />
-          <InstagramOutlined />
+          <TwitterOutlined
+            style={{
+              backgroundColor: "#1DA1F2",
+              color: "#ffffff",
+              padding: "10px",
+              borderRadius: "50%",
+              margin: "10px"
+            }}
+          />
+          <FacebookOutlined
+            style={{
+              backgroundColor: "#1877F2",
+              color: "#ffffff",
+              padding: "10px",
+              borderRadius: "50%",
+              margin: "10px"
+            }}
+          />
+          <TikTokOutlined
+            style={{
+              backgroundColor: "#000000",
+              color: "#ffffff",
+              padding: "10px",
+              borderRadius: "50%",
+              margin: "10px"
+            }}
+          />
+          <InstagramOutlined
+            style={{
+              backgroundColor: "#E1306C",
+              color: "#ffffff",
+              padding: "10px",
+              borderRadius: "50%",
+              margin: "10px"
+            }}
+          />
         </div>
       </div>
     </>
-  )
+  );
 }
 
-export default Footer
+export default Footer;
