@@ -56,21 +56,21 @@ function ListProduct() {
                             </div>
 
                             {/* Price */}
-                            <div className="grid grid-cols-3 gap-4 p-3">
-                                <div className="flex flex-col items-center">
-                                    <span className="text-lg font-bold text-red-600">{formatCurrency(product.salePrice)}</span>
-                                    <span className="text-sm text-gray-600"></span>
+                                <div className="grid grid-cols-3 gap-4 p-2">
+                                    <div className="flex flex-col items-center justify-center">
+                                        <span className="text-lg font-bold text-red-600">{formatCurrency(product.salePrice)}</span>
+                                        <span className="text-sm text-gray-600"></span>
+                                    </div>
+                                    <div className="flex flex-col items-center justify-center">
+                                        <span className="text-gray-500 line-through">{formatCurrency(product.OriginalPrice)}</span>
+                                        <span className="text-sm text-gray-600"></span>
+                                    </div>
+                                    <div className="flex flex-col items-center">
+                                        <div className="flex items-center justify-center w-12 h-12 bg-green-500 rounded-full">
+                                            <span className="text-white font-bold text-lg">{product.Discount}%</span>
+                                        </div>
+                                    </div>
                                 </div>
-                                <div className="flex flex-col items-center">
-                                    <span className="text-gray-500 line-through">{formatCurrency(product.OriginalPrice)}</span>
-                                    <span className="text-sm text-gray-600"></span>
-                                </div>
-                               
-                                <div className="flex flex-col items-center">
-                                    <span className="text-green-600 font-bold">{product.Discount}%</span>
-                                    <span className="text-sm text-gray-600"></span>
-                                </div>
-                            </div>
 
                             {/* rating */}
                             <div className="flex mt-[]">
@@ -83,7 +83,7 @@ function ListProduct() {
                                 ))}
                             </div>
 
-                            
+
                         </div>
                     ))}
                 </div>
