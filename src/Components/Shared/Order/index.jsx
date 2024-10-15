@@ -1,12 +1,12 @@
 import React, { useState } from 'react';
 import { Steps, Radio } from 'antd';
-import { EditOutlined,CloseOutlined,PlusCircleOutlined } from '@ant-design/icons'; // Import icon từ Ant Design
+import { EditOutlined,CloseOutlined,PlusCircleOutlined } from '@ant-design/icons'; 
 
 function Order() {
-    const [radioValue, setRadioValue] = useState(''); // State to manage the selected radio button value
+    const [radioValue, setRadioValue] = useState(''); 
 
     const handleRadioChange = (e) => {
-        setRadioValue(e.target.value); // Update the state when a radio button is selected
+        setRadioValue(e.target.value); 
     };
 
     const address = [
