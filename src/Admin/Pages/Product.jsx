@@ -3,9 +3,10 @@ import ProductList from "../Components/Product/ProductList";
 
 function Product() {
   return (
-    <div className="">
+    <div>
       <ProductList/>
     </div>
+    
   );
 }
 

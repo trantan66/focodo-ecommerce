@@ -1,177 +1,153 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useCallback, useMemo } from "react";
 import { Link } from "react-router-dom";
 import classNames from "classnames";
 import { Pagination } from "antd";
 import ProductTableHeader from "./ProductTableHeader";
-
-const data = [];
-
-function generateRandomProduct(index) {
-  const productNames = [
-    "Plush Toy",
-    "Action Figure",
-    "Puzzle Set",
-    "Keychain",
-    "Notebook",
-    "Mug",
-    "Pen",
-  ];
-  const categories = [
-    "Toys",
-    "Collectibles",
-    "Puzzles",
-    "Accessories",
-    "Stationery",
-    "Merchandise",
-  ];
-
-  const randomProductName = `Doraemon ${
-    productNames[Math.floor(Math.random() * productNames.length)]
-  } ${index}`;
-  const randomCategoryName =
-    categories[Math.floor(Math.random() * categories.length)];
-
-  const originalPrice = Math.floor(Math.random() * (90000 - 20000 + 1)) + 20000;
-  const discount = Math.floor(Math.random() * (30 - 5 + 1)) + 5;
-  const salePrice = originalPrice * (1 - discount / 100);
-  const quantity = Math.floor(Math.random() * 501);
-
-  return {
-    product: {
-      name: randomProductName,
-      imagelink:
-        "https://cdn.tuoitre.vn/471584752817336320/2024/6/3/doraemon-3-17173722166781704981911.jpeg",
-      description: `A unique ${randomProductName.toLowerCase()} featuring Doraemon.`,
-    },
-    category: {
-      name: randomCategoryName,
-      imagelink:
-        "https://cdn.tuoitre.vn/471584752817336320/2024/6/3/doraemon-3-17173722166781704981911.jpeg",
-      description: `${randomCategoryName} for fans of Doraemon.`,
-    },
-    originalprice: originalPrice,
-    discount: discount,
-    saleprice: Math.round(salePrice * 100) / 100,
-    quantity: quantity,
-  };
-}
-
-for (let i = 1; i <= 100; i++) {
-  data.push(generateRandomProduct(i));
-}
+import "../CustomCss/CustomPagination.css";
+import {
+  fetchCategoriesForProductFromAPI,
+  fetchProductsFromAPI,
+} from "../../../Services/ProductService";
 
 function ProductList() {
-  const [currentPage, setCurrentPage] = useState(1);
-  // const productsPerPage = 6;
-
-  const [searchTerm, setSearchTerm] = useState("");
-  const [productsPerPage, setProductsPerPage] = useState(6);
-
-  const [selectedCategory, setSelectedCategory] = useState("");
-
-  const indexOfLastProduct = currentPage * productsPerPage;
-  const indexOfFirstProduct = indexOfLastProduct - productsPerPage;
-
-  const categories = [...new Set(data.map((product) => product.category.name))];
-
-  const filteredData = data
-    .filter((product) =>
-      product.product.name.toLowerCase().includes(searchTerm.toLowerCase())
-    )
-    .filter(
-      (product) =>
-        selectedCategory === "" || product.category.name === selectedCategory
-    );
-
-  const currentProducts = filteredData.slice(
-    indexOfFirstProduct,
-    indexOfLastProduct
+  // localStorage.removeItem("access_token")
+  localStorage.setItem(
+    "access_token",
+    "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbiIsImlhdCI6MTcyODY2MTQxOSwiZXhwIjoxNzI5MjY2MjE5fQ.ZEmiXUhG97QP2QVtGCJo3CsT3ptTKNzNx9aSjNKXVPQ"
   );
 
-  const handlePageChange = (page) => {
+  const [products, setProducts] = useState([]);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [productsPerPage, setProductsPerPage] = useState(6);
+  const [totalProducts, setTotalProducts] = useState(0);
+  const [cachedProducts, setCachedProducts] = useState({});
+
+  const [categories, setCategories] = useState("");
+  const [selectedCategory, setSelectedCategory] = useState("");
+
+  useEffect(() => {
+    const fetchCategories = async () => {
+      try {
+        const { data } = await fetchCategoriesForProductFromAPI();
+        const filteredCategories = data.filter(
+          (category) => category.id !== 1 && category.id !== 2
+        );
+        setCategories(filteredCategories);
+      } catch (error) {
+        console.error("Lỗi khi lấy danh mục:", error);
+      }
+    };
+    fetchCategories();
+  }, []);
+
+  const fetchProducts = useCallback(async () => {
+    const cacheKey = `${currentPage}-${productsPerPage}`;
+
+    if (cachedProducts[cacheKey]) {
+      setProducts(cachedProducts[cacheKey]);
+    } else {
+      try {
+        const { data, total } = await fetchProductsFromAPI(
+          currentPage,
+          productsPerPage
+        );
+        setProducts(data);
+        setTotalProducts(total);
+
+        setCachedProducts((prev) => ({
+          ...prev,
+          [cacheKey]: data,
+        }));
+      } catch (error) {
+        console.error("Lỗi khi lấy sản phẩm:", error);
+      }
+    }
+  }, [currentPage, productsPerPage, cachedProducts]);
+
+  useEffect(() => {
+    fetchProducts();
+  }, [fetchProducts]);
+
+  const filteredData = useMemo(
+    () =>
+      products.filter((product) =>
+        product.name.toLowerCase().includes(searchTerm.toLowerCase())
+      ),
+    [products, searchTerm]
+  );
+
+  const handlePageChange = useCallback((page) => {
     setCurrentPage(page);
-  };
+  }, []);
+
+  const handleProductsPerPageChange = useCallback((value) => {
+    setProductsPerPage(value);
+  }, []);
 
   return (
-    <div className="m-4 bg-white p-4 rounded-sm border border-gray-200 flex flex-col flex-1">
+    <div className="mx-4 bg-[#282941] p-4 rounded-md flex flex-col flex-1">
       <ProductTableHeader
         searchTerm={searchTerm}
         onSearchChange={setSearchTerm}
         productsPerPage={productsPerPage}
-        onProductsPerPageChange={setProductsPerPage}
+        onProductsPerPageChange={handleProductsPerPageChange}
         selectedCategory={selectedCategory}
         setSelectedCategory={setSelectedCategory}
         categories={categories}
       />
-      <div className="bg-white px-4 pt-3 pb-4 rounded-sm border border-gray-200 flex-1">
-        <strong className="text-gray-700 font-medium">
-          Danh sách sản phẩm
-        </strong>
+
+      <div className="bg-[#282941] pt-3 pb-4 rounded-sm flex-1">
+        <strong className="text-white font-medium">Danh sách sản phẩm</strong>
         <div className="mt-3">
-          <table className="w-full text-gray-700 border-x-gray-400">
+          <table className="w-full text-white border-x-gray-400">
             <thead>
-              <tr className="bg-[#FAFAFA] h-10">
-                <td>Sản phẩm</td>
-                <td>Danh mục</td>
+              <tr className="bg-[#2E3044] h-10">
+                <td className="pl-2">Sản phẩm</td>
+                <td>Đã bán</td>
                 <td>Giá gốc</td>
-                <td>Discount</td>
+                <td>Giảm giá</td>
                 <td>Giá bán</td>
                 <td>Số lượng</td>
               </tr>
             </thead>
             <tbody className="h-[50vh]">
-              {currentProducts.map((dataproduct, index) => (
+              {filteredData.map((dataproduct, index) => (
                 <tr key={index} className="border-b-2">
                   <td>
-                    <div className="bg-white rounded-sm flex-1 flex items-center">
+                    <div className="bg-[#282941] rounded-sm flex-1 flex items-center">
                       <img
-                        src={dataproduct.product.imagelink}
+                        src={dataproduct.image}
                         alt="Product"
                         className="w-10 h-10 rounded-sm object-cover"
                       />
                       <div className="pl-2">
                         <Link
-                          to={`productdetail/${dataproduct.product.name}`}
+                          to={`productdetail/${dataproduct.id}`}
                           className="text text-sm font-semibold text-[#787BFF]"
                         >
-                          {dataproduct.product.name}
+                          {dataproduct.name}
                         </Link>
-                        <div classN ame="flex items-center">
-                          <strong className="text-xs text-gray-700 font-light">
-                            {dataproduct.product.description}
+                        <div className="flex items-center">
+                          <strong className="text-xs text-white font-light">
+                            {dataproduct.sub_description}
                           </strong>
                         </div>
                       </div>
                     </div>
                   </td>
-                  <td>
-                    <div className="bg-white rounded-sm flex-1 flex items-center">
-                      <img
-                        src={dataproduct.category.imagelink}
-                        alt="Category"
-                        className="w-10 h-10 rounded-full object-cover"
-                      />
-                      <div className="pl-2">
-                        <Link
-                          to={`category/categorydetail/${dataproduct.category.name}`}
-                          className="text text-sm font-semibold text-[#787BFF]"
-                        >
-                          {dataproduct.category.name}
-                        </Link>
-                      </div>
-                    </div>
-                  </td>
-                  <td>{dataproduct.originalprice} đ</td>
-                  <td>{dataproduct.discount}%</td>
-                  <td>{dataproduct.saleprice} đ</td>
+                  <td>{dataproduct.sold_quantity}</td>
+                  <td>{dataproduct.original_price} đ</td>
+                  <td>{(dataproduct.discount * 100).toFixed(0)}%</td>
+                  <td>{dataproduct.sell_price} đ</td>
                   <td>
                     <span
                       className={classNames(
                         dataproduct.quantity === 0
                           ? "capitalize py-1 px-2 rounded-md text-xs bg-red-300 text-red-500"
                           : dataproduct.quantity > 50
-                          ? "capitalize py-1 px-2 rounded-md text-xs bg-green-300 text-green-500"
-                          : "capitalize py-1 px-2 rounded-md text-xs bg-amber-100 text-amber-300",
+                          ? "capitalize py-1 px-2 rounded-md text-xs bg-green-200 text-green-800"
+                          : "capitalize py-1 px-2 rounded-md text-xs bg-amber-100 text-amber-400",
                         "text-xs font-medium"
                       )}
                     >
@@ -191,8 +167,9 @@ function ProductList() {
             showSizeChanger={false}
             current={currentPage}
             onChange={handlePageChange}
-            total={data.length}
+            total={totalProducts}
             pageSize={productsPerPage}
+            className="custom-pagination"
           />
         </div>
       </div>

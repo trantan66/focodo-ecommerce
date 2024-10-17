@@ -17,10 +17,10 @@ export default function Layout() {
       <Slider />
       <ListProduct />
       <Category />
-      <div className="p-40">
+      {/* <div className="p-40">
         <div></div>
         <div>{<Outlet />}</div>
-      </div>
+      </div> */}
       <Footer />
     </div>
   );

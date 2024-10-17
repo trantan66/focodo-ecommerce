@@ -44,14 +44,21 @@ const popularProducts = [
 		product_thumbnail: 'https://bepnhamo.vn/wp-content/uploads/2023/02/maxresdefault.jpg',
 		product_price: '₫80000',
 		product_stock: 453
+	},
+	{
+		id: '4342',
+		product_name: 'Bánh bột lọc',
+		product_thumbnail: 'https://bepnhamo.vn/wp-content/uploads/2023/02/maxresdefault.jpg',
+		product_price: '₫80000',
+		product_stock: 453
 	}
 ];
 
 
 function PopularProduct() {
 	return (
-		<div className="w-[20rem] bg-white p-4 rounded-sm border border-gray-200">
-			<strong className="text-gray-700 font-medium">Sản phẩm bán chạy</strong>
+		<div className="w-[20rem] bg-[#282941] p-4 rounded-sm">
+			<strong className="text-white font-medium">Sản phẩm bán chạy</strong>
 			<div className="mt-4 flex flex-col gap-3">
 				{popularProducts.map((product) => (
 					<Link
@@ -67,7 +74,7 @@ function PopularProduct() {
 							/>
 						</div>
 						<div className="ml-4 flex-1">
-							<p className="text-sm text-gray-800">{product.product_name}</p>
+							<p className="text-sm text-white">{product.product_name}</p>
 							<span
 								className={classNames(
 									product.product_stock === 0
@@ -81,7 +88,7 @@ function PopularProduct() {
 								Còn: {product.product_stock === 0 ? 'Hết hàng' : product.product_stock}
 							</span>
 						</div>
-						<div className="text-xs text-gray-400 pl-1.5">{product.product_price}</div>
+						<div className="text-xs text-white pl-1.5">{product.product_price}</div>
 					</Link>
 				))}
 			</div>

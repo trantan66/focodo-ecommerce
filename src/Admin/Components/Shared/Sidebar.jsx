@@ -13,7 +13,7 @@ const linkClass =
 
 function Sidebar() {
   return (
-    <div className="sticky top-0 bg-neutral-900 w-60 p-4 flex flex-col text-white">
+    <div className="sticky top-0 bg-[#2B2C40] w-60 p-4 flex flex-col text-white">
       <div className="flex items-center gap-2 px-1 py-3">
         <FcComboChart size={24} />
         <span className="text-neutral-100 text-lg">Focodo Admin</span>
@@ -30,7 +30,7 @@ function Sidebar() {
         <div className={linkClass}>
           <span className="flex items-center text-red-700">
             <RiLogoutBoxRLine className="text-red-700 mr-1.5" />
-            Logout
+            Đăng xuất
           </span>
         </div>
       </div>

@@ -1,9 +1,16 @@
-import React from 'react'
+import React from "react";
+import OrderList from "../Components/Order/OrderList";
+import PaymentChart from "../Components/Order/PaymentChart";
+
 
 function Order() {
+
   return (
-    <div>This is admin Order</div>
-  )
+    <div className="flex flex-col gap-4">
+      <PaymentChart />
+      <OrderList />
+    </div>
+  );
 }
 
-export default Order
+export default Order;

@@ -1,11 +1,15 @@
-import { Link } from "react-router-dom";
+import Category from "../Components/Home/Category";
+import Intro from "../Components/Home/Intro";
+import ListProduct from "../Components/Home/ListProduct";
+import Slider from "../Components/Home/Slider";
 
-export default function Home(){
-    return(
-        <div>
-            <p>this is HomePage</p>
-            <Link className="underline mr-20" to="/product" >to product</Link>
-            <Link className="underline" to="/login" >to login</Link>
-        </div>
-    )
+export default function Home() {
+  return (
+    <div>
+      <Intro />
+      <Slider />
+      <ListProduct />
+      <Category />
+    </div>
+  );
 }

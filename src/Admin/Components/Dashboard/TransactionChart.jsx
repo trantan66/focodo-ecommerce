@@ -18,10 +18,10 @@ const data = [
 
 export default function TransactionChart() {
 	return (
-		<div className="h-[22rem] bg-white p-4 rounded-sm border border-gray-200 flex flex-col flex-1">
-			<strong className="text-gray-700 font-medium">Giao dịch</strong>
+		<div className="h-[22rem] bg-[#282941] p-4 rounded-sm flex flex-col flex-1">
+			<strong className="text-white font-medium">Giao dịch</strong>
 			<div className="mt-3 w-full flex-1 text-xs">
-				<ResponsiveContainer width="100%" height="100%">
+				<ResponsiveContainer width="100%" height="100%" >
 					<BarChart
 						width={500}
 						height={300}
@@ -34,11 +34,11 @@ export default function TransactionChart() {
 						}}
 					>
 						<CartesianGrid strokeDasharray="3 3 0 0" vertical={false} />
-						<XAxis dataKey="name" />
+						<XAxis dataKey="name"/>
 						<YAxis />
 						<Tooltip />
 						<Legend />
-						<Bar dataKey="DoanhThu" fill="#10b981" />
+						<Bar dataKey="DoanhThu" fill="#0284c7" />
 						<Bar dataKey="ChiPhi" fill="#ea580c" />
 					</BarChart>
 				</ResponsiveContainer>

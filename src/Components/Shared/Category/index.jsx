@@ -2,7 +2,7 @@ import comhen from "../image/comhen.jpg"
 function Category () {
     return (
         <>
-            <div className="grid grid-cols-4 grid-rows-1 grid-flow-col w-full h-[600px] mt-[200px] gap-8">
+            <div className="grid grid-cols-4 grid-rows-1 grid-flow-col w-full h-[600px] mt-[50px] gap-8">
                 <div>
                     <div><img src={comhen} alt="Cơm hến" class="w-full h-[330px] object-cover"/></div>
                     <p class="italic text-3xl font-normal text-left ml-[35px] mt-[20px]">Sản phẩm phổ biến</p>

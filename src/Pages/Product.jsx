@@ -1,13 +1,16 @@
 import React from "react";
-import { Link } from "react-router-dom";
+import Filter from "../Components/Product/Filter";
+import ProductList from "../Components/Product/Product_List";
+
 
 function Product() {
   return (
+    
     <div>
-      <div>This is Product page</div>
-      <Link className="underline" to="/">
-        to home
-      </Link>
+      <div className="flex justify-center my-4">
+        <Filter/>
+        <ProductList/>
+      </div>
     </div>
   );
 }
