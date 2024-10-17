@@ -2,6 +2,7 @@ import { useState } from "react";
 import { StarOutlined, StarFilled } from "@ant-design/icons";
 import { Tabs } from "antd";
 import products from './data'; // Import file data.js
+import ProductCard from "./ProductCard";
 
 function ListProduct() {
     const [visibleProducts, setVisibleProducts] = useState(8); // Mặc định hiển thị 8 sản phẩm
@@ -18,9 +19,7 @@ function ListProduct() {
     ];
 
     // Định nghĩa hàm formatCurrency ở cấp độ của ListProduct
-    const formatCurrency = (amount) => {
-        return new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(amount);
-    };
+
 
     // Hàm xử lý khi nhấn nút "Xem thêm"
     const showMoreProducts = () => {
@@ -43,48 +42,8 @@ function ListProduct() {
             <div className="w-full h-auto flex justify-center items-center">
                 <div className="grid grid-cols-4 gap-4 w-[1200px]">
                     {/* Hiển thị số lượng sản phẩm dựa trên visibleProducts */}
-                    {products.slice(0, visibleProducts).map(product => (
-                        <div key={product.id} className="w-[268px] h-[350px] bg-red-500 flex flex-col items-center" style={{ backgroundColor: '#F6F6F6' }}>
-                            {/* image */}
-                            <div className="w-[245px] h-[220px] mt-[12px]">
-                                <img src={product.image} alt={product.name} className="w-full h-full object-cover" />
-                            </div>
-
-                            {/* Description */}
-                            <div className="w-[225px] mt-[5px]">
-                                <p className="font-medium text-lg">{product.Name}</p>
-                            </div>
-
-                            {/* Price */}
-                                <div className="grid grid-cols-3 gap-4 p-2">
-                                    <div className="flex flex-col items-center justify-center">
-                                        <span className="text-lg font-bold text-red-600">{formatCurrency(product.salePrice)}</span>
-                                        <span className="text-sm text-gray-600"></span>
-                                    </div>
-                                    <div className="flex flex-col items-center justify-center">
-                                        <span className="text-gray-500 line-through">{formatCurrency(product.OriginalPrice)}</span>
-                                        <span className="text-sm text-gray-600"></span>
-                                    </div>
-                                    <div className="flex flex-col items-center">
-                                        <div className="flex items-center justify-center w-12 h-12 bg-green-500 rounded-full">
-                                            <span className="text-white font-bold text-lg">{product.Discount}%</span>
-                                        </div>
-                                    </div>
-                                </div>
-
-                            {/* rating */}
-                            <div className="flex mt-[]">
-                                {[...Array(5)].map((_, index) => (
-                                    index < product.rating ? (
-                                        <StarFilled key={index} className="text-yellow-500" />
-                                    ) : (
-                                        <StarOutlined key={index} className="text-yellow-500" />
-                                    )
-                                ))}
-                            </div>
-
-
-                        </div>
+                    {products.map(product => (
+                        <ProductCard product={product} />
                     ))}
                 </div>
             </div>
@@ -94,7 +53,7 @@ function ListProduct() {
                 {visibleProducts < products.length ? (
                     <button
                         onClick={showMoreProducts}
-                        className="w-[200px] h-[50px] bg-blue-500 text-white text-center rounded">
+                        className="inline-block font-semibold text-[16px] px-[30px] py-[10px] rounded-[8px] text-black bg-[#ffffffeb] border-[1px] border-black hover:no-underline hover:text-white hover:bg-black">
                         Xem thêm
                     </button>
                 ) : (

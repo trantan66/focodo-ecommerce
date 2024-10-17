@@ -13,8 +13,5 @@
 }
 /* Thêm hiệu ứng hover */
 .Navigation .ant-menu-item:hover {
-    background-color: #fff !important; 
-    color: black !important; 
-    border-top: 1px solid black !important; 
-    cursor: pointer; 
+    color: #1677ff !important; 
 }

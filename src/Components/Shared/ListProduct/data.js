@@ -8,8 +8,8 @@ const products = [
         OriginalPrice: 20000,
         Discount: 20,
         salePrice: 16000,
-        image: 'https://cdn.tgdd.vn/2021/07/CookProduct/bthum-1200x676-2.jpg',
-        rating: 4
+        image: 'https://res.cloudinary.com/dpsqln4rh/image/upload/v1726502831/focodo_ecommerce/product/yjojahq8kmzk5nb7c6ta.jpg',
+        rating: 4.2
     },
     {
         id: 2,
@@ -20,8 +20,8 @@ const products = [
         OriginalPrice: 20000,
         Discount: 20,
         salePrice: 16000,
-        image: 'https://cdn.tgdd.vn/2021/07/CookProduct/bthum-1200x676-2.jpg',
-        rating: 4
+        image: 'https://res.cloudinary.com/dpsqln4rh/image/upload/v1726503863/focodo_ecommerce/product/lon4iw5tymjl2ipylyux.jpg',
+        rating: 3.4
     },
     {
         id: 3,
@@ -32,8 +32,8 @@ const products = [
         OriginalPrice: 20000,
         Discount: 20,
         salePrice: 16000,
-        image: 'https://cdn.tgdd.vn/2021/07/CookProduct/bthum-1200x676-2.jpg',
-        rating: 4
+        image: 'https://res.cloudinary.com/dpsqln4rh/image/upload/v1726753286/focodo_ecommerce/product/zydq7mua8cnwodexwywg.webp',
+        rating: 2.5
     },
     {
         id: 4,
@@ -44,7 +44,7 @@ const products = [
         OriginalPrice: 20000,
         Discount: 20,
         salePrice: 16000,
-        image: 'https://cdn.tgdd.vn/2021/07/CookProduct/bthum-1200x676-2.jpg',
+        image: 'https://res.cloudinary.com/dpsqln4rh/image/upload/v1726988921/focodo_ecommerce/product/sbeahuqzw2rlejg8i2cr.jpg',
         rating: 4
     },
     {
