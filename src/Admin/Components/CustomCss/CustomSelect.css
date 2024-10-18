@@ -1,0 +1,54 @@
+.ant-select-selector {
+  background-color: #282941 !important;
+  color: white !important;
+}
+.ant-select-item {
+  color: white !important;
+}
+
+.ant-select-item:hover {
+  background-color: #4a4e69;
+}
+
+.ant-select-selector:hover {
+  background-color: #3e3e50 !important;
+  border-color: #4a4e69 !important;
+}
+
+.ant-select-open .ant-select-selector {
+  background-color: #4a4e69 !important;
+  border-color: #4a4e69 !important;
+}
+
+.ant-select-arrow {
+  color: white !important;
+}
+
+.ant-select-item {
+  color: white !important;
+}
+
+.ant-select-item-option:hover {
+  background-color: #3e3e50 !important;
+  color: white !important;
+}
+
+.ant-select-item-option-selected {
+  background-color: #4a4e69 !important;
+  color: white !important;
+}
+
+.select-dropdown {
+    display: block;
+    max-height: 300px; /* Adjust the height as needed */
+    overflow-y: auto; /* Adds vertical scrollbar when content overflows */
+    background-color: #282941; /* Ensures the background is consistent */
+    color: white; /* Text color */
+    border: 1px solid gray; /* Border styling */
+    border-radius: 0.25rem; /* Rounded corners */
+  }
+  
+  .select-dropdown option {
+    padding: 8px 12px; /* Option padding */
+  }
+  

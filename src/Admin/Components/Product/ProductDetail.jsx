@@ -1,18 +1,22 @@
 import React, { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import "../CustomCss/Slider.css";
 import {
+  DeleteProduct,
   fetchCategoriesForProductFromAPI,
   fetchProductByIdFromAPI,
   updateProductToAPI,
 } from "../../../Services/ProductService";
 import { CKEditor } from "@ckeditor/ckeditor5-react";
 import ClassicEditor from "@ckeditor/ckeditor5-build-classic";
+import { notification } from "antd";
+import { FiLoader } from "react-icons/fi";
 
 function ProductDetail() {
   const { productId } = useParams();
+  const navigate = useNavigate();
 
   const [name, setProductName] = useState("");
   const [quantity, setProductQuantity] = useState("");
@@ -29,6 +33,8 @@ function ProductDetail() {
   const [imagePreviews, setImagePreviews] = useState([]);
 
   const [currentImages, setCurrentImages] = useState([]);
+
+  const [loadingIcon, setLoadingIcon] = useState(false);
 
   useEffect(() => {
     const fetchCategories = async () => {
@@ -72,11 +78,15 @@ function ProductDetail() {
   }, [productId]);
 
   const handleSubmit = async (e) => {
+    setLoadingIcon(true);
+
     e.preventDefault();
     const categoryIds = selectedCategories.map((category) => category.id);
     categoryIds.unshift(1);
 
-    const categoryRemovedIds = removeSelectedCategories.map((category) =>  category.id);
+    const categoryRemovedIds = removeSelectedCategories.map(
+      (category) => category.id
+    );
 
     const product = {
       name,
@@ -95,10 +105,28 @@ function ProductDetail() {
     console.log(categoryRemovedIds);
 
     try {
-      const response = await updateProductToAPI(productId, product, images, currentImages, categoryRemovedIds);
-      console.log(response.code)
+      await updateProductToAPI(
+        productId,
+        product,
+        images,
+        currentImages,
+        categoryRemovedIds
+      );
+
+      notification.success({
+        message: "Cập nhật sản phẩm thành công!",
+        description: "Sản phẩm đã được cập nhật.",
+      });
+
+      setTimeout(() => {
+        window.location.reload();
+      }, 1000);
     } catch (error) {
-      console.error("Error adding the product:", error);
+      console.error("Error updating the product:", error);
+      notification.error({
+        message: "Có lỗi xảy ra!",
+        description: "Không thể cập nhật sản phẩm. Vui lòng thử lại.",
+      });
     }
   };
 
@@ -150,12 +178,36 @@ function ProductDetail() {
       prevImages.filter((image) => image !== imageToRemove)
     );
   };
+  const handleRemoveProduct = async (productId) => {
+    const confirmed = window.confirm("Bạn có chắc chắn muốn xóa sản phẩm này?");
+    if (confirmed) {
+      try {
+        await DeleteProduct(productId);
+        notification.success({
+          message: "Xóa sản phẩm thành công!",
+          description: "Sản phẩm đã được xóa khỏi danh sách.",
+        });
+        setTimeout(() => {
+          navigate("/admin/product");
+        }, 2000);
+      } catch (error) {
+        console.error("Error deleting the product:", error);
+        notification.error({
+          message: "Có lỗi xảy ra!",
+          description: "Không thể xóa sản phẩm. Vui lòng thử lại.",
+        });
+      }
+    }
+  };
 
   return (
     <div className="px-4 flex flex-col flex-1">
       <div className="rounded-md flex flex-row justify-between flex-1">
         <span className="text-white text-3xl mb-4">Sản phẩm #{productId}</span>
-        <button className="text-red-500  bg-[#4D2F3A] px-6 mb-3 rounded-md hover:bg-red-800">
+        <button
+          className="text-red-500  bg-[#4D2F3A] px-6 mb-3 rounded-md hover:bg-red-800"
+          onClick={() => handleRemoveProduct(productId)}
+        >
           Xóa sản phẩm
         </button>
       </div>
@@ -355,9 +407,12 @@ function ProductDetail() {
             {/* Submit Button */}
             <button
               type="submit"
-              className="w-full bg-blue-600 p-3 rounded-md text-white hover:bg-blue-500"
+              className={`w-full p-3 rounded-md text-white flex items-center justify-center space-x-2
+               ${loadingIcon ? "bg-gray-400" : "bg-blue-600 hover:bg-blue-500"}`}
+              disabled={loadingIcon ? "true" : ""}
             >
-              Cập nhật
+              {loadingIcon ? <FiLoader /> : ""}
+              <span>Cập nhật</span>
             </button>
           </form>
         </div>

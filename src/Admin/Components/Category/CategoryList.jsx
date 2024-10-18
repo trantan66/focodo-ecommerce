@@ -3,7 +3,7 @@ import CategoryTableHeader from "./CategoryTableHeader";
 import { Link } from "react-router-dom";
 import { Pagination } from "antd";
 import { Dialog, DialogPanel, DialogTitle } from "@headlessui/react";
-import { fetchCategoriesForProductFromAPI } from "../../../Services/ProductService";
+import { fetchCategoriesFromAPI } from "../../../Services/CategoryService";
 
 function CategoryList() {
   const [categories, setCategories] = useState([]);
@@ -18,6 +18,8 @@ function CategoryList() {
   const [newCategoryName, setNewCategoryName] = useState("");
   const [newImages, setNewImages] = useState([]);
   const [imagePreviews, setImagePreviews] = useState([]);
+  // const [newDescription, setNewDescription] = useState();
+  // const [newSubcategories, setNewSubcategories] = useState([]);
 
   const fetchCategories = useCallback(async () => {
     const cacheKey = `${currentPage}-${categoriesPerPage}`;
@@ -26,7 +28,7 @@ function CategoryList() {
       setCategories(cachedCategories[cacheKey]);
     } else {
       try {
-        const { data, total } = await fetchCategoriesForProductFromAPI(
+        const { data, total } = await fetchCategoriesFromAPI(
           currentPage,
           categoriesPerPage
         );
@@ -115,9 +117,9 @@ function CategoryList() {
               <thead>
                 <tr className="bg-[#2E3044] h-10">
                   <td className="pl-2">Danh mục</td>
+                  <td>Mô tả</td>
                   <td>Tổng sản phẩm</td>
-                  <td>Thu nhập</td>
-                  <td></td>
+                  <td>Danh mục phụ</td>
                 </tr>
               </thead>
               <tbody className="h-[50vh]">
@@ -145,9 +147,26 @@ function CategoryList() {
                         </div>
                       </div>
                     </td>
+                    <td className="max-w-96">{items.description}</td>
+                    <td>{items.number_of_products}</td>
+                    <td>
+                      <select className="bg-[#282941]">
+                        {items.subcategories.length > 0 ? (
+                          <option> mục lục phụ</option>,
 
-                    <td>{items.quantity}</td>
-                    <td>đ{items.saleprice}</td>
+                          items.subcategories.map((subcategories) => (
+                            <option
+                              key={subcategories.id}
+                              value={subcategories.name}
+                            >
+                              {subcategories.name}
+                            </option>
+                          ))
+                        ) : (
+                          <option value={"Không mục lục phụ"}>Không mục lục phụ</option>
+                        )}
+                      </select>
+                    </td>
                   </tr>
                 ))}
               </tbody>

@@ -1,9 +1,18 @@
 import React, { useEffect, useState } from "react";
 import ClassicEditor from "@ckeditor/ckeditor5-build-classic";
 import { CKEditor } from "@ckeditor/ckeditor5-react";
-import { addProductToAPI, fetchCategoriesForProductFromAPI } from "../../../Services/ProductService";
+import {
+  addProductToAPI,
+  fetchCategoriesForProductFromAPI,
+} from "../../../Services/ProductService";
+import { notification, Select } from "antd";
+import { FiLoader } from "react-icons/fi";
+import "../CustomCss/CustomSelect.css";
+
 
 const AddProduct = () => {
+  // const navigate = useNavigate();
+
   const [name, setProductName] = useState("");
   const [quantity, setProductQuantity] = useState("");
   const [package_quantity, setProductPackageQuantity] = useState("");
@@ -16,6 +25,8 @@ const AddProduct = () => {
   const [categories, setCategories] = useState([]);
   const [images, setImages] = useState([]);
   const [imagePreviews, setImagePreviews] = useState([]);
+
+  const [loadingIcon, setLoadingIcon] = useState(false);
 
   useEffect(() => {
     const fetchCategories = async () => {
@@ -34,6 +45,8 @@ const AddProduct = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setLoadingIcon(true);
+
     const categoryIds = selectedCategories.map((category) => category.id);
     categoryIds.unshift(1);
 
@@ -52,8 +65,16 @@ const AddProduct = () => {
     try {
       await addProductToAPI(product, images);
       resetForm();
+      notification.success({
+        message: "Thêm sản phẩm thành công!",
+        description: "Sản phẩm đã được thêm.",
+      });
     } catch (error) {
       console.error("Error adding the product:", error);
+      notification.error({
+        message: "Có lỗi xảy ra!",
+        description: "Không thể cập nhật sản phẩm. Vui lòng thử lại.",
+      });
     }
   };
 
@@ -157,7 +178,7 @@ const AddProduct = () => {
             <span className="text-white mb-1 self-start">Danh mục</span>
             <select
               onChange={handleCategoryChange}
-              className="text-sm focus:outline-none border border-gray-300 w-full h-10 px-4 pr-4 rounded-sm bg-[#282941] text-white overflow-y-auto"
+              className="text-sm focus:outline-none border border-gray-300 w-full h-10 px-4 pr-4 rounded-sm bg-[#282941] text-white overflow-y-auto select-dropdown"
             >
               <option value="">Chọn danh mục</option>
               {categories.map((category) => (
@@ -284,9 +305,14 @@ const AddProduct = () => {
           {/* Submit Button */}
           <button
             type="submit"
-            className="w-full bg-blue-600 p-3 rounded-md text-white hover:bg-blue-500"
+            className={`w-full p-3 rounded-md text-white flex items-center justify-center space-x-2
+               ${
+                 loadingIcon ? "bg-gray-400" : "bg-blue-600 hover:bg-blue-500"
+               }`}
+            disabled={loadingIcon ? "true" : ""}
           >
-            Thêm sản phẩm
+            {loadingIcon ? <FiLoader /> : ""}
+            <span>Thêm sản phẩm</span>
           </button>
         </form>
       </div>
