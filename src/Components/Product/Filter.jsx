@@ -1,49 +1,49 @@
-import React from "react";
-import { Link } from "react-router-dom";
-import { SearchOutlined } from "@ant-design/icons";
-import { Input } from "antd";
+import React from 'react';
+import { Link } from 'react-router-dom';
+import { SearchOutlined } from '@ant-design/icons';
+import { Input } from 'antd';
+import { Collapse, List, Typography } from 'antd';
+
+const { Panel } = Collapse;
+const { Text } = Typography;
+const data = [
+    {
+        category: 'Bánh Huế',
+        items: ['Bánh bèo', 'Bánh ép Huế', 'Bánh lọc Huế', 'Bánh kẹo Huế'],
+    },
+    { category: 'Khuyến mãi', items: [] },
+    { category: 'Gia vị Huế', items: [] },
+    { category: 'Hạt sen Huế', items: [] },
+    { category: 'Mắm Huế', items: [] },
+    { category: 'Mè xửng Thiên Hương', items: [] },
+    { category: 'Rượu Minh Mạng', items: [] },
+    { category: 'Tinh dầu Huế', items: [] },
+    { category: 'Trà cung đình Huế', items: [] },
+    { category: 'Nem chả Huế', items: [] },
+];
 
 function Filter() {
-  return (
-    <div className="">
-      <label htmlFor="" className="text-xl ">
-        Danh mục sản phẩm
-      </label>
-      <div class="w-full h-0.5 bg-black mt-2 mb-4"></div>
-      <div className="mb-3">
-        <Input
-          size="large"
-          placeholder="Tìm sản phẩm"
-          prefix={<SearchOutlined />}
-        />
-      </div>
-      <div className="leading-loose">
-        <Link href="" className="hover:text-orange-500 hover:no-underline">
-          Tất cả
-        </Link>
-        <br></br>
-        <Link href="" className="hover:text-orange-500 hover:no-underline">
-          Khuyến mãi
-        </Link>
-        <br></br>
-        <Link href="" className="hover:text-orange-500 hover:no-underline">
-          Bánh bèo
-        </Link>
-        <br></br>
-        <Link href="" className="hover:text-orange-500 hover:no-underline">
-          Bánh nậm
-        </Link>
-        <br></br>
-        <Link href="" className="hover:text-orange-500 hover:no-underline">
-          Cơm hến
-        </Link>
-        <br></br>
-        <Link href="" className="hover:text-orange-500 hover:no-underline">
-          Bánh xèo
-        </Link>
-      </div>
-    </div>
-  );
+    return (
+        <div className="">
+            <p className="text-[16px] font-semibold mb-3">DANH MỤC SẢN PHẨM</p>
+            <Input className="mb-3" size="large" placeholder="Tìm sản phẩm" prefix={<SearchOutlined />} />
+            <Collapse accordion bordered={false} style={{ background: 'none' }}>
+                {data.map((section) => (
+                    <Panel header={section.category} key={section.category}>
+                        {section.items.length ? (
+                            <List
+                                size="small"
+                                dataSource={section.items}
+                                renderItem={(item) => <List.Item className="hover:text-orange-500">{item}</List.Item>}
+                            />
+                        ) : (
+                            <Text type="secondary">Không có dữ liệu</Text>
+                        )}
+                    </Panel>
+                ))}
+            </Collapse>
+        </div>
+    );
 }
 
 export default Filter;

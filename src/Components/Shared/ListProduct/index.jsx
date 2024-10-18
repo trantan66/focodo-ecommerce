@@ -1,8 +1,7 @@
-import { useState } from "react";
-import { StarOutlined, StarFilled } from "@ant-design/icons";
-import { Tabs } from "antd";
+import { useState } from 'react';
+import { Tabs } from 'antd';
 import products from './data'; // Import file data.js
-import ProductCard from "./ProductCard";
+import ProductCard from './ProductCard';
 
 function ListProduct() {
     const [visibleProducts, setVisibleProducts] = useState(8); // Mặc định hiển thị 8 sản phẩm
@@ -15,15 +14,14 @@ function ListProduct() {
         {
             key: '2',
             label: 'Khuyến mãi',
-        }
+        },
     ];
 
     // Định nghĩa hàm formatCurrency ở cấp độ của ListProduct
 
-
     // Hàm xử lý khi nhấn nút "Xem thêm"
     const showMoreProducts = () => {
-        setVisibleProducts(prevVisible => prevVisible + 4); // Hiển thị thêm 4 sản phẩm
+        setVisibleProducts((prevVisible) => prevVisible + 4); // Hiển thị thêm 4 sản phẩm
     };
 
     // Hàm xử lý khi nhấn nút "Ẩn bớt"
@@ -42,7 +40,7 @@ function ListProduct() {
             <div className="w-full h-auto flex justify-center items-center">
                 <div className="grid grid-cols-4 gap-4 w-[1200px]">
                     {/* Hiển thị số lượng sản phẩm dựa trên visibleProducts */}
-                    {products.map(product => (
+                    {products.map((product) => (
                         <ProductCard product={product} />
                     ))}
                 </div>
@@ -53,13 +51,15 @@ function ListProduct() {
                 {visibleProducts < products.length ? (
                     <button
                         onClick={showMoreProducts}
-                        className="inline-block font-semibold text-[16px] px-[30px] py-[10px] rounded-[8px] text-black bg-[#ffffffeb] border-[1px] border-black hover:no-underline hover:text-white hover:bg-black">
+                        className="inline-block font-semibold text-[16px] px-[30px] py-[10px] rounded-[8px] text-black bg-[#ffffffeb] border-[1px] border-black hover:no-underline hover:text-white hover:bg-black"
+                    >
                         Xem thêm
                     </button>
                 ) : (
                     <button
                         onClick={showLessProducts}
-                        className="w-[200px] h-[50px] bg-red-500 text-white text-center rounded">
+                        className="w-[200px] h-[50px] bg-red-500 text-white text-center rounded"
+                    >
                         Ẩn bớt
                     </button>
                 )}

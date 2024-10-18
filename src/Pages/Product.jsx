@@ -7,7 +7,7 @@ function Product() {
   return (
     
     <div>
-      <div className="flex justify-center my-4">
+      <div className="flex justify-center mx-auto my-4 w-[1200px]">
         <Filter/>
         <ProductList/>
       </div>
