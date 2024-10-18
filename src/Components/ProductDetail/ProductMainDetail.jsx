@@ -16,7 +16,7 @@ function ProductDetail(props) {
           <p className="text-[40px] font-semibold">{props.name}</p>
           <p className="opacity-50 italic text-[16px]">{props.subcription}</p>
           <p className="text-[32px] text-[#FF0000] font-semibold italic mt-2 mb-2">
-            {props.price}
+            {props.price}đ
           </p>
           <InputNumber
             min={1}

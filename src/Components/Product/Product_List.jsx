@@ -41,7 +41,7 @@ function Productlist(props) {
         {props.name}
       </span>
       <span className="mx-auto italic font-semibold text-[24px]">
-        {props.price}
+        {props.price}đ
       </span>
       <button
         className="bg-black text-white mx-auto mb-3 w-[193px] h-[48px] rounded-lg hover:bg-[#3C3D37] transition duration-300"
