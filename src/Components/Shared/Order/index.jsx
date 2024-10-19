@@ -141,8 +141,9 @@ function Order() {
                 </div>
                 <div className="w-[600px] pl-10 bg-[#FAFAFA]">
                     {/* Hiển thị sản phẩm */}
+                    <h2 className="text-xl pt-5">Thông tin đơn hàng</h2>
                     {orderData.products.map((product) => (
-                        <div key={product.id} className="w-[450px] flex items-center pt-5 py-3">
+                        <div key={product.id} className="w-[450px] flex items-center py-3">
                             <img
                                 src={product.image}
                                 alt={product.Name}
