@@ -29,6 +29,11 @@ function Order() {
     // Tổng tiền cuối cùng
     const finalTotal = totalOrderPrice + shippingFee - discountAmount;
 
+    // Hàm định dạng tiền tệ
+    const formatCurrency = (value) => {
+        return new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(value);
+    };
+
     return (
         <>
             <div className="w-[1200px] mx-auto flex justify-center">
@@ -148,7 +153,8 @@ function Order() {
                                     <span>{product.Name}</span>
                                     <span>Số lượng: {product.Quantity}</span>
                                 </div>
-                                <span>{product.TotalPrice} VND</span>
+                                <span>{formatCurrency(product.TotalPrice)}</span>{' '}
+                                {/* Định dạng hiển thị giá sản phẩm */}
                             </div>
                         </div>
                     ))}
@@ -159,25 +165,25 @@ function Order() {
                             className="block w-[75%] p-[8px] border rounded-md"
                             placeholder="Mã giảm giá"
                         />
-                        <button className="block w-[20%] bg-blue-500 text-white rounded-md">Sử dụng</button>
+                        <button className="block w-[20%] bg-blue-500 text-white rounded-md">Áp dụng</button>
                     </div>
                     <div className="mt-4 border-b-2"></div>
-                    <div className="mt-5">
+                    <div className="mt-5 mr-5">
                         <div className="flex justify-between py-2">
                             <span>Tạm tính:</span>
-                            <span>{totalOrderPrice} VND</span> {/* Sử dụng biến tổng tiền sản phẩm */}
+                            <span>{formatCurrency(totalOrderPrice)}</span> {/* Sử dụng hàm định dạng tiền tệ */}
                         </div>
                         <div className="flex justify-between py-2">
                             <span>Phí vận chuyển:</span>
-                            <span>{shippingFee} VND</span> {/* Sử dụng biến phí vận chuyển */}
+                            <span>{formatCurrency(shippingFee)}</span> {/* Sử dụng hàm định dạng tiền tệ */}
                         </div>
                         <div className="flex justify-between border-b py-2">
                             <span>Số tiền giảm giá:</span>
-                            <span>{discountAmount} VND</span> {/* Sử dụng biến số tiền giảm giá */}
+                            <span>{formatCurrency(discountAmount)}</span> {/* Sử dụng hàm định dạng tiền tệ */}
                         </div>
                         <div className="flex justify-between py-2 font-bold">
                             <span>Tổng cộng:</span>
-                            <span>{finalTotal} VND</span> {/* Sử dụng biến tổng tiền cuối cùng */}
+                            <span>{formatCurrency(finalTotal)}</span> {/* Sử dụng hàm định dạng tiền tệ */}
                         </div>
                     </div>
                 </div>
