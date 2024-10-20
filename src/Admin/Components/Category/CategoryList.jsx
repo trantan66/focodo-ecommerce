@@ -1,9 +1,12 @@
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import CategoryTableHeader from "./CategoryTableHeader";
 import { Link } from "react-router-dom";
-import { Pagination } from "antd";
+import { Pagination, Select } from "antd";
 import { Dialog, DialogPanel, DialogTitle } from "@headlessui/react";
-import { fetchCategoriesFromAPI } from "../../../Services/CategoryService";
+import {
+  fetchAllCategoriesFromAPI,
+  fetchCategoriesFromAPI,
+} from "../../../Services/CategoryService";
 
 function CategoryList() {
   const [categories, setCategories] = useState([]);
@@ -18,8 +21,13 @@ function CategoryList() {
   const [newCategoryName, setNewCategoryName] = useState("");
   const [newImages, setNewImages] = useState([]);
   const [imagePreviews, setImagePreviews] = useState([]);
-  // const [newDescription, setNewDescription] = useState();
-  // const [newSubcategories, setNewSubcategories] = useState([]);
+  const [newDescription, setNewDescription] = useState();
+  const [newSubcategories, setNewSubcategories] = useState([]);
+  const [selectedSubCategories, setSelectedSubCategories] = useState([]);
+
+  const [checkImageQuantity, setCheckImageQuantity] = useState(false);
+
+  const [allCategories, setAllCategories] = useState([]);
 
   const fetchCategories = useCallback(async () => {
     const cacheKey = `${currentPage}-${categoriesPerPage}`;
@@ -49,6 +57,21 @@ function CategoryList() {
     fetchCategories();
   }, [fetchCategories]);
 
+  useEffect(() => {
+    const fetchCategories = async () => {
+      try {
+        const { data } = await fetchAllCategoriesFromAPI();
+        const filteredCategories = data.filter(
+          (category) => category.id !== 1 && category.id !== 2
+        );
+        setAllCategories(filteredCategories);
+      } catch (error) {
+        console.error("Lỗi khi lấy danh mục:", error);
+      }
+    };
+    fetchCategories();
+  }, []);
+
   const filteredData = useMemo(
     () =>
       categories.filter((category) =>
@@ -69,20 +92,24 @@ function CategoryList() {
     e.preventDefault();
     const categoryData = {
       newCategoryName,
+      newDescription,
       newImages,
+      newSubcategories,
     };
     console.log("Category added:", categoryData);
 
     // Xử lý logic gửi danh mục lên server ở đây
 
     resetForm();
+    setCheckImageQuantity(false);
   };
   const handleImageUpload = (e) => {
     const files = Array.from(e.target.files);
     setNewImages(files);
-
     const previewUrls = files.map((file) => URL.createObjectURL(file));
     setImagePreviews(previewUrls);
+
+    setCheckImageQuantity(true);
   };
 
   const handleRemoveImage = (indexToRemove) => {
@@ -92,7 +119,31 @@ function CategoryList() {
     setImagePreviews((prevPreviews) =>
       prevPreviews.filter((_, index) => index !== indexToRemove)
     );
+
+    setCheckImageQuantity(false);
   };
+
+  const handleCategoryChange = (selectedSubCategoryName) => {
+    const selectedSubCategory = newSubcategories.find(
+      (category) => category.id === selectedSubCategoryName
+    );
+
+    if (
+      selectedSubCategory &&
+      !selectedSubCategories.some((cat) => cat.id === selectedSubCategory.id)
+    ) {
+      setNewSubcategories([...selectedSubCategories, selectedSubCategory]);
+    }
+  };
+
+  const handleRemoveCategory = (categoryToRemove) => {
+    setSelectedSubCategories(
+      selectedSubCategories.filter(
+        (category) => category.id !== categoryToRemove.id
+      )
+    );
+  };
+
   const resetForm = () => {
     setNewCategoryName("");
     setNewImages([]);
@@ -118,7 +169,7 @@ function CategoryList() {
                 <tr className="bg-[#2E3044] h-10">
                   <td className="pl-2">Danh mục</td>
                   <td>Mô tả</td>
-                  <td>Tổng sản phẩm</td>
+                  <td className="text-center">Tổng sản phẩm</td>
                   <td>Danh mục phụ</td>
                 </tr>
               </thead>
@@ -148,12 +199,11 @@ function CategoryList() {
                       </div>
                     </td>
                     <td className="max-w-96">{items.description}</td>
-                    <td>{items.number_of_products}</td>
+                    <td className="text-center">{items.number_of_products}</td>
                     <td>
                       <select className="bg-[#282941]">
                         {items.subcategories.length > 0 ? (
-                          <option> mục lục phụ</option>,
-
+                          ((<option> mục lục phụ</option>),
                           items.subcategories.map((subcategories) => (
                             <option
                               key={subcategories.id}
@@ -161,9 +211,11 @@ function CategoryList() {
                             >
                               {subcategories.name}
                             </option>
-                          ))
+                          )))
                         ) : (
-                          <option value={"Không mục lục phụ"}>Không mục lục phụ</option>
+                          <option value={"Không mục lục phụ"}>
+                            Không mục lục phụ
+                          </option>
                         )}
                       </select>
                     </td>
@@ -211,11 +263,64 @@ function CategoryList() {
                       name="name"
                       value={newCategoryName}
                       onChange={(e) => setNewCategoryName(e.target.value)}
-                      className="ext-sm focus:outline-none border border-gray-300 mt-1 p-2 w-full rounded-md bg-[#282941] text-white"
+                      className="ext-sm focus:outline-none border border-gray-300 mt-1 p-3 w-full rounded-md bg-[#282941] text-white"
                       placeholder="Tên danh mục"
                       required
                     />
                   </div>
+                  <div className="flex items-center flex-col">
+                    <Select
+                      defaultValue={"Danh mục"}
+                      style={{
+                        width: "100%",
+                        height: 40,
+                        backgroundColor: "#282941",
+                      }}
+                      onChange={handleCategoryChange}
+                      dropdownStyle={{
+                        maxHeight: 300,
+                        overflowY: "auto",
+                        backgroundColor: "#282941",
+                      }}
+                      options={
+                        Array.isArray(allCategories)
+                          ? allCategories.map((category) => ({
+                              value: category.name,
+                              label: category.name,
+                            }))
+                          : []
+                      }
+                    />
+                    {selectedSubCategories.length > 0 && (
+                      <div className="mt-2 flex flex-wrap gap-2 self-start">
+                        {selectedSubCategories.map((category) => (
+                          <div
+                            key={category.id}
+                            className="bg-[#B1C1C0] text-gray-800 p-2 rounded-md flex items-center"
+                          >
+                            <span>{category.name}</span>
+                            <button
+                              type="button"
+                              onClick={() => handleRemoveCategory(category)}
+                              className="ml-2 text-red-400"
+                            >
+                              X
+                            </button>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+
+                  <textarea
+                    value={newDescription}
+                    onChange={(e) => setNewDescription(e.target.value)}
+                    className="w-full p-3 border rounded-sm bg-[#282941] text-white focus:outline-none"
+                    placeholder="Nhập mô tả danh mục"
+                    rows="4"
+                    required
+                  />
+
                   <div>
                     <label className="block text-sm font-medium text-white">
                       Ảnh
@@ -223,10 +328,10 @@ function CategoryList() {
                     <input
                       type="file"
                       accept="image/*"
-                      multiple
                       onChange={handleImageUpload}
                       className="w-full p-3 border rounded-sm bg-[#282941] text-white focus:outline-none"
                       required
+                      disabled={checkImageQuantity ? true : false}
                     />
                   </div>
                   {imagePreviews.length > 0 && (

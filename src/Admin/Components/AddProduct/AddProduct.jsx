@@ -1,14 +1,11 @@
 import React, { useEffect, useState } from "react";
 import ClassicEditor from "@ckeditor/ckeditor5-build-classic";
 import { CKEditor } from "@ckeditor/ckeditor5-react";
-import {
-  addProductToAPI,
-  fetchCategoriesForProductFromAPI,
-} from "../../../Services/ProductService";
+import { addProductToAPI } from "../../../Services/ProductService";
 import { notification, Select } from "antd";
 import { FiLoader } from "react-icons/fi";
 import "../CustomCss/CustomSelect.css";
-
+import { fetchAllCategoriesFromAPI } from "../../../Services/CategoryService";
 
 const AddProduct = () => {
   // const navigate = useNavigate();
@@ -31,7 +28,7 @@ const AddProduct = () => {
   useEffect(() => {
     const fetchCategories = async () => {
       try {
-        const { data } = await fetchCategoriesForProductFromAPI();
+        const { data } = await fetchAllCategoriesFromAPI();
         const filteredCategories = data.filter(
           (category) => category.id !== 1 && category.id !== 2
         );
@@ -95,15 +92,14 @@ const AddProduct = () => {
     );
   };
 
-  const handleCategoryChange = (e) => {
-    const selectedCategoryId = parseInt(e.target.value);
+  const handleCategoryChange = (selectedCategoryName) => {
     const selectedCategory = categories.find(
-      (category) => category.id === selectedCategoryId
+      (category) => category.name === selectedCategoryName
     );
 
     if (
       selectedCategory &&
-      !selectedCategories.some((cat) => cat.id === selectedCategoryId)
+      !selectedCategories.some((cat) => cat.id === selectedCategory.id)
     ) {
       setSelectedCategories([...selectedCategories, selectedCategory]);
     }
@@ -176,9 +172,9 @@ const AddProduct = () => {
           {/* Category selection */}
           <div className="flex items-center flex-col">
             <span className="text-white mb-1 self-start">Danh mục</span>
-            <select
+            {/* <select
               onChange={handleCategoryChange}
-              className="text-sm focus:outline-none border border-gray-300 w-full h-10 px-4 pr-4 rounded-sm bg-[#282941] text-white overflow-y-auto select-dropdown"
+              className="text-sm focus:outline-none border border-gray-300 w-full h-10 px-4 pr-4 rounded-sm bg-[#282941] text-white overflow-y-auto"
             >
               <option value="">Chọn danh mục</option>
               {categories.map((category) => (
@@ -186,7 +182,30 @@ const AddProduct = () => {
                   {category.name}
                 </option>
               ))}
-            </select>
+            </select> */}
+
+            <Select
+              defaultValue={"Danh mục"}
+              style={{
+                width: "100%",
+                height: 40,
+                backgroundColor: "#282941",
+              }}
+              onChange={handleCategoryChange}
+              dropdownStyle={{
+                maxHeight: 300,
+                overflowY: "auto",
+                backgroundColor: "#282941",
+              }}
+              options={
+                Array.isArray(categories)
+                  ? categories.map((category) => ({
+                      value: category.name,
+                      label: category.name,
+                    }))
+                  : []
+              }
+            />
 
             {/* Display selected categories */}
             {selectedCategories.length > 0 && (
@@ -309,7 +328,7 @@ const AddProduct = () => {
                ${
                  loadingIcon ? "bg-gray-400" : "bg-blue-600 hover:bg-blue-500"
                }`}
-            disabled={loadingIcon ? "true" : ""}
+            disabled={loadingIcon ? true : ""}
           >
             {loadingIcon ? <FiLoader /> : ""}
             <span>Thêm sản phẩm</span>

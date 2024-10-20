@@ -14,3 +14,15 @@ export const fetchCategoriesFromAPI = async (page, size) => {
     throw error;
   }
 };
+
+export const fetchAllCategoriesFromAPI = async () => {
+  try {
+    const response = await axiosInstance.get(`categories/all`);
+    return {
+      data: response.result,
+    };
+  } catch (error) {
+    console.error("Error fetching categories:", error);
+    throw error;
+  }
+};
