@@ -2,6 +2,7 @@ import homelander from "../image/avatar/homelander.jpg";
 export const UserData = [
   {
     username: "Hoangdeptrai3112",
+    password: "deptrai",
     name: "Djt Me May",
     avatar: homelander,
     phoneNumber: "123456789",
