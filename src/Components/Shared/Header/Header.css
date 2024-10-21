@@ -1,6 +1,6 @@
 .header-top {
     width: 100%;
-    height: 88px; 
+    height: 88px;
 }
 
 .container {
@@ -9,9 +9,9 @@
 
 .inner-wrap {
     display: flex;
-    justify-content: space-between; 
-    align-items: center; 
-    height: 100%; 
+    justify-content: space-between;
+    align-items: center;
+    height: 100%;
     padding-top: 20px;
 }
 
@@ -19,12 +19,12 @@
     width: 120px;
     height: 32px;
     display: flex;
-    align-items: center; 
+    align-items: center;
 }
 
 .inner-logo img {
-    max-width: 100%; 
-    height: auto; 
+    max-width: 100%;
+    height: auto;
 }
 
 .inner-search {
@@ -32,11 +32,11 @@
     width: 514px;
     height: 56px;
     display: flex;
-    align-items: center; 
+    align-items: center;
 }
 
 .inner-search .ant-input {
-    height: 100%; 
+    height: 100%;
 }
 
 /* Dropdown Styling */
@@ -50,7 +50,7 @@
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     z-index: 9999;
     border-radius: 5px;
-    max-height: 300px; 
+    max-height: 300px;
     overflow-y: auto;
 }
 
@@ -88,4 +88,52 @@
 .product-price {
     color: #999;
     font-size: 14px;
+}
+
+/* Style cho giỏ hàng */
+.cart-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 1;
+}
+
+.cart {
+    background-color: white;
+    width: 400px;
+    height: 500px;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+    margin-top: 60px;
+    margin-left: 1000px;
+}
+
+.products {
+    max-height: 400px;
+    overflow-y: auto;
+}
+
+.product-item {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.product-image {
+    width: 50px;
+    height: 50px;
+    object-fit: cover;
+}
+
+.product-details {
+    margin-left: 10px;
+}
+
+.price {
+    margin-top: 20px;
+    font-weight: bold;
 }
