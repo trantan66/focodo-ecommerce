@@ -1,4 +1,5 @@
 import axiosInstance from "./Customize-Axios";
+import { getHeader } from "./GetHeader";
 
 export const fetchCategoriesFromAPI = async (page, size) => {
   try {
@@ -23,6 +24,68 @@ export const fetchAllCategoriesFromAPI = async () => {
     };
   } catch (error) {
     console.error("Error fetching categories:", error);
+    throw error;
+  }
+};
+
+export const addCategoryToAPI = async (category, image) => {
+  try {
+    const formData = new FormData();
+
+    formData.append(
+      "category",
+      new Blob([JSON.stringify(category)], { type: "application/json" })
+    );
+    formData.append("image", image[0]);
+
+    const response = await axiosInstance.post("categories/create", formData, {
+      headers: {
+        ...getHeader(),
+        "Content-Type": "multipart/form-data",
+      },
+    });
+    return response.data;
+  } catch (error) {
+    if (error.response) {
+      console.error("Error response from server:", error.response.data);
+    } else if (error.request) {
+      console.error("No response received:", error.request);
+    } else {
+      console.error("Error setting up request:", error.message);
+    }
+    throw error;
+  }
+};
+export const DeleteCategory = async (categoryId) => {
+  try {
+    const response = await axiosInstance.delete(
+      `categories/delete/${categoryId}`,
+      {
+        headers: {
+          ...getHeader(),
+        },
+      }
+    );
+    return response.data;
+  } catch (error) {
+    if (error.response) {
+      console.error("Error response from server:", error.response.data);
+    } else if (error.request) {
+      console.error("No response received:", error.request);
+    } else {
+      console.error("Error setting up request:", error.message);
+    }
+    throw error;
+  }
+};
+export const fetchCategoryByIdFromAPI = async (id) => {
+  try {
+    const response = await axiosInstance.get(`categories/getCategoryById/${id}`);
+    return {
+      data: response.result,
+    };
+  } catch (error) {
+    console.error("Error fetching cateory by id:", error);
     throw error;
   }
 };
