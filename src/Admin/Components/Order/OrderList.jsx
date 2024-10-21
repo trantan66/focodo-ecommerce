@@ -1,83 +1,63 @@
-import React, { useState } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import OrderTableHeader from "./OrderTableHeader";
 import { Link } from "react-router-dom";
 import { Pagination } from "antd";
 import { getPaymentStatus } from "../../Lib/Utils/PaymentStatus";
 import { getOrderStatus } from "../../Lib/Utils/OrderStatus";
-
-const data = [];
-
-function generateRandomOrder(index) {
-  const customerNames = [
-    "Charles Kelley",
-    "Laura Montoya",
-    "Deanna Meyer",
-    "Elaine Walls",
-    "Jason Gentry",
-    "Lisa Peterson",
-  ];
-  
-  const emails = [
-    "mark45@yahoo.com",
-    "gentryjason@hotmail.com",
-    "jacksonsarah@yahoo.com",
-    "petersonlisa@carter.com",
-    "montoya22@gmail.com",
-    "charles.kelley@abc.com",
-  ];
-  
-  const statuses = ["ĐÃ ĐẶT", "ĐÃ XÁC NHẬN", "ĐANG GIAO HÀNG", "ĐÃ GIAO HÀNG", "ĐÃ HỦY"];
-  const payments = ["ĐÃ THANH TOÁN", "CHƯA THANH TOÁN", "ĐÃ HỦY"];
-  
-  const randomCustomerName = customerNames[Math.floor(Math.random() * customerNames.length)];
-  const randomEmail = emails[Math.floor(Math.random() * emails.length)];
-  const randomStatus = statuses[Math.floor(Math.random() * statuses.length)];
-  const randomPayment = payments[Math.floor(Math.random() * payments.length)];
-  
-  const orderDatetime = new Date(Date.now() - Math.floor(Math.random() * 10000000000)).toISOString().slice(0, 19).replace('T', ' ');
-
-  return {
-    orderid: (5748 + index).toString(),
-    order_datetime: orderDatetime,
-    customer: {
-      id: (5748 + index).toString(),
-      name: randomCustomerName,
-      email: randomEmail,
-      image_link: "https://cdn.tuoitre.vn/471584752817336320/2024/6/3/doraemon-3-17173722166781704981911.jpeg",
-    },
-    payment: randomPayment,
-    status: randomStatus,
-  };
-}
-
-for (let i = 1; i <= 100; i++) {
-  data.push(generateRandomOrder(i));
-}
-
+import { fetchOrdersFromAPI } from "../../../Services/OrderService";
 
 function OrderList() {
+  const [orders, setOrders] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [searchTerm, setSearchTerm] = useState("");
   const [ordersPerPage, setOrdersPerPage] = useState(6);
 
-  const indexOfLastOrder = currentPage * ordersPerPage;
-  const indexOfFirstOrder = indexOfLastOrder - ordersPerPage;
+  const [totalOrders, setTotalOrders] = useState(0);
+  const [cachedOrders, setCachedOrders] = useState({});
 
-  const filteredOrders = data.filter(
-    (order) =>
-      order.customer.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      order.customer.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      order.orderid.includes(searchTerm)
+  const fetchOrders = useCallback(async () => {
+    const cacheKey = `${currentPage}-${ordersPerPage}`;
+
+    if (cachedOrders[cacheKey]) {
+      setOrders(cachedOrders[cacheKey]);
+    } else {
+      try {
+        const { data, total } = await fetchOrdersFromAPI(
+          currentPage,
+          ordersPerPage
+        );
+        setOrders(data);
+        setTotalOrders(total);
+
+        setCachedOrders((prev) => ({
+          ...prev,
+          [cacheKey]: data,
+        }));
+      } catch (error) {
+        console.error("Error fetching orders:", error);
+      }
+    }
+  }, [currentPage, ordersPerPage, cachedOrders]);
+
+  useEffect(() => {
+    fetchOrders();
+  }, [fetchOrders]);
+
+  const filteredData = useMemo(
+    () =>
+      orders.filter((order) =>
+        order.id_order.toLowerCase().includes(searchTerm.toLowerCase())
+      ),
+    [orders, searchTerm]
   );
 
-  const currentOrders = filteredOrders.slice(
-    indexOfFirstOrder,
-    indexOfLastOrder
-  );
-
-  const handlePageChange = (page) => {
+  const handlePageChange = useCallback((page) => {
     setCurrentPage(page);
-  };
+  }, []);
+
+  const handleOrdersPerPageChange = useCallback((value) => {
+    setOrdersPerPage(value);
+  }, []);
 
   return (
     <div>
@@ -86,7 +66,7 @@ function OrderList() {
           searchTerm={searchTerm}
           onSearchChange={setSearchTerm}
           ordersPerPage={ordersPerPage}
-          onOrdersPerPageChange={setOrdersPerPage}
+          onOrdersPerPageChange={handleOrdersPerPageChange}
         />
 
         <div className="bg-[#282941] pt-3 pb-4 rounded-sm flex-1">
@@ -103,40 +83,48 @@ function OrderList() {
                 </tr>
               </thead>
               <tbody className="h-[50vh]">
-                {currentOrders.map((order, index) => (
+                {filteredData.map((order, index) => (
                   <tr key={index} className="border-b-2">
                     <td>
                       <Link
                         to={`orderdetail/${order.orderid}`}
                         className="text-[#787BFF]"
                       >
-                        #{order.orderid}
+                        #{order.id_order}
                       </Link>
                     </td>
-                    <td>{order.order_datetime}</td>
+                    <td>
+                      {order.order_date
+                        .split("T")[0]
+                        .split("-")
+                        .reverse()
+                        .join("/") +
+                        " " +
+                        order.order_date.split("T")[1].split(".")[0]}
+                    </td>
 
                     <td>
                       <div className="bg-[#282941] rounded-sm flex-1 flex items-center">
                         <img
-                          src={order.customer.image_link}
+                          src={"https://static.vecteezy.com/system/resources/thumbnails/002/318/271/small_2x/user-profile-icon-free-vector.jpg"}
                           alt="Customer"
                           className="w-10 h-10 rounded-full object-cover"
                         />
                         <div className="pl-2">
                           <Link
-                            to={`/admin/product/productdetail/${order.customer.id}`}
+                            to={`/admin/product/productdetail/${""}`}
                             className="text text-sm font-semibold text-[#787BFF]"
                           >
-                            {order.customer.name}
+                            {""}
                           </Link>
                           <div className="text-xs text-white font-light">
-                            {order.customer.email}
+                            {""}
                           </div>
                         </div>
                       </div>
                     </td>
-                    <td>{getPaymentStatus(order.payment)}</td>
-                    <td>{getOrderStatus(order.status)}</td>
+                    <td>{getPaymentStatus(order.payment_status)}</td>
+                    <td>{getOrderStatus(order.order_status)}</td>
                   </tr>
                 ))}
               </tbody>
@@ -148,7 +136,7 @@ function OrderList() {
               showSizeChanger={false}
               current={currentPage}
               onChange={handlePageChange}
-              total={filteredOrders.length}
+              total={totalOrders}
               pageSize={ordersPerPage}
               className="custom-pagination"
             />

@@ -1,14 +1,5 @@
-import axiosInstance from './Customize-Axios';
-export const getHeader = () => {
-    const token = localStorage.getItem('access_token');
-    if (!token) {
-        throw new Error('No access token found');
-    }
-    return {
-        Authorization: `Bearer ${token}`,
-        'Content-Type': 'application/json',
-    };
-};
+import axiosInstance from "./Customize-Axios";
+import { getHeader } from "./GetHeader";
 
 export const fetchProductsFromAPI = async (page, size) => {
     try {
@@ -22,6 +13,7 @@ export const fetchProductsFromAPI = async (page, size) => {
         throw error;
     }
 };
+
 export const fetchCategoriesForProductFromAPI = async () => {
     try {
         const response = await axiosInstance.get(`categories/all`);
@@ -147,16 +139,19 @@ export const addProductToCategory = async (formDataForCategory, CategoryId) => {
     }
 };
 export const removeProductFromCategory = async (categoryId, productId) => {
-    try {
-        const response = await axiosInstance.delete(`categories/removeProductFromCategory/${categoryId}`, {
-            params: { id_product: productId }, // Gửi id_product như query parameter
-            headers: {
-                ...getHeader(),
-            },
-        });
-
-        return response.data;
-    } catch (error) {
+  try {
+    const response = await axiosInstance.delete(
+      `categories/removeProductFromCategory/${categoryId}`,
+      {
+        params: { id_product: productId },
+        headers: {
+          ...getHeader(),
+        },
+      }
+      
+    )
+    return response.data;
+  }catch (error) {
         if (error.response) {
             console.error('Error response from server:', error.response.data);
         } else if (error.request) {
@@ -179,3 +174,25 @@ const searchProducts = async (query, page = 0, size = 4) => {
 };
 
 export { getProductsFromCategory, searchProducts };
+export const DeleteProduct = async (productId) => {
+  try {
+    const response = await axiosInstance.delete(
+      `products/delete/${productId}`,
+      {
+        headers: {
+          ...getHeader(),
+        },
+      }
+    );
+    return response.data;
+  } catch (error) {
+    if (error.response) {
+      console.error("Error response from server:", error.response.data);
+    } else if (error.request) {
+      console.error("No response received:", error.request);
+    } else {
+      console.error("Error setting up request:", error.message);
+    }
+    throw error;
+  }
+};

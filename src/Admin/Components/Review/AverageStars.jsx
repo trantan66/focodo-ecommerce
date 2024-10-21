@@ -1,14 +1,14 @@
+import { useEffect, useState } from "react";
 import { FaStar } from "react-icons/fa";
+import { fetchReviewsFromAPI } from "../../../Services/ReviewService";
 
 const calculateAverageRate = (reviews) => {
-  if (reviews.length === 0) return 0; // Kiểm tra nếu không có review nào
-
-  const totalRate = reviews.reduce((sum, review) => sum + review.rate, 0); // Cộng tất cả rate
-  return totalRate / reviews.length; // Tính trung bình
+  const totalRate = reviews.reduce((sum, review) => sum + review.rating, 0);
+  return totalRate / reviews.length;
 };
 
 const countStarReviews = (reviews, star) => {
-  return reviews.filter((review) => review.rate === star).length;
+  return reviews.filter((review) => review.rating === star).length;
 };
 
 const StarBar = ({ star, percentage, quantity }) => {
@@ -26,19 +26,33 @@ const StarBar = ({ star, percentage, quantity }) => {
   );
 };
 
-function AverageStars({ dataReview }) {
-  const totalReviews = dataReview.length;
+function AverageStars() {
+  const [reviews, setReviews] = useState([]);
+  const [totalreviews, setTotalReviews] = useState(1);
+
+  useEffect(() => {
+    const fetchAllReviews = async () => {
+      try {
+        const { data, total } = await fetchReviewsFromAPI(1, totalreviews);
+        setTotalReviews(total);
+        setReviews(data);
+      } catch (error) {
+        console.error("Error fetching orders:", error);
+      }
+    };
+    fetchAllReviews();
+  }, [totalreviews]);
 
   return (
     <div className="bg-[#282941] rounded-md flex-1 p-4">
       <div className="flex items-center">
         <span className="text-[#696CFF] text-3xl">
-          {calculateAverageRate(dataReview).toFixed(1)}
+          {calculateAverageRate(reviews).toFixed(1)}
         </span>
         <FaStar className="text-[#696CFF] mx-2" size={28} />
 
         <span className="text-white text-xl">
-          Trên tổng {totalReviews} bài review
+          Trên tổng {totalreviews} bài review
         </span>
       </div>
       <div className="mt-2">
@@ -46,8 +60,12 @@ function AverageStars({ dataReview }) {
           <StarBar
             key={star}
             star={star}
-            percentage={totalReviews > 0 ? (countStarReviews(dataReview, star) * 100) / totalReviews : 0}
-            quantity={countStarReviews(dataReview, star)}
+            percentage={
+              totalreviews > 0
+                ? (countStarReviews(reviews, star) * 100) / totalreviews
+                : 0
+            }
+            quantity={countStarReviews(reviews, star)}
           />
         ))}
       </div>

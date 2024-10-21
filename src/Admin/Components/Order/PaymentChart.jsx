@@ -1,17 +1,38 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { AiOutlineClockCircle } from "react-icons/ai";
 import { BsCalendar2CheckFill } from "react-icons/bs";
 import { MdPayment } from "react-icons/md";
 import { TbShoppingCartCancel } from "react-icons/tb";
+import { fetchOrdersFromAPI } from "../../../Services/OrderService";
 
 function PaymentChart() {
+  const [totalOrders, setTotalOrders] = useState(1);
+  const [successfulPayments, setSuccessfulPayments] = useState(0);
+  const [unpaidPayments, setUnpaidPayments] = useState(0);
+  const [cancelOrderStatus, setCancelOrderStatus] = useState(0);
+
+  useEffect(() => {
+    const fetchAllOrders = async () => {
+      try {
+        const { data, total } = await fetchOrdersFromAPI(1, totalOrders);
+        setTotalOrders(total)
+        setSuccessfulPayments(data.filter(order => order.payment_status === "Thành công").length);
+        setUnpaidPayments(data.filter(order => order.payment_status === "Chưa thanh toán").length);
+        setCancelOrderStatus(data.filter(order => order.order_status === "Đã hủy").length);
+      } catch (error) {
+        console.error("Error fetching orders:", error);
+      }
+    };
+    fetchAllOrders();
+  }, [totalOrders]);
+
   return (
     <div className="flex gap-4 w-full px-4">
       <div className="bg-[#282941] rounded-sm p-4 flex-1 flex items-center justify-between border-r-2">
         <div className="pr-4">
           <div className="flex items-center">
             <h2 className="text text-xl text-white font-semibold mb-1">
-              34.500
+              {totalOrders}
             </h2>
           </div>
           <span className="text text-sm text-white font-light">
@@ -27,7 +48,7 @@ function PaymentChart() {
         <div className="pr-4">
           <div className="flex items-center">
             <h2 className="text text-xl text-white font-semibold mb-1">
-              30.120
+              {successfulPayments}
             </h2>
           </div>
           <span className="text text-sm text-white font-light">
@@ -43,7 +64,7 @@ function PaymentChart() {
         <div className="pr-4">
           <div className="flex items-center">
             <h2 className="text text-xl text-white font-semibold mb-1">
-              2.450
+              {unpaidPayments}
             </h2>
           </div>
           <span className="text text-sm text-white font-light">
@@ -59,7 +80,7 @@ function PaymentChart() {
         <div className="pr-4">
           <div className="flex items-center">
             <h2 className="text text-xl text-white font-semibold mb-1">
-              1.450
+              {cancelOrderStatus}
             </h2>
           </div>
           <span className="text text-sm text-white font-light">Đã hủy</span>

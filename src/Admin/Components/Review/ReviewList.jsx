@@ -99,20 +99,20 @@ function ReviewList() {
                     <td>
                       <div className="bg-[#282941] rounded-sm flex-1 flex items-center">
                         <img
-                          src={review.images[1]}
+                          src={review.product.image}
                           alt="Product"
                           className="w-10 h-10 rounded-md object-cover"
                         />
                         <div className="pl-2">
                           <Link
-                            to={`/admin/product/productdetail/${review.id_product}`}
+                            to={`/admin/product/productdetail/${review.product.id}`}
                             className="text text-sm font-semibold text-[#787BFF]"
                           >
-                            {review.id_product}
-                          </Link>
-                          <div className="text-xs text-white font-light">
-                            {review.content}
-                          </div>
+                            {review.product.name}
+                            </Link>
+                          {/* <div className="text-xs text-white font-light">
+                            {review.product.name}
+                          </div> */}
                         </div>
                       </div>
                     </td>
@@ -120,7 +120,7 @@ function ReviewList() {
                     <td>
                       <div className="bg-[#282941] rounded-sm flex-1 flex items-center">
                         <img
-                          src={review.images[0]}
+                          src={"https://static.vecteezy.com/system/resources/thumbnails/002/318/271/small_2x/user-profile-icon-free-vector.jpg"}
                           alt="Customer"
                           className="w-10 h-10 rounded-full object-cover"
                         />
