@@ -12,6 +12,7 @@ export const Product_Items = [
     image: banhxeonemlui,
     name: "Banh xeo nem lui",
     price: "25000",
+    saleprice: "20000",
     sale: "-10%",
     subcription:
       "Bánh bột lọc Huế không chỉ được coi là món ăn vặt, bạn hoàn toàn có thể thưởng thức thay cơm hay bữa chính trong ngày. Loại bánh này phổ biến ở nhiều địa phương, tuy nhiên, chỉ khi ăn tại Huế, bạn mới cảm nhận được vị ngon đặc trưng, đúng điệu của miền Trung",
@@ -24,6 +25,7 @@ export const Product_Items = [
     image: banhbeo,
     name: "Banh xeo nem lui",
     price: "39000",
+    saleprice: "20000",
     subcription:
       "Bánh bột lọc Huế không chỉ được coi là món ăn vặt, bạn hoàn toàn có thể thưởng thức thay cơm hay bữa chính trong ngày. Loại bánh này phổ biến ở nhiều địa phương, tuy nhiên, chỉ khi ăn tại Huế, bạn mới cảm nhận được vị ngon đặc trưng, đúng điệu của miền Trung",
     description:
@@ -35,6 +37,7 @@ export const Product_Items = [
     image: banhloc,
     name: "Banh xeo nem lui",
     price: "30000",
+    saleprice: "20000",
     subcription:
       "Bánh bột lọc Huế không chỉ được coi là món ăn vặt, bạn hoàn toàn có thể thưởng thức thay cơm hay bữa chính trong ngày. Loại bánh này phổ biến ở nhiều địa phương, tuy nhiên, chỉ khi ăn tại Huế, bạn mới cảm nhận được vị ngon đặc trưng, đúng điệu của miền Trung",
     description:
@@ -46,6 +49,7 @@ export const Product_Items = [
     image: bunbohue,
     name: "Banh xeo nem lui",
     price: "29000",
+    saleprice: "20000",
     subcription:
       "Bánh bột lọc Huế không chỉ được coi là món ăn vặt, bạn hoàn toàn có thể thưởng thức thay cơm hay bữa chính trong ngày. Loại bánh này phổ biến ở nhiều địa phương, tuy nhiên, chỉ khi ăn tại Huế, bạn mới cảm nhận được vị ngon đặc trưng, đúng điệu của miền Trung",
     description:
@@ -58,6 +62,7 @@ export const Product_Items = [
     name: "Banh xeo nem lui",
     price: "29000",
     sale: "-20%",
+    saleprice: "20000",
     subcription:
       "Bánh bột lọc Huế không chỉ được coi là món ăn vặt, bạn hoàn toàn có thể thưởng thức thay cơm hay bữa chính trong ngày. Loại bánh này phổ biến ở nhiều địa phương, tuy nhiên, chỉ khi ăn tại Huế, bạn mới cảm nhận được vị ngon đặc trưng, đúng điệu của miền Trung",
     description:
@@ -69,6 +74,7 @@ export const Product_Items = [
     image: banhnam,
     name: "Banh xeo nem lui",
     price: "29000",
+    saleprice: "20000",
     sale: "-5%",
     subcription:
       "Bánh bột lọc Huế không chỉ được coi là món ăn vặt, bạn hoàn toàn có thể thưởng thức thay cơm hay bữa chính trong ngày. Loại bánh này phổ biến ở nhiều địa phương, tuy nhiên, chỉ khi ăn tại Huế, bạn mới cảm nhận được vị ngon đặc trưng, đúng điệu của miền Trung",
@@ -81,6 +87,7 @@ export const Product_Items = [
     image: banhnam,
     name: "Banh xeo nem lui",
     price: "29000",
+    saleprice: "20000",
     subcription:
       "Bánh bột lọc Huế không chỉ được coi là món ăn vặt, bạn hoàn toàn có thể thưởng thức thay cơm hay bữa chính trong ngày. Loại bánh này phổ biến ở nhiều địa phương, tuy nhiên, chỉ khi ăn tại Huế, bạn mới cảm nhận được vị ngon đặc trưng, đúng điệu của miền Trung",
     description:
@@ -92,6 +99,7 @@ export const Product_Items = [
     image: banhnam,
     name: "Banh xeo nem lui",
     price: "29000",
+    saleprice: "20000",
     sale: "-6%",
     subcription:
       "Bánh bột lọc Huế không chỉ được coi là món ăn vặt, bạn hoàn toàn có thể thưởng thức thay cơm hay bữa chính trong ngày. Loại bánh này phổ biến ở nhiều địa phương, tuy nhiên, chỉ khi ăn tại Huế, bạn mới cảm nhận được vị ngon đặc trưng, đúng điệu của miền Trung",
@@ -104,6 +112,7 @@ export const Product_Items = [
     image: banhnam,
     name: "Banh xeo nem lui",
     price: "29000",
+    saleprice: "20000",
     subcription:
       "Bánh bột lọc Huế không chỉ được coi là món ăn vặt, bạn hoàn toàn có thể thưởng thức thay cơm hay bữa chính trong ngày. Loại bánh này phổ biến ở nhiều địa phương, tuy nhiên, chỉ khi ăn tại Huế, bạn mới cảm nhận được vị ngon đặc trưng, đúng điệu của miền Trung",
     description:
@@ -115,6 +124,7 @@ export const Product_Items = [
     image: banhnam,
     name: "Banh xeo nem lui",
     price: "29000",
+    saleprice: "20000",
     subcription:
       "Bánh bột lọc Huế không chỉ được coi là món ăn vặt, bạn hoàn toàn có thể thưởng thức thay cơm hay bữa chính trong ngày. Loại bánh này phổ biến ở nhiều địa phương, tuy nhiên, chỉ khi ăn tại Huế, bạn mới cảm nhận được vị ngon đặc trưng, đúng điệu của miền Trung",
     description:
@@ -126,6 +136,7 @@ export const Product_Items = [
     image: banhnam,
     name: "Banh xeo nem lui",
     price: "29000",
+    saleprice: "20000",
     sale: "-10%",
     subcription:
       "Bánh bột lọc Huế không chỉ được coi là món ăn vặt, bạn hoàn toàn có thể thưởng thức thay cơm hay bữa chính trong ngày. Loại bánh này phổ biến ở nhiều địa phương, tuy nhiên, chỉ khi ăn tại Huế, bạn mới cảm nhận được vị ngon đặc trưng, đúng điệu của miền Trung",
@@ -138,6 +149,7 @@ export const Product_Items = [
     image: banhnam,
     name: "Banh xeo nem lui",
     price: "29000",
+    saleprice: "20000",
     subcription:
       "Bánh bột lọc Huế không chỉ được coi là món ăn vặt, bạn hoàn toàn có thể thưởng thức thay cơm hay bữa chính trong ngày. Loại bánh này phổ biến ở nhiều địa phương, tuy nhiên, chỉ khi ăn tại Huế, bạn mới cảm nhận được vị ngon đặc trưng, đúng điệu của miền Trung",
     description:
@@ -149,6 +161,7 @@ export const Product_Items = [
     image: banhnam,
     name: "Banh xeo nem lui",
     price: "29000",
+    saleprice: "20000",
     subcription:
       "Bánh bột lọc Huế không chỉ được coi là món ăn vặt, bạn hoàn toàn có thể thưởng thức thay cơm hay bữa chính trong ngày. Loại bánh này phổ biến ở nhiều địa phương, tuy nhiên, chỉ khi ăn tại Huế, bạn mới cảm nhận được vị ngon đặc trưng, đúng điệu của miền Trung",
     description:
@@ -160,6 +173,7 @@ export const Product_Items = [
     image: banhnam,
     name: "Banh xeo nem lui",
     price: "29000",
+    saleprice: "20000",
     sale: "-10%",
     subcription:
       "Bánh bột lọc Huế không chỉ được coi là món ăn vặt, bạn hoàn toàn có thể thưởng thức thay cơm hay bữa chính trong ngày. Loại bánh này phổ biến ở nhiều địa phương, tuy nhiên, chỉ khi ăn tại Huế, bạn mới cảm nhận được vị ngon đặc trưng, đúng điệu của miền Trung",
