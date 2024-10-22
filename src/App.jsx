@@ -7,10 +7,13 @@ import ProductDetail from './Pages/ProductDetail';
 import Cart from './Pages/Cart';
 import UserProfile from './Pages/UserProfile';
 import Order from './Pages/LayoutOrder';
+import Login from './Components/Shared/Login';
 function App() {
     return (
         <Router>
             <Routes>
+                <Route path="/Login" element={<Login />} />
+
                 <Route path="/" element={<Layout />}>
                     <Route index element={<Home />} />
                     <Route path="product" element={<Product />} />
