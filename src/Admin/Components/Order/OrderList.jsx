@@ -87,7 +87,7 @@ function OrderList() {
                   <tr key={index} className="border-b-2">
                     <td>
                       <Link
-                        to={`orderdetail/${order.orderid}`}
+                        to={`orderdetail/${order.id_order}`}
                         className="text-[#787BFF]"
                       >
                         #{order.id_order}
@@ -112,13 +112,13 @@ function OrderList() {
                         />
                         <div className="pl-2">
                           <Link
-                            to={`/admin/product/productdetail/${""}`}
+                            to={`/admin/customer/customerdetail/${order.customer.id}`}
                             className="text text-sm font-semibold text-[#787BFF]"
                           >
-                            {""}
+                            {order.customer.full_name}
                           </Link>
                           <div className="text-xs text-white font-light">
-                            {""}
+                            {order.customer.phone}
                           </div>
                         </div>
                       </div>
