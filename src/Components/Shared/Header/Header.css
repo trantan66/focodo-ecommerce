@@ -104,7 +104,3 @@
     border-radius: 100px;
     border: 2px solid transparent; /* Thêm không gian để tạo khoảng cách */
 }
-
-.scrollbar::-webkit-scrollbar-thumb:hover {
-    /* background-color: #555;  */
-}

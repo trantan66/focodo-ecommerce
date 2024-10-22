@@ -8,10 +8,13 @@ import orderData from './data';
 function Order() {
     const [selectedMethod, setSelectedMethod] = useState(''); // Theo dõi phương thức vận chuyển
     const [selectedPaymentMethod, setSelectedPaymentMethod] = useState(''); // Theo dõi phương thức thanh toán
+
     const [provinces, setProvinces] = useState([]); // State để lưu danh sách tỉnh/thành phố
     const [selectedProvince, setSelectedProvince] = useState(''); // Theo dõi tỉnh/thành phố được chọn
     const [districts, setDistricts] = useState([]); // State để lưu danh sách quận/huyện
     const [selectedDistrict, setSelectedDistrict] = useState(''); // Theo dõi quận/huyện được chọn
+    const [communes, setCommunes] = useState([]); // State để lưu danh sách xã/phường
+    const [selectedCommune, setSelectedCommune] = useState(''); // Theo dõi xã/phường được chọn
 
     // Fetch province data on component mount
     useEffect(() => {
@@ -35,6 +38,18 @@ function Order() {
         }
     }, [selectedProvince]);
 
+    // Fetch commune data when a district is selected
+    useEffect(() => {
+        if (selectedDistrict) {
+            axios
+                .get(`https://api.mysupership.vn/v1/partner/areas/commune?district=${selectedDistrict}`)
+                .then((response) => {
+                    setCommunes(response.data.results);
+                })
+                .catch((error) => console.error('Error fetching communes:', error));
+        }
+    }, [selectedDistrict]);
+
     const handleMethodChange = (e) => {
         setSelectedMethod(e.target.value);
     };
@@ -50,6 +65,10 @@ function Order() {
 
     const handleDistrictChange = (e) => {
         setSelectedDistrict(e.target.value);
+    };
+
+    const handleCommuneChange = (e) => {
+        setSelectedCommune(e.target.value);
     };
 
     // Tính toán tổng tiền sản phẩm
@@ -72,7 +91,7 @@ function Order() {
     return (
         <>
             <div className="w-[1200px] mx-auto flex justify-center">
-                <div className="w-[600px] space-y-10 pt-5 pr-10">
+                <div className="w-[600px] paces-y-10 pt-5 pr-10">
                     {/* Thông tin giao hàng */}
                     <div className="space-y-5">
                         <h2 className="text-xl">Thông tin giao hàng</h2>
@@ -87,39 +106,56 @@ function Order() {
                             placeholder="Số điện thoại"
                         />
 
-                        {/* Chọn tỉnh/thành phố */}
-                        <div>
-                            <label>Chọn Tỉnh/Thành Phố</label>
-                            <select
-                                value={selectedProvince}
-                                onChange={handleProvinceChange}
-                                className="block w-full mt-[10px] p-[8px] border rounded-md"
-                            >
-                                <option value="">Chọn Tỉnh/Thành Phố</option>
-                                {provinces.map((province) => (
-                                    <option key={province.code} value={province.code}>
-                                        {province.name}
-                                    </option>
-                                ))}
-                            </select>
-                        </div>
+                        <div className="flex space-x-4">
+                            {/* Chọn tỉnh/thành phố */}
+                            <div className="flex-grow">
+                                <select
+                                    value={selectedProvince}
+                                    onChange={handleProvinceChange}
+                                    className="block w-full mt-[10px] p-[8px] border rounded-md"
+                                >
+                                    <option value="">Chọn Tỉnh/Thành Phố</option>
+                                    {provinces.map((province) => (
+                                        <option key={province.code} value={province.code}>
+                                            {province.name}
+                                        </option>
+                                    ))}
+                                </select>
+                            </div>
 
-                        {/* Chọn quận/huyện */}
-                        <div>
-                            <label>Chọn Quận/Huyện</label>
-                            <select
-                                value={selectedDistrict}
-                                onChange={handleDistrictChange}
-                                disabled={!selectedProvince}
-                                className="block w-full mt-[10px] p-[8px] border rounded-md"
-                            >
-                                <option value="">Chọn Quận/Huyện</option>
-                                {districts.map((district) => (
-                                    <option key={district.code} value={district.code}>
-                                        {district.name}
-                                    </option>
-                                ))}
-                            </select>
+                            {/* Chọn quận/huyện */}
+                            <div className="flex-grow">
+                                <select
+                                    value={selectedDistrict}
+                                    onChange={handleDistrictChange}
+                                    disabled={!selectedProvince}
+                                    className="block w-full mt-[10px] p-[8px] border rounded-md"
+                                >
+                                    <option value="">Chọn Quận/Huyện</option>
+                                    {districts.map((district) => (
+                                        <option key={district.code} value={district.code}>
+                                            {district.name}
+                                        </option>
+                                    ))}
+                                </select>
+                            </div>
+
+                            {/* Chọn xã/phường */}
+                            <div className="flex-grow">
+                                <select
+                                    value={selectedCommune}
+                                    onChange={handleCommuneChange}
+                                    disabled={!selectedDistrict}
+                                    className="block w-full mt-[10px] p-[8px] border rounded-md"
+                                >
+                                    <option value="">Chọn Xã/Phường</option>
+                                    {communes.map((commune) => (
+                                        <option key={commune.code} value={commune.code}>
+                                            {commune.name}
+                                        </option>
+                                    ))}
+                                </select>
+                            </div>
                         </div>
 
                         <input

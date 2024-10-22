@@ -23,7 +23,5 @@ const products = [
 ];
 
 const TotalOrderPrice = 60000;
-const TotalShippingFee = 20000;
-const discount = 10000;
 
-export default { products, TotalOrderPrice, TotalShippingFee, discount };
+export default { products, TotalOrderPrice };
