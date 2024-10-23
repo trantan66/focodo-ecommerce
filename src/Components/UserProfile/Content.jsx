@@ -8,6 +8,7 @@ import { CanceledOrders } from './OrderList';
 import { CompletedOrders } from './OrderList';
 import { ProcessingOrders } from './OrderList';
 import { ShippingOrders } from './OrderList';
+import './Style.css';
 function Content() {
     const user = UserData[0];
     const onChange = (key) => {
@@ -18,7 +19,7 @@ function Content() {
     const [confirmPassword, setConfirmPassword] = useState('');
     const [message, setMessage] = useState('');
     const handleChangePassword = () => {
-        const user = UserData[0]; 
+        const user = UserData[0];
 
         if (user.password !== oldPassword) {
             setMessage('Mật khẩu cũ không đúng!');
@@ -41,7 +42,7 @@ function Content() {
             key: '1',
             label: 'Tất cả',
             children: (
-                <div className="h-[375px] overflow-auto">
+                <div className="h-[375px] overflow-auto ">
                     <p className="font-semibold py-2">Đang xử lý</p>
                     <ProcessingOrders></ProcessingOrders>
                     <p className="font-semibold py-2 text-[#FCCD2A]">Chờ giao hàng</p>

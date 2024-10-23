@@ -9,6 +9,7 @@ export const Product_Items = [
   {
     id: 1,
     rate: 4,
+    quantity:2,
     image: banhxeonemlui,
     name: "Banh xeo nem lui",
     price: "25000",
@@ -21,6 +22,7 @@ export const Product_Items = [
   {
     id: 2,
     rate: 5,
+    quantity:3,
     image: banhbeo,
     name: "Banh xeo nem lui",
     price: "39000",
@@ -32,6 +34,7 @@ export const Product_Items = [
   {
     id: 3,
     rate: 3,
+    quantity:10,
     image: banhloc,
     name: "Banh xeo nem lui",
     price: "30000",
@@ -43,6 +46,7 @@ export const Product_Items = [
   {
     id: 4,
     rate: 2,
+    quantity:3,
     image: bunbohue,
     name: "Banh xeo nem lui",
     price: "29000",
@@ -54,6 +58,7 @@ export const Product_Items = [
   {
     id: 5,
     rate: 4,
+    quantity:3,
     image: comhen,
     name: "Banh xeo nem lui",
     price: "29000",
@@ -66,6 +71,7 @@ export const Product_Items = [
   {
     id: 6,
     rate: 3,
+    quantity:3,
     image: banhnam,
     name: "Banh xeo nem lui",
     price: "29000",
@@ -78,6 +84,7 @@ export const Product_Items = [
   {
     id: 7,
     rate: 3,
+    quantity:3,
     image: banhnam,
     name: "Banh xeo nem lui",
     price: "29000",
@@ -89,6 +96,7 @@ export const Product_Items = [
   {
     id: 8,
     rate: 3,
+    quantity:3,
     image: banhnam,
     name: "Banh xeo nem lui",
     price: "29000",
@@ -101,6 +109,7 @@ export const Product_Items = [
   {
     id: 9,
     rate: 3,
+    quantity:3,
     image: banhnam,
     name: "Banh xeo nem lui",
     price: "29000",
@@ -112,6 +121,7 @@ export const Product_Items = [
   {
     id: 10,
     rate: 3,
+    quantity:3,
     image: banhnam,
     name: "Banh xeo nem lui",
     price: "29000",
@@ -123,6 +133,7 @@ export const Product_Items = [
   {
     id: 11,
     rate: 3,
+    quantity:3,
     image: banhnam,
     name: "Banh xeo nem lui",
     price: "29000",
@@ -135,6 +146,7 @@ export const Product_Items = [
   {
     id: 12,
     rate: 3,
+    quantity:3,
     image: banhnam,
     name: "Banh xeo nem lui",
     price: "29000",
@@ -146,6 +158,7 @@ export const Product_Items = [
   {
     id: 13,
     rate: 3,
+    quantity:3,
     image: banhnam,
     name: "Banh xeo nem lui",
     price: "29000",
@@ -157,6 +170,7 @@ export const Product_Items = [
   {
     id: 14,
     rate: 3,
+    quantity:3,
     image: banhnam,
     name: "Banh xeo nem lui",
     price: "29000",
