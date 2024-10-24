@@ -5,9 +5,10 @@ import Home from './Pages/Home';
 import Present from './Pages/Presentation';
 import ProductDetail from './Pages/ProductDetail';
 import Cart from './Pages/Cart';
-import Order from './Pages/LayoutOrder';
-import Search from './Pages/Search';
 import UserProfile from './Pages/UserProfile';
+import Order from './Pages/LayoutOrder';
+import OrderDetail from './Pages/OrderDetail';
+import Search from './Pages/Search';
 import Login from './Pages/Login';
 import PrivateRoutes from './Roots/PrivateRoutes';
 import AuthRoutes from './Roots/AuthRoutes';
@@ -38,6 +39,7 @@ function App() {
                     <Route path="productdetail/:producId" element={<ProductDetail />} />
                     <Route path="cart" element={<Cart />}></Route>
                     <Route path="order" element={<Order />}></Route>
+                    <Route path="orderdetail" element={<OrderDetail />}></Route>
                     <Route element={<AuthRoutes />}>
                         <Route path="login" element={<Login />}></Route>
                     </Route>

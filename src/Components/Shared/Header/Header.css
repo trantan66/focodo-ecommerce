@@ -89,3 +89,18 @@
     color: #999;
     font-size: 14px;
 }
+
+.scrollbar::-webkit-scrollbar {
+    width: 6px; /* Độ rộng của scrollbar */
+}
+
+.scrollbar::-webkit-scrollbar-track {
+    background: #f1f1f1; /* Màu nền của scrollbar */
+    border-radius: 100px;
+}
+
+.scrollbar::-webkit-scrollbar-thumb {
+    background-color: gray; /* Màu thanh trượt */
+    border-radius: 100px;
+    border: 2px solid transparent; /* Thêm không gian để tạo khoảng cách */
+}

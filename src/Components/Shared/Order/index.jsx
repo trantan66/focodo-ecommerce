@@ -1,13 +1,54 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
 import cod from '../image/cod.svg';
 import vnpay from '../image/vnpay_new.svg';
 import other from '../image/other.svg';
-
 import orderData from './data';
 
 function Order() {
     const [selectedMethod, setSelectedMethod] = useState(''); // Theo dõi phương thức vận chuyển
     const [selectedPaymentMethod, setSelectedPaymentMethod] = useState(''); // Theo dõi phương thức thanh toán
+
+    const [provinces, setProvinces] = useState([]); // State để lưu danh sách tỉnh/thành phố
+    const [selectedProvince, setSelectedProvince] = useState(''); // Theo dõi tỉnh/thành phố được chọn
+    const [districts, setDistricts] = useState([]); // State để lưu danh sách quận/huyện
+    const [selectedDistrict, setSelectedDistrict] = useState(''); // Theo dõi quận/huyện được chọn
+    const [communes, setCommunes] = useState([]); // State để lưu danh sách xã/phường
+    const [selectedCommune, setSelectedCommune] = useState(''); // Theo dõi xã/phường được chọn
+
+    // Fetch province data on component mount
+    useEffect(() => {
+        axios
+            .get('https://api.mysupership.vn/v1/partner/areas/province')
+            .then((response) => {
+                setProvinces(response.data.results);
+            })
+            .catch((error) => console.error('Error fetching provinces:', error));
+    }, []);
+
+    // Fetch district data when a province is selected
+    useEffect(() => {
+        if (selectedProvince) {
+            axios
+                .get(`https://api.mysupership.vn/v1/partner/areas/district?province=${selectedProvince}`)
+                .then((response) => {
+                    setDistricts(response.data.results);
+                })
+                .catch((error) => console.error('Error fetching districts:', error));
+        }
+    }, [selectedProvince]);
+
+    // Fetch commune data when a district is selected
+    useEffect(() => {
+        if (selectedDistrict) {
+            axios
+                .get(`https://api.mysupership.vn/v1/partner/areas/commune?district=${selectedDistrict}`)
+                .then((response) => {
+                    setCommunes(response.data.results);
+                })
+                .catch((error) => console.error('Error fetching communes:', error));
+        }
+    }, [selectedDistrict]);
 
     const handleMethodChange = (e) => {
         setSelectedMethod(e.target.value);
@@ -15,6 +56,19 @@ function Order() {
 
     const handlePaymentMethodChange = (e) => {
         setSelectedPaymentMethod(e.target.value);
+    };
+
+    const handleProvinceChange = (e) => {
+        setSelectedProvince(e.target.value);
+        setSelectedDistrict(''); // Reset district when province changes
+    };
+
+    const handleDistrictChange = (e) => {
+        setSelectedDistrict(e.target.value);
+    };
+
+    const handleCommuneChange = (e) => {
+        setSelectedCommune(e.target.value);
     };
 
     // Tính toán tổng tiền sản phẩm
@@ -37,7 +91,7 @@ function Order() {
     return (
         <>
             <div className="w-[1200px] mx-auto flex justify-center">
-                <div className="w-[600px] space-y-10 pt-5 pr-10">
+                <div className="w-[600px] paces-y-10 pt-5 pr-10">
                     {/* Thông tin giao hàng */}
                     <div className="space-y-5">
                         <h2 className="text-xl">Thông tin giao hàng</h2>
@@ -51,10 +105,63 @@ function Order() {
                             className="block w-full mt-[10px] p-[8px] border rounded-md"
                             placeholder="Số điện thoại"
                         />
+
+                        <div className="flex space-x-4">
+                            {/* Chọn tỉnh/thành phố */}
+                            <div className="flex-grow">
+                                <select
+                                    value={selectedProvince}
+                                    onChange={handleProvinceChange}
+                                    className="block w-full mt-[10px] p-[8px] border rounded-md"
+                                >
+                                    <option value="">Chọn Tỉnh/Thành Phố</option>
+                                    {provinces.map((province) => (
+                                        <option key={province.code} value={province.code}>
+                                            {province.name}
+                                        </option>
+                                    ))}
+                                </select>
+                            </div>
+
+                            {/* Chọn quận/huyện */}
+                            <div className="flex-grow">
+                                <select
+                                    value={selectedDistrict}
+                                    onChange={handleDistrictChange}
+                                    disabled={!selectedProvince}
+                                    className="block w-full mt-[10px] p-[8px] border rounded-md"
+                                >
+                                    <option value="">Chọn Quận/Huyện</option>
+                                    {districts.map((district) => (
+                                        <option key={district.code} value={district.code}>
+                                            {district.name}
+                                        </option>
+                                    ))}
+                                </select>
+                            </div>
+
+                            {/* Chọn xã/phường */}
+                            <div className="flex-grow">
+                                <select
+                                    value={selectedCommune}
+                                    onChange={handleCommuneChange}
+                                    disabled={!selectedDistrict}
+                                    className="block w-full mt-[10px] p-[8px] border rounded-md"
+                                >
+                                    <option value="">Chọn Xã/Phường</option>
+                                    {communes.map((commune) => (
+                                        <option key={commune.code} value={commune.code}>
+                                            {commune.name}
+                                        </option>
+                                    ))}
+                                </select>
+                            </div>
+                        </div>
+
                         <input
                             type="text"
                             className="block w-full mt-[10px] p-[8px] border rounded-md"
-                            placeholder="Địa chỉ"
+                            placeholder="Địa chỉ chi tiết"
                         />
                     </div>
 
@@ -132,7 +239,7 @@ function Order() {
 
                     <div className="flex justify-between items-center space-y-5">
                         <a href="" className="text-blue-500">
-                            Quay lại giỏi hàng
+                            Quay lại giỏ hàng
                         </a>
                         <button className="w-[200px] h-[50px] bg-blue-500 text-white rounded-md">
                             Hoàn tất đơn hàng
@@ -154,38 +261,29 @@ function Order() {
                                     <span>{product.Name}</span>
                                     <span>Số lượng: {product.Quantity}</span>
                                 </div>
-                                <span>{formatCurrency(product.TotalPrice)}</span>{' '}
-                                {/* Định dạng hiển thị giá sản phẩm */}
+                                <span>{formatCurrency(product.TotalPrice)}</span>
                             </div>
                         </div>
                     ))}
-                    <div className="mt-2 border-b-2"></div>
-                    <div className="flex justify-between mt-4">
-                        <input
-                            type="text"
-                            className="block w-[75%] p-[8px] border rounded-md"
-                            placeholder="Mã giảm giá"
-                        />
-                        <button className="block w-[20%] bg-blue-500 text-white rounded-md">Áp dụng</button>
+
+                    {/* Hiển thị phí vận chuyển */}
+                    <div className="w-[450px] flex justify-between py-3">
+                        <span>Phí vận chuyển:</span>
+                        <span>{formatCurrency(shippingFee)}</span>
                     </div>
-                    <div className="mt-4 border-b-2"></div>
-                    <div className="mt-5 mr-5">
-                        <div className="flex justify-between py-2">
-                            <span>Tạm tính:</span>
-                            <span>{formatCurrency(totalOrderPrice)}</span> {/* Sử dụng hàm định dạng tiền tệ */}
+
+                    {/* Hiển thị số tiền giảm giá (nếu có) */}
+                    {discountAmount > 0 && (
+                        <div className="w-[450px] flex justify-between py-3">
+                            <span>Giảm giá:</span>
+                            <span>{formatCurrency(discountAmount)}</span>
                         </div>
-                        <div className="flex justify-between py-2">
-                            <span>Phí vận chuyển:</span>
-                            <span>{formatCurrency(shippingFee)}</span> {/* Sử dụng hàm định dạng tiền tệ */}
-                        </div>
-                        <div className="flex justify-between border-b py-2">
-                            <span>Số tiền giảm giá:</span>
-                            <span>{formatCurrency(discountAmount)}</span> {/* Sử dụng hàm định dạng tiền tệ */}
-                        </div>
-                        <div className="flex justify-between py-2 font-bold">
-                            <span>Tổng cộng:</span>
-                            <span>{formatCurrency(finalTotal)}</span> {/* Sử dụng hàm định dạng tiền tệ */}
-                        </div>
+                    )}
+
+                    {/* Hiển thị tổng tiền */}
+                    <div className="w-[450px] flex justify-between py-3 font-bold">
+                        <span>Tổng cộng:</span>
+                        <span>{formatCurrency(finalTotal)}</span>
                     </div>
                 </div>
             </div>
