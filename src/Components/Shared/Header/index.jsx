@@ -5,8 +5,9 @@ import './Header.css';
 import logo from '../image/logo.png';
 import products from './data';
 import { searchProducts } from '../../../Services/ProductService';
-
+import useAuth from '../../../Hooks/useAuth';
 function Header() {
+    const { auth } = useAuth();
     const [isSearchActive, setIsSearchActive] = useState(false);
     const [showAll, setShowAll] = useState(false);
     const [valueInput, setValueInput] = useState('');
@@ -25,15 +26,12 @@ function Header() {
         return new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(amount);
     };
     const fetchProducts = async () => {
-        console.log(valueInput);
         const response = await searchProducts(valueInput);
-        console.log(response);
         setProducts(response.result.data);
     };
     useEffect(() => {
         fetchProducts();
     }, [valueInput]);
-
     return (
         <div className="Header">
             <div className="header-top">
