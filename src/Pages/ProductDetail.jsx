@@ -5,7 +5,7 @@ import ReviewList from "../Components/ProductDetail/ReviewList";
 
 function ProductDetail() {
   return (
-    <div className="p-[6rem]">
+    <div className="p-[6rem] w-[1200px] mx-auto">
       <ProductMainDetail />
       <div className="mb-[4rem]">
         <ReviewList />

@@ -1,4 +1,4 @@
-const products = [
+const productsCart = [
     {
         id: 1,
         Name: 'Bánh bèo Huế',
@@ -29,4 +29,4 @@ const products = [
     },
 ];
 
-export default products;
+export default productsCart;

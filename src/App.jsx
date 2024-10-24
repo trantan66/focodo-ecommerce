@@ -8,18 +8,23 @@ import Cart from './Pages/Cart';
 import UserProfile from './Pages/UserProfile';
 import Order from './Pages/LayoutOrder';
 import OrderDetail from './Pages/OrderDetail';
+import Login from './Components/Shared/Login';
+import Search from './Pages/Search';
 function App() {
     return (
         <Router>
             <Routes>
+                <Route path="/Login" element={<Login />} />
+
                 <Route path="/" element={<Layout />}>
                     <Route index element={<Home />} />
                     <Route path="product" element={<Product />} />
+                    <Route path="search" element={<Search />} />
                     <Route path="presentation" element={<Present />} />
                     <Route path="productdetail/:producId" element={<ProductDetail />} />
                     <Route path="userprofile" element={<UserProfile />} />
-                    <Route path="/Cart" element={<Cart />}></Route>
-                    <Route path="/Order" element={<Order />}></Route>
+                    <Route path="cart" element={<Cart />}></Route>
+                    <Route path="order" element={<Order />}></Route>
                     <Route path="/Orderdetail" element={<OrderDetail />}></Route>
                 </Route>
             </Routes>
