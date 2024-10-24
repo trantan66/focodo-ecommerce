@@ -8,6 +8,7 @@ import Cart from './Pages/Cart';
 import UserProfile from './Pages/UserProfile';
 import Order from './Pages/LayoutOrder';
 import Login from './Components/Shared/Login';
+import Search from './Pages/Search';
 function App() {
     return (
         <Router>
@@ -17,11 +18,12 @@ function App() {
                 <Route path="/" element={<Layout />}>
                     <Route index element={<Home />} />
                     <Route path="product" element={<Product />} />
+                    <Route path="search" element={<Search />} />
                     <Route path="presentation" element={<Present />} />
                     <Route path="productdetail/:producId" element={<ProductDetail />} />
                     <Route path="userprofile" element={<UserProfile />} />
-                    <Route path="/Cart" element={<Cart />}></Route>
-                    <Route path="/Order" element={<Order />}></Route>
+                    <Route path="cart" element={<Cart />}></Route>
+                    <Route path="order" element={<Order />}></Route>
                 </Route>
             </Routes>
         </Router>

@@ -2,7 +2,6 @@ import React from "react";
 import OrderList from "../Components/Order/OrderList";
 import PaymentChart from "../Components/Order/PaymentChart";
 
-
 function Order() {
 
   return (
