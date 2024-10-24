@@ -8,7 +8,24 @@ import Cart from './Pages/Cart';
 import Order from './Pages/LayoutOrder';
 import Search from './Pages/Search';
 import UserProfile from './Pages/UserProfile';
-
+import Login from './Pages/Login';
+import PrivateRoutes from './Roots/PrivateRoutes';
+import AuthRoutes from './Roots/AuthRoutes';
+import AdminLayout from './Admin/Components/Shared/Layout';
+import AdminProduct from './Admin/Pages/Product';
+import AdminDashboard from './Admin/Pages/Dashboard';
+import AdminOrder from './Admin/Pages/Order';
+import AdminCustomer from './Admin/Pages/Customer';
+import AdminProductDetail from './Admin/Components/Product/ProductDetail';
+import AdminOrderDetail from './Admin/Pages/OrderDetail';
+import AdminCustomerDetail from './Admin/Pages/CustomerDetail';
+import AdminCategory from './Admin/Pages/Category';
+import AdminReview from './Admin/Pages/Review';
+import AdminAddProduct from './Admin/Components/AddProduct/AddProduct';
+const roles = {
+    user: 'USER',
+    admin: 'ADMIN',
+};
 function App() {
     return (
         <Router>
@@ -19,9 +36,29 @@ function App() {
                     <Route path="search" element={<Search />} />
                     <Route path="presentation" element={<Present />} />
                     <Route path="productdetail/:producId" element={<ProductDetail />} />
-                    <Route path="userprofile" element={<UserProfile />} />
                     <Route path="cart" element={<Cart />}></Route>
                     <Route path="order" element={<Order />}></Route>
+                    <Route element={<AuthRoutes />}>
+                        <Route path="login" element={<Login />}></Route>
+                    </Route>
+                    <Route element={<PrivateRoutes allowedRoles={[roles.user, roles.admin]} />}>
+                        <Route path="userprofile" element={<UserProfile />} />
+                    </Route>
+                </Route>
+                <Route element={<PrivateRoutes allowedRoles={[roles.admin]} />}>
+                    <Route path="admin" element={<AdminLayout />}>
+                        <Route index element={<AdminDashboard />} />
+                        <Route path="product" element={<AdminProduct />} />
+                        <Route path="order" element={<AdminOrder />} />
+                        <Route path="customer" element={<AdminCustomer />} />
+                        <Route path="customer/customerdetail/:customerId" element={<AdminCustomerDetail />} />
+                        <Route path="product" element={<AdminProduct />} />
+                        <Route path="product/addproduct" element={<AdminAddProduct />} />
+                        <Route path="product/productdetail/:productId" element={<AdminProductDetail />} />
+                        <Route path="order/orderdetail/:orderId" element={<AdminOrderDetail />} />
+                        <Route path="category" element={<AdminCategory />} />
+                        <Route path="review" element={<AdminReview />} />
+                    </Route>
                 </Route>
             </Routes>
         </Router>
