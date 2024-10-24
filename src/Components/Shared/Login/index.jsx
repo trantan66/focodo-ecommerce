@@ -8,15 +8,15 @@ function Login() {
     };
 
     return (
-        <div className="h-screen flex items-center justify-center bg-gradient-to-r from-green-400 to-green-600">
+        <div className="h-screen flex items-center justify-center bg-[#F0F4F9]">
             <div className="bg-white p-8 rounded-lg shadow-md w-96 space-y-5">
                 <h2 className="text-2xl font-semibold text-center text-[#0B847A]">LOGIN</h2>
-                <form className="space-y-10">
+                <form className="space-y-8">
                     <div>
                         <input
                             type="text"
                             id="username"
-                            className="mt-1 block w-full h-[60px] border border-gray-300 rounded-md p-2"
+                            className="mt-1 block w-full h-[50px] border border-gray-300 rounded-md p-2"
                             placeholder="Username"
                             required
                         />
@@ -25,7 +25,7 @@ function Login() {
                         <input
                             type={showPassword ? 'text' : 'password'} // Chỉnh sửa đây
                             id="password"
-                            className="mt-1 block w-full h-[60px] border border-gray-300 rounded-md p-2"
+                            className="mt-1 block w-full h-[50px] border border-gray-300 rounded-md p-2"
                             placeholder="Password"
                             required
                         />

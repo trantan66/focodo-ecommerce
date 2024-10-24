@@ -8,12 +8,15 @@ import Cart from './Pages/Cart';
 import UserProfile from './Pages/UserProfile';
 import Order from './Pages/LayoutOrder';
 import Login from './Components/Shared/Login';
-import Search from './Pages/Search';
 function App() {
     return (
         <Router>
             <Routes>
                 <Route path="/Login" element={<Login />} />
+                <Route path="/SignUp" element={<SignUp />} />
+                <Route path="/FP_Step1" element={<FP_Step1 />} />
+                <Route path="/FP_Step2" element={<FP_Step2 />} />
+                <Route path="/FP_Step3" element={<FP_Step3 />} />
 
                 <Route path="/" element={<Layout />}>
                     <Route index element={<Home />} />
