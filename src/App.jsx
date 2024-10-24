@@ -25,7 +25,7 @@ function App() {
                     <Route path="userprofile" element={<UserProfile />} />
                     <Route path="cart" element={<Cart />}></Route>
                     <Route path="order" element={<Order />}></Route>
-                    <Route path="/Orderdetail" element={<OrderDetail />}></Route>
+                    <Route path="orderdetail" element={<OrderDetail />}></Route>
                 </Route>
             </Routes>
         </Router>
