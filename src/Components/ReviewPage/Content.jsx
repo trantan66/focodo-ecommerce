@@ -6,25 +6,26 @@ import TextArea from 'antd/es/input/TextArea';
 const desc = ['Rất tệ', 'Tệ', 'Bình thường', 'Tốt', 'Tuyệt vời'];
 function Content() {
     const [value, setValue] = useState(3);
+    const formatCurrency = (amount) => {
+        return new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(amount);
+    };
     return (
-        <div className="flex flex-col w-[60%] mx-auto bg-gray-100 p-3 my-3 rounded-lg gap-3">
+        <div className="flex flex-col w-[60%] mx-auto p-3 my-3 border rounded-lg gap-3">
             <p className="text-[20px] font-semibold mb-3 ">Đánh giá sản phẩm</p>
-            <div className="h-[100px] overflow-auto border rounded-lg px-2 py-1">
-                <ProductList img={Product_Items[0].image} name={Product_Items[0].name}></ProductList>
-                <ProductList img={Product_Items[1].image} name={Product_Items[1].name}></ProductList>
-                <ProductList img={Product_Items[2].image} name={Product_Items[2].name}></ProductList>
+            <div className="h-[100px] bg-gray-100 px-2 py-1">
+                <ProductList img={Product_Items[0].image} name={Product_Items[0].name} price={formatCurrency(Product_Items[0].saleprice)} subcription={Product_Items[0].subcription}></ProductList>
             </div>
-            <div className="flex gap-6 mt-2">
+            <div className="flex gap-6 ">
                 <span className="">Chất lượng sản phẩm</span>
                 <div className="flex mt-1">
                     <Rate tooltips={desc} onChange={setValue} value={value} />
                     {value ? <span className="mx-2 text-[13px]">{desc[value - 1]}</span> : null}
                 </div>
             </div>
+            <p className="my-2">Bình luận</p>
             <div className="">
-                <p className="my-2">Bình luận</p>
                 <TextArea
-                    className="w-full"
+                    className=""
                     showCount
                     maxLength={100}
                     placeholder="Để lại bình luận ở đây"

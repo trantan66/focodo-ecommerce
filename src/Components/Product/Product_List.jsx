@@ -1,9 +1,10 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Pagination } from 'antd';
 import { useNavigate } from 'react-router-dom';
-import products from '../Shared/ListProduct/data';
+//import products from '../Shared/ListProduct/data';
 import { StarFilled, StarOutlined } from '@ant-design/icons';
 import Rating from 'react-rating';
+import { fetchAllProduct } from '../../Services/ProductService';
 const ArrangeFilter = [
     {
         key: 'ByRating',
@@ -58,7 +59,7 @@ function Productlist(props) {
                     </span>
                 </div>
                 <div className="flex items-center justify-center leading-[18px] h-[18px] p-[5px] bg-green-500 rounded-[8px]">
-                    <span className="inline-block text-white font-bold text-[15px]">{props.Discount}%</span>
+                    <span className="inline-block text-white font-bold text-[15px]">{props.Discount * 100}%</span>
                 </div>
             </div>
 
@@ -79,7 +80,7 @@ function ProductList() {
     const [currentPage, setCurrentPage] = useState(1);
     const [selectedCategory, setSelectedCategory] = useState('');
     const [productsPerPage, setProductsPerPage] = useState(6);
-
+    const [products, setProducts] = useState([]);
     const indexOfLastProduct = currentPage * productsPerPage;
     const indexOfFirstProduct = indexOfLastProduct - productsPerPage;
 
@@ -88,18 +89,26 @@ function ProductList() {
     };
     const filterProducts = (products, value) => {
         if (value === 'Giá từ thấp đến cao') {
-            return products.sort((a, b) => parseFloat(a.salePrice) - parseFloat(b.salePrice));
+            return products.sort((a, b) => parseFloat(a.sell_price) - parseFloat(b.sell_price));
         }
 
         if (value === 'Giá từ cao đến thấp') {
-            return products.sort((a, b) => parseFloat(b.salePrice) - parseFloat(a.salePrice));
+            return products.sort((a, b) => parseFloat(b.sell_price) - parseFloat(a.sell_price));
         }
 
         if (value === 'Theo đánh giá') {
-            return products.sort((a, b) => b.rating - a.rating);
+            return products.sort((a, b) => b.review - a.review);
         }
 
         return products;
+    };
+    useEffect(() => {
+        fetchProducts();
+    }, [selectedCategory]);
+
+    const fetchProducts = async () => {
+        const response = await fetchAllProduct();
+        setProducts(response.data);
     };
     const currentProducts = filterProducts(products, selectedCategory).slice(indexOfFirstProduct, indexOfLastProduct);
 
@@ -128,12 +137,12 @@ function ProductList() {
                     <Productlist
                         id={item.id}
                         key={item.id}
-                        rating={item.rating}
+                        rating={item.review}
                         image={item.image}
-                        Name={item.Name}
-                        salePrice={item.salePrice}
-                        OriginalPrice={item.OriginalPrice}
-                        Discount={item.Discount}
+                        Name={item.name}
+                        salePrice={item.sell_price}
+                        OriginalPrice={item.original_price}
+                        Discount={item.discount}
                     />
                 ))}
             </div>

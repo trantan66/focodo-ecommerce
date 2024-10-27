@@ -192,3 +192,14 @@ export const removeProductFromCategory = async (categoryId, productId) => {
     throw error;
   }
 };
+export const fetchAllProduct = async () => {
+    try {
+      const response = await axiosInstance.get(`products/all`);
+      return {
+        data: response.result,
+      };
+    } catch (error) {
+      console.error("Error fetching products:", error);
+      throw error;
+    }
+  };
