@@ -99,10 +99,6 @@ function ProductDetail() {
       quantity: parseInt(quantity, 10),
       categories: categoryIds,
     };
-    console.log(product);
-    console.log(images);
-    console.log(currentImages);
-    console.log(categoryRemovedIds);
 
     try {
       await updateProductToAPI(
@@ -112,7 +108,13 @@ function ProductDetail() {
         currentImages,
         categoryRemovedIds
       );
-
+    } catch (error) {
+      console.error("Error updating the product:", error);
+      notification.error({
+        message: "Có lỗi xảy ra!",
+        description: "Không thể cập nhật sản phẩm. Vui lòng thử lại.",
+      });
+    }finally{
       notification.success({
         message: "Cập nhật sản phẩm thành công!",
         description: "Sản phẩm đã được cập nhật.",
@@ -120,13 +122,7 @@ function ProductDetail() {
 
       setTimeout(() => {
         window.location.reload();
-      }, 1000);
-    } catch (error) {
-      console.error("Error updating the product:", error);
-      notification.error({
-        message: "Có lỗi xảy ra!",
-        description: "Không thể cập nhật sản phẩm. Vui lòng thử lại.",
-      });
+      }, 500);
     }
   };
 

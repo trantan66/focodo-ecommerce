@@ -44,10 +44,7 @@ function CustomerList() {
     () =>
       users
         .filter((user) =>
-          user.full_name.toLowerCase().includes(searchTerm.toLowerCase())
-        )
-        .filter((user) =>
-          user.username.toLowerCase().includes(searchTerm.toLowerCase())
+          user.phone.includes(searchTerm)
         ),
     [users, searchTerm]
   );

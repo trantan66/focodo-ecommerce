@@ -14,7 +14,7 @@ const countStarReviews = (reviews, star) => {
 const StarBar = ({ star, percentage, quantity }) => {
   return (
     <div className="flex items-center text-white">
-      <span className="mr-2">{star} star</span>
+      <span className="mr-2">{star} sao</span>
       <div className="flex-1 bg-[#35365F] rounded-lg h-2">
         <div
           className="bg-[#696CFF] h-2 rounded-lg"

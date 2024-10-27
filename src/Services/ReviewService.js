@@ -1,4 +1,5 @@
 import axiosInstance from "./Customize-Axios";
+import { getHeader } from "./GetHeader";
 
 export const fetchReviewsFromAPI = async (page, size) => {
   try {
@@ -13,4 +14,27 @@ export const fetchReviewsFromAPI = async (page, size) => {
     console.error("Error fetching reviews:", error);
     throw error;
   }
+};
+export const DeleteReview = async (reviewId) => {
+  try {
+    const response = await axiosInstance.delete(
+      `reviews/delete/${reviewId}`,
+      {
+        headers: {
+          ...getHeader(),
+        },
+      }
+      
+    )
+    return response.data;
+  }catch (error) {
+        if (error.response) {
+            console.error('Error response from server:', error.response.data);
+        } else if (error.request) {
+            console.error('No response received:', error.request);
+        } else {
+            console.error('Error setting up request:', error.message);
+        }
+        throw error;
+    }
 };

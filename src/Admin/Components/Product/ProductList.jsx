@@ -10,11 +10,6 @@ import {
 import { fetchAllCategoriesFromAPI } from "../../../Services/CategoryService";
 
 function ProductList() {
-  // localStorage.removeItem("access_token"
-  // localStorage.setItem(
-  //   "access_token",
-  //   "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbiIsImlhdCI6MTcyOTQwNjA0OSwiZXhwIjoxNzMwMDEwODQ5fQ.0wTtP7WWqvdUmgNCgpf4u4A_VR7i3kCJPYjVs6z--N0"
-  // );
 
   const [products, setProducts] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
