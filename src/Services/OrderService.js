@@ -41,12 +41,29 @@ export const updateOrderStatus = async (id, status) => {
                 ...getHeader(),
             },
         });
-        
+
         return {
             data: response.data,
         };
     } catch (error) {
         console.error('Error update order status:', error);
+        throw error;
+    }
+};
+
+export const fetchOrdersOfUser = async (page, size) => {
+    try {
+        const response = await axiosInstance.get(`orders/getOrdersOfUser?page=${page - 1}&size=${size}`, {
+            headers: {
+                ...getHeader(),
+            },
+        });
+        return {
+            data: response.result.data,
+            total: response.result.pagination.total_records,
+        };
+    } catch (error) {
+        console.error('Error fetching orders:', error);
         throw error;
     }
 };

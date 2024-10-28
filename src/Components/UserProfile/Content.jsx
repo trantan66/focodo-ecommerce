@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { Button, Input, Tabs } from 'antd';
 import UserIn4 from './UserIn4';
 import { UserData } from './UserData';
@@ -9,6 +9,7 @@ import { CompletedOrders } from './OrderList';
 import { ProcessingOrders } from './OrderList';
 import { ShippingOrders } from './OrderList';
 import './Style.css';
+import { fetchOrdersOfUser } from '../../Services/OrderService';
 function Content() {
     const user = UserData[0];
     const onChange = (key) => {
@@ -36,13 +37,55 @@ function Content() {
         console.log(user);
         setMessage('Đổi mật khẩu thành công!');
     };
+    // //phan trang cho orders
+    const [orders, setOrders] = useState([]);
+    const [currentPage, setCurrentPage] = useState(1);
+    const [searchTerm, setSearchTerm] = useState('');
+    const [ordersPerPage, setOrdersPerPage] = useState(6);
+
+    const [totalOrders, setTotalOrders] = useState(0);
+    const [cachedOrders, setCachedOrders] = useState({});
+
+    const fetchOrders = useCallback(async () => {
+        const cacheKey = `${currentPage}-${ordersPerPage}`;
+
+        if (cachedOrders[cacheKey]) {
+            setOrders(cachedOrders[cacheKey]);
+        } else {
+            try {
+                const { data, total } = await fetchOrdersOfUser(currentPage, ordersPerPage);
+                setOrders(data);
+                console.log(data);
+                setTotalOrders(total);
+
+                setCachedOrders((prev) => ({
+                    ...prev,
+                    [cacheKey]: data,
+                }));
+            } catch (error) {
+                console.error('Error fetching orders:', error);
+            }
+        }
+    }, [currentPage, ordersPerPage, cachedOrders]);
+
+    useEffect(() => {
+        fetchOrders();
+    }, [fetchOrders]);
+
+    //   const handlePageChange = useCallback((page) => {
+    //     setCurrentPage(page);
+    //   }, []);
+
+    //   const handleOrdersPerPageChange = useCallback((value) => {
+    //     setOrdersPerPage(value);
+    //   }, []);
 
     const orderdisplay = [
         {
             key: '1',
             label: 'Tất cả',
             children: (
-                <div className="h-[375px] overflow-auto ">
+                <div className=" ">
                     <p className="font-semibold py-2">Đang xử lý</p>
                     <ProcessingOrders></ProcessingOrders>
                     <p className="font-semibold py-2 text-[#FCCD2A]">Chờ giao hàng</p>
@@ -58,7 +101,7 @@ function Content() {
             key: '2',
             label: 'Đang xử lý',
             children: (
-                <div className="h-[375px] overflow-auto">
+                <div className="">
                     <ProcessingOrders></ProcessingOrders>
                 </div>
             ),
@@ -67,7 +110,7 @@ function Content() {
             key: '3',
             label: 'Chờ giao hàng',
             children: (
-                <div className="h-[375px] overflow-auto">
+                <div className="">
                     <ShippingOrders></ShippingOrders>
                 </div>
             ),
@@ -76,7 +119,7 @@ function Content() {
             key: '4',
             label: 'Hoàn thành',
             children: (
-                <div className="h-[375px] overflow-auto">
+                <div className="">
                     <CompletedOrders></CompletedOrders>
                 </div>
             ),
@@ -85,7 +128,7 @@ function Content() {
             key: '5',
             label: 'Đã hủy',
             children: (
-                <div className="h-[375px] overflow-auto">
+                <div className="">
                     <CanceledOrders></CanceledOrders>
                 </div>
             ),
@@ -182,7 +225,7 @@ function Content() {
             label: 'Đơn mua',
             children: (
                 <div className="border p-3 bg-slate-100 rounded-lg ">
-                    <Tabs defaultActiveKey="1" items={orderdisplay} centered></Tabs>
+                    <Tabs className="" defaultActiveKey="1" items={orderdisplay} centered></Tabs>
                 </div>
             ),
         },
@@ -196,13 +239,7 @@ function Content() {
                     <p className="text-[14px]  ">{user.username}</p>
                 </div>
             </div>
-            <Tabs
-                className="h-[500px] mx-3 my-3 "
-                tabPosition="left"
-                defaultActiveKey="1"
-                items={items}
-                onChange={onChange}
-            />
+            <Tabs className=" mx-3 my-3 " tabPosition="left" defaultActiveKey="1" items={items} onChange={onChange} />
         </div>
     );
 }
