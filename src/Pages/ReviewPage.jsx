@@ -2,7 +2,11 @@ import React from 'react';
 import Content from '../Components/ReviewPage/Content';
 
 function ReviewPage() {
-    return <Content></Content>;
+    return (
+        <div className="">
+            <Content></Content>
+        </div>
+    );
 }
 
 export default ReviewPage;

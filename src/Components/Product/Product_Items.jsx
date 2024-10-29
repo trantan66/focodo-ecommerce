@@ -27,7 +27,7 @@ export const Product_Items = [
         price: '39000',
         saleprice: '20000',
         subcription:
-            'Bánh bột lọc Huế không chỉ được coi là món ăn vặt, bạn hoàn toàn có thể thưởng thức thay cơm hay bữa chính trong ngày. Loại bánh này phổ biến ở nhiều địa phương, tuy nhiên, chỉ khi ăn tại Huế, bạn mới cảm nhận được vị ngon đặc trưng, đúng điệu của miền Trung',
+            'Bánh bột lọc Huế không chỉ được coi là món ăn vặt, bạn hoàn toàn có thể thưởng thức thay cơm hay bữa chính trong ngày.',
         description:
             'Bánh Ép Huế – Bò Khô – Cô Béo là một sản phẩm bánh ép nhân bò khô được ép theo thủ công của các nghệ nhân bánh ép tại Huế. Với nhân bò khô được ép kết dính vào bánh ép tạo nên hương vị thơm ngon giữa mùi bùi của bánh và thơm vị thịt bò. Bánh Ép Huế Cô Béo là một trong thương hiệu bánh ép nổi tiếng của Huế với nhiều 2 vị cơ bản: Bánh ép khô Bò và bánh ép khô Heo. Bánh ép khô thì được ép trong thời gian dài, ép đến khi khô giòn. Thoạt nhìn, bạn sẽ thấy nó trông giống bánh tráng trứng nhưng thành phần và hương vị hoàn toàn khác. Thịt mỡ được rải đều, thêm chút hành lá và ép giòn, ăn kèm tương ớt rất dậy vị.',
     },
