@@ -8,13 +8,50 @@ import { searchProducts } from '../../../Services/ProductService';
 import useAuth from '../../../Hooks/useAuth';
 import productsCart from './dataCart';
 
+import { fetchCartOfUser } from '../../../Services/ProductService';
+
 function Header() {
     const { auth } = useAuth();
     const [isSearchActive, setIsSearchActive] = useState(false);
     const [showAll, setShowAll] = useState(false);
     const [valueInput, setValueInput] = useState('');
-    const [products, setProducts] = useState([]);
     const [isCartVisible, setIsCartVisible] = useState(false);
+
+    const [products, setProducts] = useState([]); // Danh sách sản phẩm trong giỏ hàng
+    const [values, setValues] = useState([]); // Số lượng của từng sản phẩm
+    const [discount, setDiscount] = useState(0);
+
+    // Hàm để lấy giỏ hàng của người dùng
+    const fetchCart = async () => {
+        try {
+            const cartItems = await fetchCartOfUser();
+            setProducts(cartItems);
+            setValues(cartItems.map((item) => item.quantity));
+        } catch (error) {
+            console.error('Error fetching cart:', error);
+        }
+    };
+
+    // Gọi API khi component được render lần đầu
+    useEffect(() => {
+        fetchCart();
+    }, []);
+
+    // Hàm tính tổng tiền cho sản phẩm được chọn
+    const calculateTotal = () => {
+        return values.reduce((total, quantity, index) => {
+            // Kiểm tra nếu sản phẩm có thuộc tính check = true
+            if (products[index].check) {
+                return total + quantity * products[index].unit_price; // Tính tổng cho sản phẩm đó
+            }
+            return total; // Không tính cho sản phẩm không được chọn
+        }, 0);
+    };
+
+    // Hàm tính thành tiền sau giảm giá
+    const calculateFinalTotal = () => {
+        return calculateTotal() - discount;
+    };
 
     const handleFocus = () => {
         setIsSearchActive(true);
@@ -129,20 +166,22 @@ function Header() {
                                     <div className="w-[450px] h-[550px] bg-white mt-[60px] ml-[1000px] p-[20px] rounded-xl shadow-md">
                                         <p className="font-medium text-center text-xl mb-[10px]">GIỎ HÀNG</p>
                                         <div className="max-h-[300px] overflow-y-auto scrollbar">
-                                            {productsCart.map((product) => (
-                                                <div key={product.id} className="flex items-center mb-2">
+                                            {products.map((product, index) => (
+                                                <div key={product.id_cart} className="flex items-center mb-2">
                                                     <img
                                                         src={product.image}
-                                                        alt={product.Name}
+                                                        alt={product.product_name}
                                                         className="w-[75px] h-[75px] object-cover"
                                                     />
                                                     <div className="ml-[10px] flex justify-between w-full">
                                                         <div>
-                                                            <p className="font-medium text-lg">{product.Name}</p>
-                                                            <p>x{product.Quantity}</p>
+                                                            <p className="font-medium text-lg">
+                                                                {product.product_name}
+                                                            </p>
+                                                            <p>x{product.quantity}</p>
                                                         </div>
                                                         <div className="mr-[10px] text-red-500">
-                                                            {formatCurrency(product.OriginalPrice)}
+                                                            {formatCurrency(values[index] * product.unit_price)}
                                                         </div>
                                                     </div>
                                                 </div>

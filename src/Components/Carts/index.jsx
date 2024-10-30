@@ -131,7 +131,7 @@ function Carts() {
         fetchCart();
     }, []);
 
-    // Hàm tính tổng tiền cho một sản phẩm
+    // Hàm tính tổng tiền cho sản phẩm được chọn
     const calculateTotal = () => {
         return values.reduce((total, quantity, index) => {
             // Kiểm tra nếu sản phẩm có thuộc tính check = true

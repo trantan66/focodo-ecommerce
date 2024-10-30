@@ -5,14 +5,7 @@ import vnpay from '../image/vnpay_new.svg';
 import other from '../image/other.svg';
 import orderData from './data';
 
-import {
-    fetchCartOfUser,
-    updateQuantityInCart,
-    increaseQuantityInCart,
-    decreaseQuantityInCart,
-    deleteProductFromCart,
-    updateCheckInCart,
-} from '../../../Services/ProductService';
+import { fetchCartOfUser } from '../../../Services/ProductService';
 
 function Order() {
     const [selectedMethod, setSelectedMethod] = useState(''); // Theo dõi phương thức vận chuyển
@@ -44,9 +37,15 @@ function Order() {
         fetchCart();
     }, []);
 
-    // Hàm tính tổng tiền cho một sản phẩm
+    // Hàm tính tổng tiền cho sản phẩm được chọn
     const calculateTotal = () => {
-        return values.reduce((total, quantity, index) => total + quantity * products[index].unit_price, 0);
+        return values.reduce((total, quantity, index) => {
+            // Kiểm tra nếu sản phẩm có thuộc tính check = true
+            if (products[index].check) {
+                return total + quantity * products[index].unit_price; // Tính tổng cho sản phẩm đó
+            }
+            return total; // Không tính cho sản phẩm không được chọn
+        }, 0);
     };
 
     // Fetch province data on component mount
@@ -104,9 +103,6 @@ function Order() {
         setSelectedCommune(e.target.value);
     };
 
-    // Tính toán tổng tiền sản phẩm
-    const totalOrderPrice = orderData.products.reduce((total, product) => total + product.TotalPrice, 0);
-
     // Phí vận chuyển
     const shippingFee = selectedMethod === 'express' ? 20000 : 10000;
 
@@ -114,7 +110,7 @@ function Order() {
     const discountAmount = 0;
 
     // Tổng tiền cuối cùng
-    const finalTotal = totalOrderPrice + shippingFee - discountAmount;
+    const finalTotal = calculateTotal() + shippingFee - discountAmount;
 
     // Hàm định dạng tiền tệ
     const formatCurrency = (value) => {
@@ -124,7 +120,7 @@ function Order() {
     return (
         <>
             <div className="w-[1200px] mx-auto flex justify-center">
-                <div className="w-[600px] paces-y-10 pt-5 pr-10">
+                <div className="w-[600px] space-y-10 pt-5 pr-10">
                     {/* Thông tin giao hàng */}
                     <div className="space-y-5">
                         <h2 className="text-xl">Thông tin giao hàng</h2>
@@ -296,7 +292,9 @@ function Order() {
                                     <span>{product.product_name}</span>
                                     <span>Số lượng: {values[index]}</span>
                                 </div>
-                                <span>{formatCurrency(values[index] * product.unit_price)}</span>
+                                <div className="">
+                                    <span>{formatCurrency(values[index] * product.unit_price)}</span>
+                                </div>
                             </div>
                         </div>
                     ))}
