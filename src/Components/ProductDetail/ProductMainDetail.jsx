@@ -1,9 +1,12 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Product_Items } from '../Product/Product_Items';
 import delivery from '../image/delivery.png';
 import { Button, InputNumber } from 'antd';
 import ImageGallery from 'react-image-gallery';
 import 'react-image-gallery/styles/css/image-gallery.css';
+import { useParams } from 'react-router-dom';
+import data from '../Shared/Order/data';
+import { fetchProductByIdFromAPI } from '../../Services/ProductService';
 
 const images = [
     {
@@ -104,23 +107,32 @@ function ProductDetail(props) {
             </div>
             <div className="mt-5">
                 <p className="text-[24px] italic font-semibold">Mô tả </p>
-                <p className="mt-3">{props.description}</p>
+                <div dangerouslySetInnerHTML={{ __html: props.description }} className="mt-3"></div>
             </div>
         </div>
     );
 }
 
 function ProductMainDetail() {
-    const productdisplay = Product_Items[0];
+    const { id } = useParams();
+    const [product, setProduct] = useState('');
+    const fetchProduct = async (id) => {
+        const response = await fetchProductByIdFromAPI(id);
+        setProduct(response.data);
+    };
+    useEffect(() => {
+        fetchProduct(id);
+    }, []);
+
     return (
         <div>
             <ProductDetail
-                name={productdisplay.name}
-                subcription={productdisplay.subcription}
-                price={productdisplay.price}
-                saleprice={productdisplay.saleprice}
-                image={productdisplay.image}
-                description={productdisplay.description}
+                name={product.name}
+                subcription={product.sub_description}
+                price={product.original_price}
+                saleprice={product.sell_price}
+                image={product.image}
+                description={product.main_description}
             ></ProductDetail>
         </div>
     );
