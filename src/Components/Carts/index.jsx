@@ -8,10 +8,8 @@ import {
     decreaseQuantityInCart,
     deleteProductFromCart,
     updateCheckInCart,
-    checkVoucher,
-    getVoucher,
 } from '../../Services/ProductService';
-// import { checkVoucher, getVoucher } from '../../Services/VoucherService';
+import { checkVoucher, getVoucher } from '../../Services/VoucherService';
 
 function Carts() {
     const [products, setProducts] = useState([]); // Danh sách sản phẩm trong giỏ hàng
@@ -124,7 +122,7 @@ function Carts() {
                 alert('Mã giảm giá không hợp lệ.');
             }
         } catch (error) {
-            alert('Có lỗi xảy ra. Vui lòng thử lại.');
+            alert('Mã giảm giá không hợp lệ hoặc đã hết hạn.');
         }
     };
 
@@ -135,7 +133,13 @@ function Carts() {
 
     // Hàm tính tổng tiền cho một sản phẩm
     const calculateTotal = () => {
-        return values.reduce((total, quantity, index) => total + quantity * products[index].unit_price, 0);
+        return values.reduce((total, quantity, index) => {
+            // Kiểm tra nếu sản phẩm có thuộc tính check = true
+            if (products[index].check) {
+                return total + quantity * products[index].unit_price; // Tính tổng cho sản phẩm đó
+            }
+            return total; // Không tính cho sản phẩm không được chọn
+        }, 0);
     };
 
     // Hàm tính thành tiền sau giảm giá

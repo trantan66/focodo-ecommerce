@@ -9,7 +9,7 @@ export const checkVoucher = async (voucher, total) => {
                 ...getHeader(),
             },
         });
-        return response.result; // Trả về response.data.result nếu cần
+        return response.result; // Trả về response.data.result
     } catch (error) {
         console.error('Lỗi khi check voucher:', error);
         throw error;
