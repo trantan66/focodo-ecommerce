@@ -216,6 +216,27 @@ export const addProductToCart = async (cartRequest) => {
     }
 };
 
+// Hàm cập nhật trạng thái sản phẩm trong giỏ hàng
+export const updateCheckInCart = async (IdCart) => {
+    try {
+        const response = await axiosInstance.put(`carts/updateCart/${IdCart}`, {
+            headers: {
+                ...getHeader(),
+            },
+        });
+        return response.result; // Sử dụng response.data.result
+    } catch (error) {
+        if (error.response) {
+            console.error('Error response from server:', error.response.data);
+        } else if (error.request) {
+            console.error('No response received:', error.request);
+        } else {
+            console.error('Error setting up request:', error.message);
+        }
+        throw error;
+    }
+};
+
 // Hàm cập nhật số lượng sản phẩm trong giỏ hàng
 export const updateQuantityInCart = async (productId, quantity) => {
     try {

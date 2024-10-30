@@ -7,6 +7,7 @@ import {
     increaseQuantityInCart,
     decreaseQuantityInCart,
     deleteProductFromCart,
+    updateCheckInCart,
 } from '../../Services/ProductService';
 
 function Carts() {
@@ -28,12 +29,19 @@ function Carts() {
     };
 
     // Hàm để cập nhật trạng thái checkbox
-    const handleCheckboxChange = (index) => {
+    const handleCheckboxChange = async (index) => {
         setCheckedItems((prev) => {
             const newCheckedItems = [...prev];
             newCheckedItems[index] = !newCheckedItems[index]; // Đảo ngược trạng thái
             return newCheckedItems;
         });
+
+        try {
+            await updateCheckInCart(products[index].id_cart); // Gọi API để cập nhật trạng thái check
+            fetchCart(); // Cập nhật giỏ hàng sau khi thay đổi trạng thái
+        } catch (error) {
+            console.error('Error updating checkbox status:', error);
+        }
     };
 
     // Hàm để cập nhật số lượng sản phẩm trực tiếp
