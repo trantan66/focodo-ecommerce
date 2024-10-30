@@ -8,13 +8,17 @@ import {
     decreaseQuantityInCart,
     deleteProductFromCart,
     updateCheckInCart,
+    checkVoucher,
+    getVoucher,
 } from '../../Services/ProductService';
+// import { checkVoucher, getVoucher } from '../../Services/VoucherService';
 
 function Carts() {
     const [products, setProducts] = useState([]); // Danh sách sản phẩm trong giỏ hàng
     const [values, setValues] = useState([]); // Số lượng của từng sản phẩm
-    const [discount, setDiscount] = useState(0); // Giá trị giảm giá
     const [checkedItems, setCheckedItems] = useState([]); // Trạng thái checkbox
+    const [discount, setDiscount] = useState(0);
+    const [voucherCode, setVoucherCode] = useState('');
 
     // Hàm để lấy giỏ hàng của người dùng
     const fetchCart = async () => {
@@ -98,6 +102,32 @@ function Carts() {
         }
     };
 
+    const applyVoucher = async () => {
+        try {
+            const total = calculateTotal(); // Tính tổng tiền
+            console.log(total);
+            console.log(voucherCode);
+            // Gọi API checkVoucher để kiểm tra mã giảm giá
+            const checkResponse = await checkVoucher(voucherCode, total);
+            if (checkResponse === true) {
+                // Nếu mã giảm giá hợp lệ, lấy thông tin voucher từ API getVoucher
+                const voucherResponse = await getVoucher(voucherCode);
+                console.log(voucherResponse);
+                if (voucherResponse) {
+                    // Cập nhật giá trị discount_price từ kết quả API
+                    const discountPrice = voucherResponse.discount_price;
+                    setDiscount(discountPrice);
+                } else {
+                    alert('Mã giảm giá không hợp lệ hoặc đã hết hạn.');
+                }
+            } else {
+                alert('Mã giảm giá không hợp lệ.');
+            }
+        } catch (error) {
+            alert('Có lỗi xảy ra. Vui lòng thử lại.');
+        }
+    };
+
     // Gọi API khi component được render lần đầu
     useEffect(() => {
         fetchCart();
@@ -172,12 +202,20 @@ function Carts() {
                 <div>
                     <h2 className="text-xl font-semibold mb-[50px] italic">Đơn hàng</h2>
                     <label className="italic">Mã giảm giá:</label>
-                    <input
-                        type="text"
-                        className="border border-gray-300 rounded w-full h-[40px]"
-                        placeholder="Nhập mã giảm giá"
-                        onChange={(e) => setDiscount(Number(e.target.value) || 0)}
-                    />
+                    <div className="flex">
+                        <input
+                            type="text"
+                            className="border border-gray-300 rounded w-full h-[40px]"
+                            placeholder="Nhập mã giảm giá"
+                            onChange={(e) => setVoucherCode(e.target.value)}
+                        />
+                        <button
+                            className="bg-black text-white rounded w-[100px] h-[40px] ml-[20px]"
+                            onClick={applyVoucher}
+                        >
+                            Áp dụng
+                        </button>
+                    </div>
                 </div>
 
                 <div className="flex flex-col">

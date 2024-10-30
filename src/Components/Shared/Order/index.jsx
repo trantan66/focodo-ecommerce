@@ -5,6 +5,15 @@ import vnpay from '../image/vnpay_new.svg';
 import other from '../image/other.svg';
 import orderData from './data';
 
+import {
+    fetchCartOfUser,
+    updateQuantityInCart,
+    increaseQuantityInCart,
+    decreaseQuantityInCart,
+    deleteProductFromCart,
+    updateCheckInCart,
+} from '../../../Services/ProductService';
+
 function Order() {
     const [selectedMethod, setSelectedMethod] = useState(''); // Theo dõi phương thức vận chuyển
     const [selectedPaymentMethod, setSelectedPaymentMethod] = useState(''); // Theo dõi phương thức thanh toán
@@ -15,6 +24,30 @@ function Order() {
     const [selectedDistrict, setSelectedDistrict] = useState(''); // Theo dõi quận/huyện được chọn
     const [communes, setCommunes] = useState([]); // State để lưu danh sách xã/phường
     const [selectedCommune, setSelectedCommune] = useState(''); // Theo dõi xã/phường được chọn
+
+    const [products, setProducts] = useState([]); // Danh sách sản phẩm trong giỏ hàng
+    const [values, setValues] = useState([]); // Số lượng của từng sản phẩm
+
+    // Hàm để lấy giỏ hàng của người dùng
+    const fetchCart = async () => {
+        try {
+            const cartItems = await fetchCartOfUser();
+            setProducts(cartItems);
+            setValues(cartItems.map((item) => item.quantity));
+        } catch (error) {
+            console.error('Error fetching cart:', error);
+        }
+    };
+
+    // Gọi API khi component được render lần đầu
+    useEffect(() => {
+        fetchCart();
+    }, []);
+
+    // Hàm tính tổng tiền cho một sản phẩm
+    const calculateTotal = () => {
+        return values.reduce((total, quantity, index) => total + quantity * products[index].unit_price, 0);
+    };
 
     // Fetch province data on component mount
     useEffect(() => {
@@ -246,22 +279,24 @@ function Order() {
                         </button>
                     </div>
                 </div>
+
+                {/* Thông tin đơn hàng */}
                 <div className="w-[600px] pl-10 bg-[#FAFAFA]">
                     {/* Hiển thị sản phẩm */}
                     <h2 className="text-xl pt-5">Thông tin đơn hàng</h2>
-                    {orderData.products.map((product) => (
-                        <div key={product.id} className="w-[450px] flex items-center py-3">
+                    {products.map((product, index) => (
+                        <div key={product.id_cart} className="w-[450px] flex items-center py-3">
                             <img
                                 src={product.image}
-                                alt={product.Name}
+                                alt={product.product_name}
                                 className="w-[75px] h-[75px] object-cover mr-4"
                             />
                             <div className="flex-grow flex justify-between">
                                 <div className="flex flex-col">
-                                    <span>{product.Name}</span>
-                                    <span>Số lượng: {product.Quantity}</span>
+                                    <span>{product.product_name}</span>
+                                    <span>Số lượng: {values[index]}</span>
                                 </div>
-                                <span>{formatCurrency(product.TotalPrice)}</span>
+                                <span>{formatCurrency(values[index] * product.unit_price)}</span>
                             </div>
                         </div>
                     ))}
