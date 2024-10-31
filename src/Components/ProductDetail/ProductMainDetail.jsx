@@ -1,41 +1,24 @@
 import React, { useEffect, useState } from 'react';
-import { Product_Items } from '../Product/Product_Items';
 import delivery from '../image/delivery.png';
 import { Button, InputNumber } from 'antd';
 import ImageGallery from 'react-image-gallery';
 import 'react-image-gallery/styles/css/image-gallery.css';
 import { useParams } from 'react-router-dom';
-import data from '../Shared/Order/data';
 import { fetchProductByIdFromAPI } from '../../Services/ProductService';
 
-const images = [
-    {
-        original:
-            'https://res.cloudinary.com/dpsqln4rh/image/upload/v1726502831/focodo_ecommerce/product/yjojahq8kmzk5nb7c6ta.jpg',
-        thumbnail:
-            'https://res.cloudinary.com/dpsqln4rh/image/upload/v1726502831/focodo_ecommerce/product/yjojahq8kmzk5nb7c6ta.jpg',
-    },
-    {
-        original:
-            'https://res.cloudinary.com/dpsqln4rh/image/upload/v1726502831/focodo_ecommerce/product/yjojahq8kmzk5nb7c6ta.jpg',
-        thumbnail:
-            'https://res.cloudinary.com/dpsqln4rh/image/upload/v1726502831/focodo_ecommerce/product/yjojahq8kmzk5nb7c6ta.jpg',
-    },
-    {
-        original:
-            'https://res.cloudinary.com/dpsqln4rh/image/upload/v1726502831/focodo_ecommerce/product/yjojahq8kmzk5nb7c6ta.jpg',
-        thumbnail:
-            'https://res.cloudinary.com/dpsqln4rh/image/upload/v1726502831/focodo_ecommerce/product/yjojahq8kmzk5nb7c6ta.jpg',
-    },
-    {
-        original:
-            'https://res.cloudinary.com/dpsqln4rh/image/upload/v1726502831/focodo_ecommerce/product/yjojahq8kmzk5nb7c6ta.jpg',
-        thumbnail:
-            'https://res.cloudinary.com/dpsqln4rh/image/upload/v1726502831/focodo_ecommerce/product/yjojahq8kmzk5nb7c6ta.jpg',
-    },
-];
-
 function ProductDetail(props) {
+    const renderImage = (item) => (
+        <div style={{ width: '500px', height: '300px' }}>
+            <img src={item.original} alt="" style={{ width: '100%', height: '100%', objectFit: 'fill ' }} />
+        </div>
+    );
+    const images = props.images || [];
+    const galleryImages = images.map((url) => ({
+        original: url,
+        thumbnail: url,
+        originalHeight: 300,
+        originalWidth: 300,
+    }));
     const [value, setValue] = useState(1); // State to hold the value
 
     const incrementValue = () => {
@@ -57,10 +40,19 @@ function ProductDetail(props) {
             <div className="flex justify-center">
                 <div className="size-[40%]">
                     <ImageGallery
-                        items={images}
+                        items={galleryImages}
                         useBrowserFullscreen={false}
                         showPlayButton={false}
                         thumbnailPosition="bottom"
+                        renderItem={(item) => (
+                            <img
+                                src={item.original}
+                                style={{ width: '400px', height: '300px', objectFit: 'contain' }}
+                            />
+                        )}
+                        renderThumbInner={(item) => (
+                            <img src={item.thumbnail} style={{ width: '100px', height: '100px', objectFit: 'contain' }} />
+                        )}
                     />
                 </div>
                 <div className="mx-3">
@@ -123,7 +115,7 @@ function ProductMainDetail() {
     useEffect(() => {
         fetchProduct(id);
     }, []);
-
+    console.log(product);
     return (
         <div>
             <ProductDetail
@@ -133,6 +125,7 @@ function ProductMainDetail() {
                 saleprice={product.sell_price}
                 image={product.image}
                 description={product.main_description}
+                images={product.images}
             ></ProductDetail>
         </div>
     );

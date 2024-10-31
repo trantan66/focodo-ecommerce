@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { StarFilled, StarOutlined } from '@ant-design/icons';
 import Rating from 'react-rating';
 import { fetchAllProduct } from '../../Services/ProductService';
+
 const ArrangeFilter = [
     {
         key: 'ByRating',
