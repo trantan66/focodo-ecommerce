@@ -1,9 +1,10 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { Pagination } from 'antd';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { StarFilled, StarOutlined } from '@ant-design/icons';
 import Rating from 'react-rating';
-import { fetchAllProduct } from '../../Services/ProductService';
+import { fetchAllProduct, fetchProductsByCategoryFromAPI, fetchProductsFromAPI } from '../../Services/ProductService';
+import Filter from './Filter';
 
 const ArrangeFilter = [
     {
@@ -77,84 +78,97 @@ function Productlist(props) {
 }
 
 function ProductList() {
-    const [currentPage, setCurrentPage] = useState(1);
-    const [selectedCategory, setSelectedCategory] = useState('');
-    const [productsPerPage, setProductsPerPage] = useState(6);
+    const navigate = useNavigate();
     const [products, setProducts] = useState([]);
-    const indexOfLastProduct = currentPage * productsPerPage;
-    const indexOfFirstProduct = indexOfLastProduct - productsPerPage;
+    const [currentPage, setCurrentPage] = useState(1);
+    const [searchTerm, setSearchTerm] = useState('');
+    const [productsPerPage, setProductsPerPage] = useState(6);
+    const [totalProducts, setTotalProducts] = useState(0);
 
-    const handlePageChange = (page) => {
-        setCurrentPage(page);
-    };
-    const filterProducts = (products, value) => {
-        if (value === 'Giá từ thấp đến cao') {
-            return products.sort((a, b) => parseFloat(a.sell_price) - parseFloat(b.sell_price));
+    const [selectedCategory, setSelectedCategory] = useState({});
+    const { categoryId = 1 } = useParams();
+
+    const fetchProducts = useCallback(async () => {
+        try {
+            const { data, total } = await fetchProductsByCategoryFromAPI(categoryId, currentPage, productsPerPage);
+            setProducts(data);
+            setTotalProducts(total);
+            console.log(data);
+        } catch (error) {
+            console.error('Lỗi khi lấy sản phẩm:', error);
         }
+    }, [currentPage, productsPerPage]);
 
-        if (value === 'Giá từ cao đến thấp') {
-            return products.sort((a, b) => parseFloat(b.sell_price) - parseFloat(a.sell_price));
-        }
-
-        if (value === 'Theo đánh giá') {
-            return products.sort((a, b) => b.review - a.review);
-        }
-
-        return products;
-    };
     useEffect(() => {
         fetchProducts();
-    }, [selectedCategory]);
+    }, [fetchProducts]);
 
-    const fetchProducts = async () => {
-        const response = await fetchAllProduct();
-        setProducts(response.data);
-    };
-    const currentProducts = filterProducts(products, selectedCategory).slice(indexOfFirstProduct, indexOfLastProduct);
+    // const filteredData = useMemo(
+    //     () =>
+    //         Array.isArray(products)
+    //             ? products.filter((product) => product.name.toLowerCase().includes(searchTerm.toLowerCase()))
+    //             : [],
+    //     [products, searchTerm],
+    // );
+
+    const handlePageChange = useCallback((page) => {
+        setCurrentPage(page);
+    }, []);
+
+    const handleProductsPerPageChange = useCallback((value) => {
+        setProductsPerPage(value);
+    }, []);
 
     return (
-        <div className="">
-            <div className="flex ml-10">
-                <span>Số lượng sản phẩm: </span>
-                <span className="font-bold ml-1">85</span>
+        <div className="flex justify-center mx-auto my-4 w-[1200px]">
+            <Filter />
+            <div className="">
+                <div className="flex ml-10">
+                    <span>Số lượng sản phẩm: </span>
+                    <span className="font-bold ml-1">{totalProducts}</span>
 
-                <select
-                    value={selectedCategory}
-                    onChange={(e) => setSelectedCategory(e.target.value)}
-                    className="border border-gray-300 p-2 rounded ml-auto"
-                >
-                    <option value="">Tất cả</option>
-                    {ArrangeFilter.map((item) => (
-                        <option key={item.key} value={item.value}>
-                            {item.value}
-                        </option>
-                    ))}
-                </select>
-            </div>
+                    <select
+                        value={selectedCategory}
+                        onChange={(e) => setSelectedCategory(e.target.value)}
+                        className="border border-gray-300 p-2 rounded ml-auto"
+                    >
+                        <option value="">Tất cả</option>
+                        {ArrangeFilter.map((item) => (
+                            <option key={item.key} value={item.value}>
+                                {item.value}
+                            </option>
+                        ))}
+                    </select>
+                </div>
 
-            <div className="grid grid-cols-3 ml-10 mt-3 gap-4 ">
-                {currentProducts.map((item, index) => (
-                    <Productlist
-                        id={item.id}
-                        key={item.id}
-                        rating={item.review}
-                        image={item.image}
-                        Name={item.name}
-                        salePrice={item.sell_price}
-                        OriginalPrice={item.original_price}
-                        Discount={item.discount}
+                <div className="grid grid-cols-3 ml-10 mt-3 gap-4 ">
+                    {products.length > 0 ? (
+                        products.map((item, index) => (
+                            <Productlist
+                                id={item.id}
+                                key={item.id}
+                                rating={item.review}
+                                image={item.image}
+                                Name={item.name}
+                                salePrice={item.sell_price}
+                                OriginalPrice={item.original_price}
+                                Discount={item.discount}
+                            />
+                        ))
+                    ) : (
+                        <span className=" text-2xl ">Không có sản phẩm nào </span>
+                    )}
+                </div>
+                <div className="mt-5  ">
+                    <Pagination
+                        showSizeChanger={false}
+                        current={currentPage}
+                        onChange={handlePageChange}
+                        total={totalProducts}
+                        pageSize={productsPerPage}
+                        align="center"
                     />
-                ))}
-            </div>
-            <div className="mt-5">
-                <Pagination
-                    showSizeChanger={false}
-                    current={currentPage}
-                    onChange={handlePageChange}
-                    total={products.length}
-                    pageSize={productsPerPage}
-                    className="flex justify-center items-center"
-                />
+                </div>
             </div>
         </div>
     );

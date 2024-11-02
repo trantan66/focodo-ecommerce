@@ -203,3 +203,16 @@ export const fetchAllProduct = async () => {
       throw error;
     }
   };
+
+  export const fetchProductsByCategoryFromAPI = async (id, page, size) => {
+    try {
+        const response = await axiosInstance.get(`products/getProductsOfCategory/${id}?page=${page - 1}&size=${size}`);
+        return {
+            data: response.result.data,
+            total: response.result.pagination.total_records,
+        };
+    } catch (error) {
+        console.error('Error fetching product by id:', error);
+        throw error;
+    }
+};
