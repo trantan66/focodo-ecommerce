@@ -17,6 +17,9 @@ function Header() {
         navigate(`/Cart`);
     };
     // Điều hướng đến trang Order
+    const handleToProductDetail = () => {
+        navigate(`/productdetail`);
+    };
     const handleToOrder = () => {
         navigate(`/Order`);
     };

@@ -18,10 +18,15 @@ function Order() {
 
     const [provinces, setProvinces] = useState([]); // State để lưu danh sách tỉnh/thành phố
     const [selectedProvince, setSelectedProvince] = useState(''); // Theo dõi tỉnh/thành phố được chọn
+    const [selectedProvinceName, setSelectedProvinceName] = useState(''); // Lưu tên tỉnh/thành phố
+
     const [districts, setDistricts] = useState([]); // State để lưu danh sách quận/huyện
     const [selectedDistrict, setSelectedDistrict] = useState(''); // Theo dõi quận/huyện được chọn
+    const [selectedDistrictName, setSelectedDistrictName] = useState(''); // Lưu tên quận/huyện
+
     const [communes, setCommunes] = useState([]); // State để lưu danh sách xã/phường
     const [selectedCommune, setSelectedCommune] = useState(''); // Theo dõi xã/phường được chọn
+    const [selectedCommuneName, setSelectedCommuneName] = useState(''); // Lưu tên xã/phường
 
     const [products, setProducts] = useState([]); // Danh sách sản phẩm trong giỏ hàng
     const [values, setValues] = useState([]); // Số lượng của từng sản phẩm
@@ -137,16 +142,28 @@ function Order() {
     };
 
     const handleProvinceChange = (e) => {
-        setSelectedProvince(e.target.value);
-        setSelectedDistrict(''); // Reset district when province changes
+        const selectedOption = e.target.options[e.target.selectedIndex];
+        setSelectedProvince(selectedOption.value); // Lưu mã code để dùng cho API
+        setSelectedProvinceName(selectedOption.getAttribute('data-name')); // Lưu tên để hiển thị
+        setSelectedDistrict(''); // Reset quận/huyện khi tỉnh/thành phố thay đổi
+        setSelectedDistrictName('');
+        setDistricts([]); // Xóa danh sách quận/huyện cũ
+        setCommunes([]); // Xóa danh sách xã/phường cũ
     };
 
     const handleDistrictChange = (e) => {
-        setSelectedDistrict(e.target.value);
+        const selectedOption = e.target.options[e.target.selectedIndex];
+        setSelectedDistrict(selectedOption.value); // Lưu mã code để dùng cho API
+        setSelectedDistrictName(selectedOption.getAttribute('data-name')); // Lưu tên để hiển thị
+        setSelectedCommune(''); // Reset xã/phường khi quận/huyện thay đổi
+        setSelectedCommuneName('');
+        setCommunes([]); // Xóa danh sách xã/phường cũ
     };
 
     const handleCommuneChange = (e) => {
-        setSelectedCommune(e.target.value);
+        const selectedOption = e.target.options[e.target.selectedIndex];
+        setSelectedCommune(selectedOption.value); // Lưu mã code để dùng cho API
+        setSelectedCommuneName(selectedOption.getAttribute('data-name')); // Lưu tên để hiển thị
     };
 
     // Phí vận chuyển
@@ -182,9 +199,9 @@ function Order() {
             full_name: fullName,
             phone: phone,
             address: address,
-            province: selectedProvince, // Thêm tỉnh
-            district: selectedDistrict, // Thêm huyện
-            ward: selectedCommune, // Thêm xã/phường
+            province: selectedProvinceName, // Thêm tỉnh
+            district: selectedDistrictName, // Thêm huyện
+            ward: selectedCommuneName, // Thêm xã/phường
         };
 
         // Cập nhật order với các thông tin cần thiết
@@ -226,6 +243,10 @@ function Order() {
         }
     };
 
+    const backToCart = () => {
+        navigate(`/Cart`);
+    };
+
     return (
         <>
             <div className="w-[1200px] mx-auto flex justify-center">
@@ -256,7 +277,7 @@ function Order() {
                                 >
                                     <option value="">Chọn Tỉnh/Thành Phố</option>
                                     {provinces.map((province) => (
-                                        <option key={province.code} value={province.code}>
+                                        <option key={province.code} value={province.code} data-name={province.name}>
                                             {province.name}
                                         </option>
                                     ))}
@@ -273,7 +294,7 @@ function Order() {
                                 >
                                     <option value="">Chọn Quận/Huyện</option>
                                     {districts.map((district) => (
-                                        <option key={district.code} value={district.code}>
+                                        <option key={district.code} value={district.code} data-name={district.name}>
                                             {district.name}
                                         </option>
                                     ))}
@@ -290,7 +311,7 @@ function Order() {
                                 >
                                     <option value="">Chọn Xã/Phường</option>
                                     {communes.map((commune) => (
-                                        <option key={commune.code} value={commune.code}>
+                                        <option key={commune.code} value={commune.code} data-name={commune.name}>
                                             {commune.name}
                                         </option>
                                     ))}
@@ -356,7 +377,7 @@ function Order() {
                     </div>
 
                     <div className="flex justify-between items-center space-y-5">
-                        <a href="#" className="text-blue-500">
+                        <a href="#" className="text-blue-500" onClick={backToCart}>
                             Quay lại giỏ hàng
                         </a>
                         <button className="w-[200px] h-[50px] bg-blue-500 text-white rounded-md" onClick={handleSubmit}>
