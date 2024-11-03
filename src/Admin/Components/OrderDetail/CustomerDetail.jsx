@@ -1,6 +1,7 @@
 import React from 'react';
 import { TbShoppingCartCheck } from 'react-icons/tb';
 import { Link } from 'react-router-dom';
+import { formatPhoneNumber } from '../../../utils/FormatPhoneNumber';
 
 function CustomerDetail({ data }) {
     return (
@@ -33,13 +34,13 @@ function CustomerDetail({ data }) {
                         <div className="rounded-full w-12 h-12 bg-[#36483F] flex items-center justify-center">
                             <TbShoppingCartCheck className="text-2xl text-[#71DD37]" />
                         </div>
-                        <span>{''} đơn hàng</span>
+                        <span>{data.quantity_order} đơn hàng</span>
                     </div>
 
                     <div className="flex flex-col">
                         <strong>Thông tin liên hệ</strong>
                         <span>Username: {data.username}</span>
-                        <span>Số điện thoại: {data.phone}</span>
+                        <span>Số điện thoại: {formatPhoneNumber(data.phone)}</span>
                     </div>
                 </div>
             )}

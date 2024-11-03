@@ -3,7 +3,7 @@ import { AiOutlineClockCircle } from "react-icons/ai";
 import { BsCalendar2CheckFill } from "react-icons/bs";
 import { MdPayment } from "react-icons/md";
 import { TbShoppingCartCancel } from "react-icons/tb";
-import { fetchOrdersFromAPI } from "../../../Services/OrderService";
+import { fetchNumberOfOrdersFromAPI } from "../../../Services/OrderService";
 
 function PaymentChart() {
   const [totalOrders, setTotalOrders] = useState(1);
@@ -12,19 +12,26 @@ function PaymentChart() {
   const [cancelOrderStatus, setCancelOrderStatus] = useState(0);
 
   useEffect(() => {
-    const fetchAllOrders = async () => {
+    const fetchOrders = async () => {
       try {
-        const { data, total } = await fetchOrdersFromAPI(1, totalOrders);
-        setTotalOrders(total)
-        setSuccessfulPayments(data.filter(order => order.payment_status === "Thành công").length);
-        setUnpaidPayments(data.filter(order => order.payment_status === "Chưa thanh toán").length);
-        setCancelOrderStatus(data.filter(order => order.order_status === "Đã hủy").length);
+        const totalResponse = await fetchNumberOfOrdersFromAPI("Tổng hóa đơn");
+        setTotalOrders(totalResponse.data);
+
+        const successfulResponse = await fetchNumberOfOrdersFromAPI("Thành công");
+        setSuccessfulPayments(successfulResponse.data);
+
+        const unpaidResponse = await fetchNumberOfOrdersFromAPI("Chưa thanh toán");
+        setUnpaidPayments(unpaidResponse.data);
+
+        const cancelResponse = await fetchNumberOfOrdersFromAPI("Đã hủy");
+        setCancelOrderStatus(cancelResponse.data);
       } catch (error) {
         console.error("Error fetching orders:", error);
       }
     };
-    fetchAllOrders();
-  }, [totalOrders]);
+
+    fetchOrders();
+  }, []);
 
   return (
     <div className="flex gap-4 w-full px-4">

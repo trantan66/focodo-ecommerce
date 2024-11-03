@@ -142,6 +142,9 @@ function CategoryList() {
                 message: 'Thêm danh mục thành công!',
                 description: 'Danh mục đã được thêm.',
             });
+            setLoadingIcon(false);
+            setLoadingScreen(false);
+
         }
         setCheckImageQuantity(false);
     };
@@ -182,6 +185,8 @@ function CategoryList() {
 
         setCheckImageQuantity(true);
         setCheckImageQuantityUpdate(true);
+
+        e.target.value = null;
     };
 
     const handleRemoveImage = (indexToRemove) => {
@@ -232,6 +237,10 @@ function CategoryList() {
         setImagePreviews([]);
         setIsDialogOpen(false);
         setNewDescription('');
+    };
+    const closeUpdateDialog = () => {
+        setIsUpdateDialogOpen(false);
+        setCheckImageQuantityUpdate(true);
     };
 
     return (
@@ -428,7 +437,7 @@ function CategoryList() {
             </Dialog>
 
             {/* update dialog*/}
-            <Dialog open={isUpdateDialogOpen} onClose={() => setIsUpdateDialogOpen(false)} className="relative z-10">
+            <Dialog open={isUpdateDialogOpen} onClose={() => closeUpdateDialog()} className="relative z-10">
                 {loadingScreen && (
                     <div className="fixed inset-0 flex items-center justify-center bg-black/50 z-50">
                         <FiLoader className="text-white text-6xl animate-spin" />
@@ -544,7 +553,7 @@ function CategoryList() {
                                 <div className="flex justify-end gap-4 mt-4">
                                     <button
                                         type="button"
-                                        onClick={() => setIsUpdateDialogOpen(false)}
+                                        onClick={() => closeUpdateDialog()}
                                         className="bg-gray-300 text-black px-4 py-2 rounded-md"
                                     >
                                         Hủy

@@ -23,6 +23,7 @@ import AdminCustomerDetail from './Admin/Pages/CustomerDetail';
 import AdminCategory from './Admin/Pages/Category';
 import AdminReview from './Admin/Pages/Review';
 import AdminAddProduct from './Admin/Components/AddProduct/AddProduct';
+import AdminProfile from './Admin/Pages/Profile';
 const roles = {
     user: 'USER',
     admin: 'ADMIN',
@@ -60,6 +61,7 @@ function App() {
                         <Route path="order/orderdetail/:orderId" element={<AdminOrderDetail />} />
                         <Route path="category" element={<AdminCategory />} />
                         <Route path="review" element={<AdminReview />} />
+                        <Route path="profile" element={<AdminProfile />} />
                     </Route>
                 </Route>
             </Routes>
