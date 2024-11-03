@@ -28,7 +28,7 @@ export function Orders(props) {
         return new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(amount);
     };
 
-    const renderButtonByStatus = (status) => {
+    const renderButtonByStatus = (status, review) => {
         switch (status) {
             case 'Chưa xác nhận':
                 return (
@@ -64,9 +64,16 @@ export function Orders(props) {
                         <button className="ml-auto mr-2 bg-[#77CDFF] text-black w-[10%] h-[40px] rounded-lg hover:bg-[#3C3D37] transition duration-300 my-3">
                             Xem chi tiết
                         </button>
-                        <button className="mr-4 bg-black text-white w-[10%] h-[40px] rounded-lg hover:bg-[#3C3D37] transition duration-300 my-3">
-                            Đánh giá
-                        </button>
+
+                        {review ? (
+                            <button className="mr-4 bg-black text-white w-[10%] h-[40px] rounded-lg hover:bg-[#3C3D37] transition duration-300 my-3">
+                                Xem đánh giá
+                            </button>
+                        ) : (
+                            <button className="mr-4 bg-black text-white w-[10%] h-[40px] rounded-lg hover:bg-[#3C3D37] transition duration-300 my-3">
+                                Đánh giá
+                            </button>
+                        )}
                     </div>
                 );
             default:
@@ -87,7 +94,7 @@ export function Orders(props) {
                     {formatCurrency(props.totalprice)}
                 </span>
             </div>
-            <div className="flex gap-3 ">{renderButtonByStatus(props.status)}</div>
+            <div className="flex gap-3 ">{renderButtonByStatus(props.status, props.review)}</div>
         </div>
     );
 }

@@ -1,19 +1,10 @@
-::-webkit-scrollbar {
-    width: 10px;
-}
-/* Track */
-::-webkit-scrollbar-track {
-    background: #f1f1f1;
-    border-radius: 10px;
+.image-gallery-left-nav .image-gallery-svg {
+    width: 50px; /* điều chỉnh độ rộng mũi tên */
+    height: 50px; /* điều chỉnh độ cao mũi tên */
 }
 
-/* Handle */
-::-webkit-scrollbar-thumb {
-    background: #888;
-    border-radius: 10px;
-}
-
-/* Handle on hover */
-::-webkit-scrollbar-thumb:hover {
-    background: #555;
+/* Tăng kích thước mũi tên phải */
+.image-gallery-right-nav .image-gallery-svg {
+    width: 50px;
+    height: 50px;
 }

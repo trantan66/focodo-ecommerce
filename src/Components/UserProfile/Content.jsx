@@ -79,7 +79,12 @@ function Content() {
                                     price={data.total_price}
                                 ></ProductList>
                             ))}
-                            <Orders status={data.order_status} totalprice={data.final_price} total={totalOrders} />
+                            <Orders
+                                review={data.review_check}
+                                status={data.order_status}
+                                totalprice={data.final_price}
+                                total={totalOrders}
+                            />
                         </div>
                     ))}
                 </div>

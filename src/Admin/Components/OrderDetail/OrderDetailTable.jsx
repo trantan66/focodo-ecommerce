@@ -1,5 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+import { formatCurrency } from '../../../utils/FormatCurrency';
 
 function OrderDetailTable({ data }) {
     return (
@@ -15,7 +16,7 @@ function OrderDetailTable({ data }) {
                             <td>Tổng</td>
                         </tr>
                     </thead>
-                    <tbody className="h-[50vh]">
+                    <tbody>
                         {Array.isArray(data.order_details) && data.order_details.length > 0 ? (
                             data.order_details.map((items, index) => (
                                 <tr key={index} className="border-b-2">
@@ -36,9 +37,9 @@ function OrderDetailTable({ data }) {
                                             </div>
                                         </div>
                                     </td>
-                                    <td>đ{items.unit_price}</td>
+                                    <td>{formatCurrency(items.unit_price)}</td>
                                     <td>{items.quantity}</td>
-                                    <td>đ{items.total_price}</td>
+                                    <td>{formatCurrency(items.total_price)}</td>
                                 </tr>
                             ))
                         ) : (
@@ -55,16 +56,16 @@ function OrderDetailTable({ data }) {
             <div className="flex flex-col items-end pt-3">
                 <div className="grid grid-cols-2 gap-3">
                     <span>Tổng tiền:</span>
-                    <span className="text-left">đ{data.total_price}</span>
+                    <span className="text-left">{formatCurrency(data.total_price)}</span>
 
                     <span>Discount:</span>
                     <span className="text-left">{data.discount_price}%</span>
 
                     <span>Ship:</span>
-                    <span className="text-left">đ{data.shipping_price}</span>
+                    <span className="text-left">{formatCurrency(data.shipping_price)}</span>
 
                     <span>Thành tiền:</span>
-                    đ{data.final_price}
+                    {formatCurrency(data.final_price)}
                 </div>
             </div>
         </div>

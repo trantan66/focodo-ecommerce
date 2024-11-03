@@ -1,4 +1,3 @@
-
 import axiosInstance from './Customize-Axios';
 import { getHeader } from './GetHeader';
 
@@ -51,7 +50,40 @@ export const updateOrderStatus = async (id, status) => {
         throw error;
     }
 };
-
+export const fetchNumberOfOrdersFromAPI = async (status) => {
+    try {
+        const response = await axiosInstance.get(`orders/getNumberOfOrderByStatus?status=${status}`, {
+            headers: {
+                ...getHeader(),
+            },
+        });
+        return {
+            data: response.result,
+        };
+    } catch (error) {
+        console.error('Error fetching orders:', error);
+        throw error;
+    }
+};
+export const fetchOrderByStatus = async (page, size, status) => {
+    try {
+        const response = await axiosInstance.get(
+            `orders/getOrdersOfUserByOrderStatus?page=${page - 1}&size=${size}&status=${status}`,
+            {
+                headers: {
+                    ...getHeader(),
+                },
+            },
+        );
+        return {
+            data: response.result.data,
+            total: response.result.pagination.total_records,
+        };
+    } catch (error) {
+        console.error('error fetching orders: ', error);
+        throw error;
+    }
+};
 export const fetchOrdersOfUser = async (page, size) => {
     try {
         const response = await axiosInstance.get(`orders/getOrdersOfUser?page=${page - 1}&size=${size}`, {
@@ -71,34 +103,16 @@ export const fetchOrdersOfUser = async (page, size) => {
 
 export const fetchOrderStatus = async () => {
     try {
-        const response = await axiosInstance.get(`orders/getAllOrderStatus`,{
-        headers: {
-            ...getHeader(),
-        },
-    });
-    return{
-        data: response.result,
-    }
-    } catch(error){
-        console.error('error fetching order status:', error);
-        throw error;
-    }
-};
-
-export const fetchOrderByStatus = async (page, size, status) => {
-    try {
-        const response = await axiosInstance.get(`orders/getOrdersOfUserByOrderStatus?page=${page - 1}&size=${size}&status=${status}`,{
+        const response = await axiosInstance.get(`orders/getAllOrderStatus`, {
             headers: {
                 ...getHeader(),
             },
         });
         return {
-            data: response.result.data,
-            total: response.result.pagination.total_records,
-        }
+            data: response.result,
+        };
+    } catch (error) {
+        console.error('error fetching order status:', error);
+        throw error;
     }
-    catch(error){
-            console.error('error fetching orders: ', error);
-            throw error;
-    }
-}
+};

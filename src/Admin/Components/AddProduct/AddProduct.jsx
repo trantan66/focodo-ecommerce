@@ -76,14 +76,16 @@ const AddProduct = () => {
             setLoadingScreen(false);
         }
     };
-
     const handleImageUpload = (e) => {
         const files = Array.from(e.target.files);
         setImages(files);
-
+    
         const previewUrls = files.map((file) => URL.createObjectURL(file));
         setImagePreviews(previewUrls);
+    
+        e.target.value = null;
     };
+    
 
     const handleRemoveImage = (indexToRemove) => {
         setImages((prevImages) => prevImages.filter((_, index) => index !== indexToRemove));
@@ -165,18 +167,6 @@ const AddProduct = () => {
                         {/* Category selection */}
                         <div className="flex items-center flex-col">
                             <span className="text-white mb-1 self-start">Danh mục</span>
-                            {/* <select
-              onChange={handleCategoryChange}
-              className="text-sm focus:outline-none border border-gray-300 w-full h-10 px-4 pr-4 rounded-sm bg-[#282941] text-white overflow-y-auto"
-            >
-              <option value="">Chọn danh mục</option>
-              {categories.map((category) => (
-                <option key={category.id} value={category.id}>
-                  {category.name}
-                </option>
-              ))}
-            </select> */}
-
                             <Select
                                 defaultValue={'Danh mục'}
                                 style={{
@@ -283,7 +273,7 @@ const AddProduct = () => {
                                 multiple
                                 onChange={handleImageUpload}
                                 className="w-full p-3 border rounded-sm bg-[#282941] text-white focus:outline-none"
-                                required
+                                required={images.length === 0}
                             />
                         </div>
 

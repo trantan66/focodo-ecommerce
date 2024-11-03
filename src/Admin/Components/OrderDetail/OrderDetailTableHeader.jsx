@@ -22,6 +22,9 @@ function OrderDetailTableHeader({ data }) {
     const handleCancelStatus = () => {
         submitOrderStatusChange('Đã hủy');
     };
+    const handleDeliveredStatus = () => {
+        submitOrderStatusChange('Đã giao');
+    };
 
     const submitOrderStatusChange = async (status) => {
         try {
@@ -37,6 +40,7 @@ function OrderDetailTableHeader({ data }) {
             notification.success({
                 message: 'Cập nhật trạng thái thành công!',
                 description: 'Trạng thái đã được cập nhật.',
+                duration: '1',
             });
         }
     };
@@ -74,12 +78,20 @@ function OrderDetailTableHeader({ data }) {
                     </button>
                 )}
                 {statusOrder === 'Đã xác nhận' && (
-                    <button
-                        onClick={handleNotConfirmStatus}
-                        className="text-[#04BAE3] bg-[#25445C] px-6 mb-3 rounded-md hover:bg-cyan-800"
-                    >
-                        Hủy xác nhận
-                    </button>
+                    <div className="flex flex-row gap-4">
+                        <button
+                            onClick={handleDeliveredStatus}
+                            className="text-[#6CD136] bg-[#36483F] px-6 mb-3 rounded-md hover:bg-green-800"
+                        >
+                            Xác nhận đã giao
+                        </button>
+                        <button
+                            onClick={handleNotConfirmStatus}
+                            className="text-[#04BAE3] bg-[#25445C] px-6 mb-3 rounded-md hover:bg-cyan-800"
+                        >
+                            Hủy xác nhận
+                        </button>
+                    </div>
                 )}
                 {(statusOrder === 'Đã xác nhận' || statusOrder === 'Chưa xác nhận') && (
                     <button
