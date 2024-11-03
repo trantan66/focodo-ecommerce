@@ -1,18 +1,22 @@
 import React, { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import "../CustomCss/Slider.css";
 import {
-  fetchCategoriesForProductFromAPI,
+  DeleteProduct,
   fetchProductByIdFromAPI,
   updateProductToAPI,
 } from "../../../Services/ProductService";
 import { CKEditor } from "@ckeditor/ckeditor5-react";
 import ClassicEditor from "@ckeditor/ckeditor5-build-classic";
+import { notification, Select } from "antd";
+import { FiLoader } from "react-icons/fi";
+import { fetchAllCategoriesFromAPI } from "../../../Services/CategoryService";
 
 function ProductDetail() {
   const { productId } = useParams();
+  const navigate = useNavigate();
 
   const [name, setProductName] = useState("");
   const [quantity, setProductQuantity] = useState("");
@@ -30,10 +34,13 @@ function ProductDetail() {
 
   const [currentImages, setCurrentImages] = useState([]);
 
+  const [loadingIcon, setLoadingIcon] = useState(false);
+  const [loadingScreen, setLoadingScreen] = useState(false);
+
   useEffect(() => {
     const fetchCategories = async () => {
       try {
-        const { data } = await fetchCategoriesForProductFromAPI();
+        const { data } = await fetchAllCategoriesFromAPI();
         const filteredCategories = data.filter(
           (category) => category.id !== 1 && category.id !== 2
         );
@@ -72,11 +79,16 @@ function ProductDetail() {
   }, [productId]);
 
   const handleSubmit = async (e) => {
+    setLoadingIcon(true);
+    setLoadingScreen(true);
+
     e.preventDefault();
     const categoryIds = selectedCategories.map((category) => category.id);
     categoryIds.unshift(1);
 
-    const categoryRemovedIds = removeSelectedCategories.map((category) =>  category.id);
+    const categoryRemovedIds = removeSelectedCategories.map(
+      (category) => category.id
+    );
 
     const product = {
       name,
@@ -89,50 +101,71 @@ function ProductDetail() {
       quantity: parseInt(quantity, 10),
       categories: categoryIds,
     };
-    console.log(product);
-    console.log(images);
-    console.log(currentImages);
-    console.log(categoryRemovedIds);
 
     try {
-      const response = await updateProductToAPI(productId, product, images, currentImages, categoryRemovedIds);
-      console.log(response.code)
+      await updateProductToAPI(
+        productId,
+        product,
+        images,
+        currentImages,
+        categoryRemovedIds
+      );
     } catch (error) {
-      console.error("Error adding the product:", error);
+      console.error("Error updating the product:", error);
+      notification.error({
+        message: "Có lỗi xảy ra!",
+        description: "Không thể cập nhật sản phẩm. Vui lòng thử lại.",
+      });
+    }finally{
+      notification.success({
+        message: "Cập nhật sản phẩm thành công!",
+        description: "Sản phẩm đã được cập nhật.",
+      });
+
+      setTimeout(() => {
+        window.location.reload();
+      }, 500);
     }
   };
 
   const handleImageUpload = (e) => {
     const files = Array.from(e.target.files);
     setImages(files);
-
+  
     const previewUrls = files.map((file) => URL.createObjectURL(file));
     setImagePreviews(previewUrls);
+  
+    e.target.value = null;
   };
+  
 
   const handleRemoveImage = (indexToRemove) => {
-    setImages((prevImages) =>
-      prevImages.filter((_, index) => index !== indexToRemove)
-    );
+    setImages((prevImages) => {
+      const updatedImages = prevImages.filter((_, index) => index !== indexToRemove);   
+      URL.revokeObjectURL(imagePreviews[indexToRemove]);
+  
+      return updatedImages;
+    });
+  
     setImagePreviews((prevPreviews) =>
       prevPreviews.filter((_, index) => index !== indexToRemove)
     );
   };
+  
 
-  const handleCategoryChange = (e) => {
-    const selectedCategoryId = parseInt(e.target.value);
+  const handleCategoryChange = (selectedCategoryName) => {
     const selectedCategory = categories.find(
-      (category) => category.id === selectedCategoryId
+      (category) => category.name === selectedCategoryName
     );
 
     if (
       selectedCategory &&
-      !selectedCategories.some((cat) => cat.id === selectedCategoryId)
+      !selectedCategories.some((cat) => cat.id === selectedCategory.id)
     ) {
       setSelectedCategories([...selectedCategories, selectedCategory]);
     }
   };
-
+  
   const handleRemoveCategory = (categoryToRemove) => {
     setSelectedCategories(
       selectedCategories.filter(
@@ -150,12 +183,42 @@ function ProductDetail() {
       prevImages.filter((image) => image !== imageToRemove)
     );
   };
+  const handleRemoveProduct = async (productId) => {
+    const confirmed = window.confirm("Bạn có chắc chắn muốn xóa sản phẩm này?");
+    if (confirmed) {
+      try {
+        await DeleteProduct(productId);
+        notification.success({
+          message: "Xóa sản phẩm thành công!",
+          description: "Sản phẩm đã được xóa khỏi danh sách.",
+        });
+        setTimeout(() => {
+          navigate("/admin/product");
+        }, 2000);
+      } catch (error) {
+        console.error("Error deleting the product:", error);
+        notification.error({
+          message: "Có lỗi xảy ra!",
+          description: "Không thể xóa sản phẩm. Vui lòng thử lại.",
+        });
+      }
+    }
+  };
 
   return (
+    <div className="relative">
+    {loadingScreen && (
+        <div className="fixed inset-0 flex items-center justify-center bg-black/50 z-50">
+            <FiLoader className="text-white text-6xl animate-spin" />
+        </div>
+    )}
     <div className="px-4 flex flex-col flex-1">
       <div className="rounded-md flex flex-row justify-between flex-1">
         <span className="text-white text-3xl mb-4">Sản phẩm #{productId}</span>
-        <button className="text-red-500  bg-[#4D2F3A] px-6 mb-3 rounded-md hover:bg-red-800">
+        <button
+          className="text-red-500  bg-[#4D2F3A] px-6 mb-3 rounded-md hover:bg-red-800"
+          onClick={() => handleRemoveProduct(productId)}
+        >
           Xóa sản phẩm
         </button>
       </div>
@@ -227,17 +290,28 @@ function ProductDetail() {
             {/* Category selection */}
             <div className="flex items-center flex-col ">
               <span className="text-white mb-1 self-start">Danh mục</span>
-              <select
+              <Select
+                defaultValue={"Danh mục"}
+                style={{
+                  width: "100%",
+                  height: 40,
+                  backgroundColor: "#282941",
+                }}
                 onChange={handleCategoryChange}
-                className="text-sm focus:outline-none border border-gray-300 w-full h-10 px-4 pr-4 rounded-sm bg-[#282941] text-white overflow-y-auto"
-              >
-                <option value="">Chọn danh mục</option>
-                {categories.map((category) => (
-                  <option key={category.id} value={category.id}>
-                    {category.name}
-                  </option>
-                ))}
-              </select>
+                dropdownStyle={{
+                  maxHeight: 300,
+                  overflowY: "auto",
+                  backgroundColor: "#282941",
+                }}
+                options={
+                  Array.isArray(categories)
+                    ? categories.map((category) => ({
+                        value: category.name,
+                        label: category.name,
+                      }))
+                    : []
+                }
+              />
 
               {/* Display selected categories */}
               {selectedCategories.length > 0 && (
@@ -355,13 +429,19 @@ function ProductDetail() {
             {/* Submit Button */}
             <button
               type="submit"
-              className="w-full bg-blue-600 p-3 rounded-md text-white hover:bg-blue-500"
+              className={`w-full p-3 rounded-md text-white flex items-center justify-center space-x-2
+               ${
+                 loadingIcon ? "bg-gray-400" : "bg-blue-600 hover:bg-blue-500"
+               }`}
+              disabled={loadingIcon ? "true" : ""}
             >
-              Cập nhật
+              {loadingIcon ? <FiLoader /> : ""}
+              <span>Cập nhật</span>
             </button>
           </form>
         </div>
       </div>
+    </div>
     </div>
   );
 }

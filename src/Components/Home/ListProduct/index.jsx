@@ -1,229 +1,62 @@
-import { StarOutlined, StarFilled } from "@ant-design/icons";
-import { Tabs } from "antd";
-import banhbeo from "../image/banhbeo.jpg";
+import { useEffect, useState } from 'react';
+import { Tabs } from 'antd';
+import ProductCard from '../../Shared/ProductCard';
+import { getProductsFromCategory } from '../../../Services/ProductService';
 function ListProduct() {
-  const items = [
-    {
-      key: "1",
-      label: "Bán chạy",
-    },
-    {
-      key: "2",
-      label: "Khuyến mãi",
-    },
-  ];
-  return (
-    <>
-      <div class="mt-[100px] mb-[20px] flex justify-center items-center">
-        <div className="w-[1200px] h-[40px]">
-          <Tabs defaultActiveKey="1" items={items} />;
-        </div>
-      </div>
-      <div className="w-full h-[850px] flex justify-center items-center">
-        <div className="grid grid-cols-4 grid-rows-2 grid-flow-col w-[1200px] h-[850px] gap-4">
-          <div
-            class="w-[268px] h-[408px] bg-red-500 flex flex-col items-center"
-            style={{ backgroundColor: "#F6F6F6" }}
-          >
-            <div class="flex mt-[25px]">
-              <StarFilled class="text-yellow-500" />
-              <StarFilled class="text-yellow-500" />
-              <StarFilled class="text-yellow-500" />
-              <StarFilled class="text-yellow-500" />
-              <StarOutlined class="text-yellow-500" />
-            </div>
-            <div class="w-[160px] h-[160px] mt-[25px]">
-              <img
-                src={banhbeo}
-                alt="Bánh bèo"
-                class="w-full h-full object-cover"
-              />
-            </div>
-            <p class="flex italic mt-[15px] font-medium">Bánh bèo Huế</p>
-            <p class="flex italic mt-[15px]">10.000đ</p>
-            <button class="flex items-center justify-center mt-[25px] w-[200px] h-[50px] bg-black text-white text-center rounded border border-black">
-              Mua ngay
-            </button>
-          </div>
+    const [category, setCategory] = useState(2);
+    const [products, setProducts] = useState([]);
+    const items = [
+        {
+            key: '2',
+            label: 'Bán chạy',
+        },
+        {
+            key: '8',
+            label: 'Khuyến mãi',
+        },
+    ];
 
-          <div
-            class="w-[268px] h-[408px] bg-red-500 flex flex-col items-center"
-            style={{ backgroundColor: "#F6F6F6" }}
-          >
-            <div class="flex mt-[25px]">
-              <StarFilled class="text-yellow-500" />
-              <StarFilled class="text-yellow-500" />
-              <StarFilled class="text-yellow-500" />
-              <StarFilled class="text-yellow-500" />
-              <StarOutlined class="text-yellow-500" />
-            </div>
-            <div class="w-[160px] h-[160px] mt-[25px]">
-              <img
-                src={banhbeo}
-                alt="Bánh bèo"
-                class="w-full h-full object-cover"
-              />
-            </div>
-            <p class="flex italic mt-[15px] font-medium">Bánh bèo Huế</p>
-            <p class="flex italic mt-[15px]">10.000đ</p>
-            <button class="flex items-center justify-center mt-[25px] w-[200px] h-[50px] bg-black text-white text-center rounded border border-black">
-              Mua ngay
-            </button>
-          </div>
+    useEffect(() => {
+        fetchProducts();
+    }, [category]);
 
-          <div
-            class="w-[268px] h-[408px] bg-red-500 flex flex-col items-center"
-            style={{ backgroundColor: "#F6F6F6" }}
-          >
-            <div class="flex mt-[25px]">
-              <StarFilled class="text-yellow-500" />
-              <StarFilled class="text-yellow-500" />
-              <StarFilled class="text-yellow-500" />
-              <StarFilled class="text-yellow-500" />
-              <StarOutlined class="text-yellow-500" />
-            </div>
-            <div class="w-[160px] h-[160px] mt-[25px]">
-              <img
-                src={banhbeo}
-                alt="Bánh bèo"
-                class="w-full h-full object-cover"
-              />
-            </div>
-            <p class="flex italic mt-[15px] font-medium">Bánh bèo Huế</p>
-            <p class="flex italic mt-[15px]">10.000đ</p>
-            <button class="flex items-center justify-center mt-[25px] w-[200px] h-[50px] bg-black text-white text-center rounded border border-black">
-              Mua ngay
-            </button>
-          </div>
+    const fetchProducts = async () => {
+        const response = await getProductsFromCategory(category, 0, 8);
+        setProducts(response.result.data);
+    };
+    const onChange = (key) => {
+        setCategory(key);
+    };
 
-          <div
-            class="w-[268px] h-[408px] bg-red-500 flex flex-col items-center"
-            style={{ backgroundColor: "#F6F6F6" }}
-          >
-            <div class="flex mt-[25px]">
-              <StarFilled class="text-yellow-500" />
-              <StarFilled class="text-yellow-500" />
-              <StarFilled class="text-yellow-500" />
-              <StarFilled class="text-yellow-500" />
-              <StarOutlined class="text-yellow-500" />
+    return (
+        <>
+            <div className="mt-[100px] mb-[20px] flex justify-center items-center">
+                <div className="w-[1200px] h-[40px]">
+                    <Tabs defaultActiveKey="1" items={items} onChange={onChange} />
+                </div>
             </div>
-            <div class="w-[160px] h-[160px] mt-[25px]">
-              <img
-                src={banhbeo}
-                alt="Bánh bèo"
-                class="w-full h-full object-cover"
-              />
-            </div>
-            <p class="flex italic mt-[15px] font-medium">Bánh bèo Huế</p>
-            <p class="flex italic mt-[15px]">10.000đ</p>
-            <button class="flex items-center justify-center mt-[25px] w-[200px] h-[50px] bg-black text-white text-center rounded border border-black">
-              Mua ngay
-            </button>
-          </div>
 
-          <div
-            class="w-[268px] h-[408px] bg-red-500 flex flex-col items-center"
-            style={{ backgroundColor: "#F6F6F6" }}
-          >
-            <div class="flex mt-[25px]">
-              <StarFilled class="text-yellow-500" />
-              <StarFilled class="text-yellow-500" />
-              <StarFilled class="text-yellow-500" />
-              <StarFilled class="text-yellow-500" />
-              <StarOutlined class="text-yellow-500" />
-            </div>
-            <div class="w-[160px] h-[160px] mt-[25px]">
-              <img
-                src={banhbeo}
-                alt="Bánh bèo"
-                class="w-full h-full object-cover"
-              />
-            </div>
-            <p class="flex italic mt-[15px] font-medium">Bánh bèo Huế</p>
-            <p class="flex italic mt-[15px]">10.000đ</p>
-            <button class="flex items-center justify-center mt-[25px] w-[200px] h-[50px] bg-black text-white text-center rounded border border-black">
-              Mua ngay
-            </button>
-          </div>
-
-          <div
-            class="w-[268px] h-[408px] bg-red-500 flex flex-col items-center"
-            style={{ backgroundColor: "#F6F6F6" }}
-          >
-            <div class="flex mt-[25px]">
-              <StarFilled class="text-yellow-500" />
-              <StarFilled class="text-yellow-500" />
-              <StarFilled class="text-yellow-500" />
-              <StarFilled class="text-yellow-500" />
-              <StarOutlined class="text-yellow-500" />
-            </div>
-            <div class="w-[160px] h-[160px] mt-[25px]">
-              <img
-                src={banhbeo}
-                alt="Bánh bèo"
-                class="w-full h-full object-cover"
-              />
-            </div>
-            <p class="flex italic mt-[15px] font-medium">Bánh bèo Huế</p>
-            <p class="flex italic mt-[15px]">10.000đ</p>
-            <button class="flex items-center justify-center mt-[25px] w-[200px] h-[50px] bg-black text-white text-center rounded border border-black">
-              Mua ngay
-            </button>
-          </div>
-
-          <div
-            class="w-[268px] h-[408px] bg-red-500 flex flex-col items-center"
-            style={{ backgroundColor: "#F6F6F6" }}
-          >
-            <div class="flex mt-[25px]">
-              <StarFilled class="text-yellow-500" />
-              <StarFilled class="text-yellow-500" />
-              <StarFilled class="text-yellow-500" />
-              <StarFilled class="text-yellow-500" />
-              <StarOutlined class="text-yellow-500" />
-            </div>
-            <div class="w-[160px] h-[160px] mt-[25px]">
-              <img
-                src={banhbeo}
-                alt="Bánh bèo"
-                class="w-full h-full object-cover"
-              />
-            </div>
-            <p class="flex italic mt-[15px] font-medium">Bánh bèo Huế</p>
-            <p class="flex italic mt-[15px]">10.000đ</p>
-            <button class="flex items-center justify-center mt-[25px] w-[200px] h-[50px] bg-black text-white text-center rounded border border-black">
-              Mua ngay
-            </button>
-          </div>
-
-          <div
-            class="w-[268px] h-[408px] bg-red-500 flex flex-col items-center"
-            style={{ backgroundColor: "#F6F6F6" }}
-          >
-            <div class="flex mt-[25px]">
-              <StarFilled class="text-yellow-500" />
-              <StarFilled class="text-yellow-500" />
-              <StarFilled class="text-yellow-500" />
-              <StarFilled class="text-yellow-500" />
-              <StarOutlined class="text-yellow-500" />
-            </div>
-            <div class="w-[160px] h-[160px] mt-[25px]">
-              <img
-                src={banhbeo}
-                alt="Bánh bèo"
-                class="w-full h-full object-cover"
-              />
-            </div>
-            <p class="flex italic mt-[15px] font-medium">Bánh bèo Huế</p>
-            <p class="flex italic mt-[15px]">10.000đ</p>
-            <button class="flex items-center justify-center mt-[25px] w-[200px] h-[50px] bg-black text-white text-center rounded border border-black">
-              Mua ngay
-            </button>
-          </div>
-        </div>
-      </div>
-    </>
-  );
+            {products.length !== 0 && (
+                <div>
+                    <div className="w-full h-auto flex justify-center items-center">
+                        <div className="grid grid-cols-4 gap-4 w-[1200px]">
+                            {products.map((product) => (
+                                <ProductCard product={product} />
+                            ))}
+                        </div>
+                    </div>
+                    <div className="flex items-center justify-center mt-[30px]">
+                        <a
+                            href={`/product/${category}`}
+                            className="inline-block font-semibold text-[16px] px-[30px] py-[10px] rounded-[8px] text-black bg-[#ffffffeb] border-[1px] border-black hover:no-underline hover:text-white hover:bg-black"
+                        >
+                            Xem thêm
+                        </a>
+                    </div>
+                </div>
+            )}
+        </>
+    );
 }
 
 export default ListProduct;

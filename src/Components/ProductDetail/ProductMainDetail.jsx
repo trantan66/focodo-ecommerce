@@ -5,7 +5,7 @@ import ImageGallery from 'react-image-gallery';
 import 'react-image-gallery/styles/css/image-gallery.css';
 import { useParams } from 'react-router-dom';
 import { fetchProductByIdFromAPI } from '../../Services/ProductService';
-import "../UserProfile/Style.css"
+import '../UserProfile/Style.css';
 function ProductDetail(props) {
     const renderImage = (item) => (
         <div style={{ width: '500px', height: '300px' }}>
@@ -51,7 +51,10 @@ function ProductDetail(props) {
                             />
                         )}
                         renderThumbInner={(item) => (
-                            <img src={item.thumbnail} style={{ width: '100px', height: '100px', objectFit: 'contain' }} />
+                            <img
+                                src={item.thumbnail}
+                                style={{ width: '100px', height: '100px', objectFit: 'contain' }}
+                            />
                         )}
                     />
                 </div>
@@ -113,6 +116,7 @@ function ProductMainDetail() {
         setProduct(response.data);
     };
     useEffect(() => {
+        console.log(id);
         fetchProduct(id);
     }, []);
     console.log(product);

@@ -1,17 +1,18 @@
 .Navigation {
     height: 46px;
-    background-color: #2E2E2E;
+    background-color: #2e2e2e;
 }
 .Navigation .ant-menu {
-    background-color: #2E2E2E;
+    background-color: #2e2e2e;
     color: white;
+    margin: 0 -15px;
 }
 .Navigation .ant-menu-item {
     width: 234px;
-    background-color: #2E2E2E;
+    background-color: #2e2e2e;
     color: white;
 }
 /* Thêm hiệu ứng hover */
 .Navigation .ant-menu-item:hover {
-    color: #1677ff !important; 
+    color: #1677ff !important;
 }

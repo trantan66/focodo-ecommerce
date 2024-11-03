@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useParams } from 'react-router-dom';
 import { SearchOutlined } from '@ant-design/icons';
 import { Input } from 'antd';
 import { Collapse, List, Typography } from 'antd';
@@ -15,6 +15,8 @@ function Filter() {
         const response = await fetchCategoriesForProductFromAPI();
         setCagegories(response.data);
     };
+
+    const { categoryId } = useParams();
     useEffect(() => {
         fetchCategories();
     }, []);
@@ -22,7 +24,7 @@ function Filter() {
         console.log(id);
         navigate(`/product/${id}`);
         window.location.reload();
-       
+
         // Thực hiện các hành động khác ở đây
     };
     const handleClick = (id) => {
@@ -39,7 +41,11 @@ function Filter() {
                 {categories.map((section) => (
                     <Panel
                         header={
-                            <span onClick={() => handlePanelClick(section.id)} style={{ cursor: 'pointer' }}>
+                            <span
+                                className={`${categoryId == section.id && 'text-orange-500'}`}
+                                onClick={() => handlePanelClick(section.id)}
+                                style={{ cursor: 'pointer' }}
+                            >
                                 {section.name}
                             </span>
                         }
@@ -50,7 +56,10 @@ function Filter() {
                                 size="small"
                                 dataSource={section.subcategories}
                                 renderItem={(subcategories) => (
-                                    <List.Item onClick={() => handleClick(subcategories.id)} className="hover:cursor-pointer hover:text-orange-500">
+                                    <List.Item
+                                        onClick={() => handleClick(subcategories.id)}
+                                        className="hover:cursor-pointer hover:text-orange-500"
+                                    >
                                         {subcategories.name}
                                     </List.Item>
                                 )}

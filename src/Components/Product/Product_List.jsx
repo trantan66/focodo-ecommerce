@@ -5,6 +5,7 @@ import { StarFilled, StarOutlined } from '@ant-design/icons';
 import Rating from 'react-rating';
 import { fetchAllProduct, fetchProductsByCategoryFromAPI, fetchProductsFromAPI } from '../../Services/ProductService';
 import Filter from './Filter';
+import ProductCard from '../Shared/ProductCard';
 
 const ArrangeFilter = [
     {
@@ -144,16 +145,9 @@ function ProductList() {
                 <div className="grid grid-cols-3 ml-10 mt-3 gap-4 ">
                     {products.length > 0 ? (
                         products.map((item, index) => (
-                            <Productlist
-                                id={item.id}
-                                key={item.id}
-                                rating={item.review}
-                                image={item.image}
-                                Name={item.name}
-                                salePrice={item.sell_price}
-                                OriginalPrice={item.original_price}
-                                Discount={item.discount}
-                            />
+                            <div key={index}>
+                                <ProductCard product={item} />
+                            </div>
                         ))
                     ) : (
                         <span className=" text-2xl ">Không có sản phẩm nào </span>

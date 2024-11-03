@@ -1,12 +1,11 @@
 .Footer {
-    background-color: #2E2E2E;
+    background-color: #2e2e2e;
 }
 .Footer .inner-wrap {
     display: flex;
     align-items: flex-start;
 }
-.Footer .inner-wrap p
-{
+.Footer .inner-wrap p {
     font-style: italic;
     color: white;
 }
