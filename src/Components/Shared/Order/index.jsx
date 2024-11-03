@@ -6,15 +6,15 @@ import other from '../image/other.svg';
 import { useLocation } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
 
-import { fetchCartOfUser } from '../../../Services/ProductService';
+import { fetchCartCheckedOfUser } from '../../../Services/CartService';
 import { checkVoucher, getVoucher } from '../../../Services/VoucherService';
 import { getAllPaymentMethod, callCreateOrder } from '../../../Services/OrderService';
 
 function Order() {
-    const [selectedPaymentMethod, setSelectedPaymentMethod] = useState(''); // Theo dõi phương thức thanh toán
+    const [selectedPaymentMethod, setSelectedPaymentMethod] = useState('1'); // Theo dõi phương thức thanh toán
     const [paymentMethods, setPaymentMethods] = useState([]); // State để lưu các phương thức thanh toán
 
-    const [selectedMethod, setSelectedMethod] = useState([]); // State để lưu các phương thức thanh toán
+    const [selectedMethod, setSelectedMethod] = useState('standard'); // State để lưu các phương thức thanh toán
 
     const [provinces, setProvinces] = useState([]); // State để lưu danh sách tỉnh/thành phố
     const [selectedProvince, setSelectedProvince] = useState(''); // Theo dõi tỉnh/thành phố được chọn
@@ -40,7 +40,7 @@ function Order() {
     const fetchCart = async () => {
         try {
             // gọi API get các sản phẩm từ giỏ hàng
-            const cartItems = await fetchCartOfUser();
+            const cartItems = await fetchCartCheckedOfUser();
             setProducts(cartItems);
             setValues(cartItems.map((item) => item.quantity));
             // gọi các discount và vouchercode từ Cart (nếu có)
@@ -137,6 +137,7 @@ function Order() {
     };
 
     const handleProvinceChange = (e) => {
+        console.log(e.target.value);
         setSelectedProvince(e.target.value);
         setSelectedDistrict(''); // Reset district when province changes
     };
@@ -177,14 +178,18 @@ function Order() {
         const fullName = document.querySelector('input[name="full_name"]').value; // Lấy giá trị ô input họ và tên
         const phone = document.querySelector('input[name="phone"]').value; // Lấy giá trị ô input số điện thoại
         const address = document.querySelector('input[name="address"]').value; // Lấy giá trị ô input địa chỉ
+
+        const commune = communes.find((commune) => commune.code === selectedCommune);
+        const province = provinces.find((province) => province.code === selectedProvince);
+        const district = districts.find((district) => district.code === selectedDistrict);
         // Cập nhật customer với thông tin cần thiết
         const Customer = {
             full_name: fullName,
             phone: phone,
             address: address,
-            province: selectedProvince, // Thêm tỉnh
-            district: selectedDistrict, // Thêm huyện
-            ward: selectedCommune, // Thêm xã/phường
+            province: province ? province.name : '', // Thêm tỉnh
+            district: district ? district.name : '', // Thêm huyện
+            ward: commune ? commune.name : '', // Thêm xã/phường
         };
 
         // Cập nhật order với các thông tin cần thiết
@@ -309,30 +314,32 @@ function Order() {
                     {/* Phương thức vận chuyển */}
                     <div className="space-y-5">
                         <p className="text-lg">Phương thức vận chuyển</p>
-                        <div>
-                            <label className="flex items-center p-[8px] border rounded-md">
-                                <input
-                                    type="radio"
-                                    name="shippingMethod"
-                                    value="express" // Giá trị cho phương thức Hỏa tốc
-                                    checked={selectedMethod === 'express'}
-                                    onChange={handleMethodChange}
-                                    className="mr-2"
-                                />
-                                Hỏa tốc
+                        <div className="flex items-center p-[8px] border rounded-md">
+                            <input
+                                type="radio"
+                                name="shippingMethod"
+                                id="standard"
+                                value="standard" // Giá trị cho phương thức Bình thường
+                                checked={selectedMethod === 'standard'}
+                                onChange={handleMethodChange}
+                                className="mr-2"
+                            />
+                            <label htmlFor="standard" className="m-0">
+                                Bình thường
                             </label>
                         </div>
-                        <div>
-                            <label className="flex items-center p-[8px] border rounded-md">
-                                <input
-                                    type="radio"
-                                    name="shippingMethod"
-                                    value="standard" // Giá trị cho phương thức Bình thường
-                                    checked={selectedMethod === 'standard'}
-                                    onChange={handleMethodChange}
-                                    className="mr-2"
-                                />
-                                Bình thường
+                        <div className="flex items-center p-[8px] border rounded-md">
+                            <input
+                                type="radio"
+                                name="shippingMethod"
+                                id="express"
+                                value="express" // Giá trị cho phương thức Hỏa tốc
+                                checked={selectedMethod === 'express'}
+                                onChange={handleMethodChange}
+                                className="mr-2"
+                            />
+                            <label htmlFor="express" className="m-0">
+                                Hỏa tốc
                             </label>
                         </div>
                     </div>
@@ -344,13 +351,16 @@ function Order() {
                             <div className="border rounded-md flex items-center p-2" key={paymentMethod.id}>
                                 <input
                                     type="radio"
-                                    name="paymentMethod" // Đổi tên thành "paymentMethod"
+                                    name="paymentMethod"
+                                    id={paymentMethod.id} // Đổi tên thành "paymentMethod"
                                     value={paymentMethod.id}
                                     className="mr-2"
                                     checked={selectedPaymentMethod === paymentMethod.id.toString()} // So sánh với id của phương thức thanh toán
                                     onChange={handlePaymentMethodChange}
                                 />
-                                <p className="ml-2">{paymentMethod.method}</p>
+                                <label htmlFor={paymentMethod.id} className="m-0">
+                                    {paymentMethod.method}
+                                </label>
                             </div>
                         ))}
                     </div>

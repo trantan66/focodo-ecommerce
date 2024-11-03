@@ -8,7 +8,7 @@ import {
     decreaseQuantityInCart,
     deleteProductFromCart,
     updateCheckInCart,
-} from '../../Services/ProductService';
+} from '../../Services/CartService';
 import { checkVoucher, getVoucher } from '../../Services/VoucherService';
 import { useNavigate } from 'react-router-dom';
 

@@ -53,21 +53,6 @@ export const callCreateOrder = async (data) => {
     }
 };
 
-// create Order
-export const getOrderById = async (id_order) => {
-    try {
-        const response = await axiosInstance.get(`orders/getOrderById/${id_order}`, {
-            headers: {
-                ...getHeader(),
-            },
-        });
-        return response.result;
-    } catch (error) {
-        console.error('Lỗi khi getOrderById:', error);
-        throw error;
-    }
-};
-
 export const fetchOrderByIdFromAPI = async (id) => {
     try {
         const response = await axiosInstance.get(`orders/getOrderById/${id}`, {
