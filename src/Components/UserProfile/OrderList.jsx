@@ -32,9 +32,14 @@ export function Orders(props) {
         switch (status) {
             case 'Chưa xác nhận':
                 return (
-                    <button className="ml-auto mr-4 bg-red-600 text-white w-[10%] h-[40px] rounded-lg hover:bg-[#3C3D37] transition duration-300 my-3">
-                        Hủy đơn
-                    </button>
+                    <div className="flex w-[100%]">
+                        <button className="ml-auto mr-2 bg-[#77CDFF] text-black w-[10%] h-[40px] rounded-lg hover:bg-[#3C3D37] transition duration-300 my-3">
+                            Xem chi tiết
+                        </button>
+                        <button className=" mr-4 bg-red-600 text-white w-[10%] h-[40px] rounded-lg hover:bg-[#3C3D37] transition duration-300 my-3">
+                            Hủy đơn
+                        </button>
+                    </div>
                 );
             case 'Đã xác nhận':
                 return (
@@ -45,30 +50,28 @@ export function Orders(props) {
             case 'Đã hủy':
                 return (
                     <div className="flex w-[100%]">
-                    <button className="ml-auto mr-2 bg-[#77CDFF] text-black w-[10%] h-[40px] rounded-lg hover:bg-[#3C3D37] transition duration-300 my-3">
-                        Xem chi tiết
-                    </button>
-                    <button className="mr-4 bg-black text-white w-[10%] h-[40px] rounded-lg hover:bg-[#3C3D37] transition duration-300 my-3">
-                        Mua lại
-                    </button>
-                    
+                        <button className="ml-auto mr-2 bg-[#77CDFF] text-black w-[10%] h-[40px] rounded-lg hover:bg-[#3C3D37] transition duration-300 my-3">
+                            Xem chi tiết
+                        </button>
+                        <button className="mr-4 bg-black text-white w-[10%] h-[40px] rounded-lg hover:bg-[#3C3D37] transition duration-300 my-3">
+                            Mua lại
+                        </button>
                     </div>
                 );
             case 'Đã giao':
                 return (
                     <div className="flex w-[100%]">
-                    <button className="ml-auto mr-2 bg-[#77CDFF] text-black w-[10%] h-[40px] rounded-lg hover:bg-[#3C3D37] transition duration-300 my-3">
-                        Xem chi tiết
-                    </button>
-                    <button className="mr-4 bg-black text-white w-[10%] h-[40px] rounded-lg hover:bg-[#3C3D37] transition duration-300 my-3">
-                        Đánh giá
-                    </button>
-                    
+                        <button className="ml-auto mr-2 bg-[#77CDFF] text-black w-[10%] h-[40px] rounded-lg hover:bg-[#3C3D37] transition duration-300 my-3">
+                            Xem chi tiết
+                        </button>
+                        <button className="mr-4 bg-black text-white w-[10%] h-[40px] rounded-lg hover:bg-[#3C3D37] transition duration-300 my-3">
+                            Đánh giá
+                        </button>
                     </div>
                 );
             default:
                 return (
-                    <div className='bg-black'>
+                    <div className="bg-black">
                         <span className="text-3xl text-gray-800">Không có dữ liệu</span>
                     </div>
                 );
