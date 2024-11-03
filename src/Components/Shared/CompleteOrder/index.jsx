@@ -24,10 +24,10 @@ function CompleteOrder() {
     const getOrder = async () => {
         try {
             const orderInfo = await fetchOrderByIdFromAPI(id_order);
-            console.log(orderInfo); // Kiểm tra cấu trúc của orderInfo
-            setOrder(orderInfo);
-            setCustomer(orderInfo.customer);
-            setOrderDetails(orderInfo.order_details);
+            console.log(orderInfo.data); // Kiểm tra cấu trúc của orderInfo
+            setOrder(orderInfo.data);
+            setCustomer(orderInfo.data.customer);
+            setOrderDetails(orderInfo.data.order_details);
         } catch (error) {
             console.error('Error fetching order:', error);
         }
@@ -98,7 +98,7 @@ function CompleteOrder() {
 
                 <div className="w-[600px] pl-10 bg-[#FAFAFA]">
                     <h2 className="text-xl pt-5">Thông tin đơn hàng</h2>
-                    {orderDetails.length > 0 ? (
+                    {orderDetails && orderDetails.length > 0 ? (
                         orderDetails.map((product) => (
                             <div key={product.id_order_detail} className="w-[450px] flex items-center py-3">
                                 <img
