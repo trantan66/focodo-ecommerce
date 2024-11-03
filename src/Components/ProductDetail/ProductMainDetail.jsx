@@ -5,7 +5,7 @@ import ImageGallery from 'react-image-gallery';
 import 'react-image-gallery/styles/css/image-gallery.css';
 import { useParams } from 'react-router-dom';
 import { fetchProductByIdFromAPI } from '../../Services/ProductService';
-
+import "../UserProfile/Style.css"
 function ProductDetail(props) {
     const renderImage = (item) => (
         <div style={{ width: '500px', height: '300px' }}>
