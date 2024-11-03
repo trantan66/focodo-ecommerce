@@ -32,3 +32,38 @@ export const getAllPaymentMethod = async (voucher, total) => {
         throw error;
     }
 };
+
+// create Order
+export const callCreateOrder = async (data) => {
+    const order = {
+        customer: data.customer,
+        order: data.order,
+    };
+
+    try {
+        const response = await axiosInstance.post('orders/create?platform=web', order, {
+            headers: {
+                ...getHeader(),
+            },
+        });
+        return response.result; // Trả về response.data.result
+    } catch (error) {
+        console.error('Lỗi khi tạo đơn hàng:', error);
+        throw error;
+    }
+};
+
+// create Order
+export const getOrderById = async (id_order) => {
+    try {
+        const response = await axiosInstance.get(`orders/getOrderById/${id_order}`, {
+            headers: {
+                ...getHeader(),
+            },
+        });
+        return response.result;
+    } catch (error) {
+        console.error('Lỗi khi getOrderById:', error);
+        throw error;
+    }
+};

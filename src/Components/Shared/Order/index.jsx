@@ -3,13 +3,18 @@ import axios from 'axios';
 import cod from '../image/cod.svg';
 import vnpay from '../image/vnpay_new.svg';
 import other from '../image/other.svg';
-import orderData from './data';
+import { useLocation } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
 import { fetchCartOfUser } from '../../../Services/ProductService';
+import { checkVoucher, getVoucher } from '../../../Services/VoucherService';
+import { getAllPaymentMethod, callCreateOrder } from '../../../Services/OrderService';
 
 function Order() {
-    const [selectedMethod, setSelectedMethod] = useState(''); // Theo dõi phương thức vận chuyển
     const [selectedPaymentMethod, setSelectedPaymentMethod] = useState(''); // Theo dõi phương thức thanh toán
+    const [paymentMethods, setPaymentMethods] = useState([]); // State để lưu các phương thức thanh toán
+
+    const [selectedMethod, setSelectedMethod] = useState([]); // State để lưu các phương thức thanh toán
 
     const [provinces, setProvinces] = useState([]); // State để lưu danh sách tỉnh/thành phố
     const [selectedProvince, setSelectedProvince] = useState(''); // Theo dõi tỉnh/thành phố được chọn
@@ -21,20 +26,60 @@ function Order() {
     const [products, setProducts] = useState([]); // Danh sách sản phẩm trong giỏ hàng
     const [values, setValues] = useState([]); // Số lượng của từng sản phẩm
 
+    const [discount, setDiscount] = useState(0);
+    const [voucherCode, setVoucherCode] = useState('');
+
+    // Lấy giá trị discount từ URL
+    const location = useLocation();
+    const queryParams = new URLSearchParams(location.search);
+    const discountValueFromCart = queryParams.get('discountValue') || 0;
+    const discountCodeFromCart = queryParams.get('discountCode') || '';
+    const navigate = useNavigate();
+
     // Hàm để lấy giỏ hàng của người dùng
     const fetchCart = async () => {
         try {
+            // gọi API get các sản phẩm từ giỏ hàng
             const cartItems = await fetchCartOfUser();
             setProducts(cartItems);
             setValues(cartItems.map((item) => item.quantity));
+            // gọi các discount và vouchercode từ Cart (nếu có)
+            if (discountValueFromCart && discountCodeFromCart) {
+                setDiscount(discountValueFromCart);
+                setVoucherCode(discountCodeFromCart);
+            }
         } catch (error) {
             console.error('Error fetching cart:', error);
+        }
+    };
+
+    const applyVoucher = async () => {
+        try {
+            const total = calculateTotal(); // Tính tổng tiền
+            // Gọi API checkVoucher để kiểm tra mã giảm giá
+            const checkResponse = await checkVoucher(voucherCode, total);
+            if (checkResponse === true) {
+                // Nếu mã giảm giá hợp lệ, lấy thông tin voucher từ API getVoucher
+                const voucherResponse = await getVoucher(voucherCode);
+                if (voucherResponse) {
+                    // Cập nhật giá trị discount_price từ kết quả API
+                    const discountPrice = voucherResponse.discount_price;
+                    setDiscount(discountPrice);
+                } else {
+                    alert('Mã giảm giá không hợp lệ hoặc đã hết hạn.');
+                }
+            } else {
+                alert('Mã giảm giá không hợp lệ.');
+            }
+        } catch (error) {
+            alert('Mã giảm giá không hợp lệ hoặc đã hết hạn.');
         }
     };
 
     // Gọi API khi component được render lần đầu
     useEffect(() => {
         fetchCart();
+        fetchPaymentMethods();
     }, []);
 
     // Hàm tính tổng tiền cho sản phẩm được chọn
@@ -86,8 +131,9 @@ function Order() {
         setSelectedMethod(e.target.value);
     };
 
+    // Hàm xử lý thay đổi phương thức thanh toán
     const handlePaymentMethodChange = (e) => {
-        setSelectedPaymentMethod(e.target.value);
+        setSelectedPaymentMethod(e.target.value); // Cập nhật phương thức thanh toán được chọn
     };
 
     const handleProvinceChange = (e) => {
@@ -106,15 +152,79 @@ function Order() {
     // Phí vận chuyển
     const shippingFee = selectedMethod === 'express' ? 20000 : 10000;
 
-    // Số tiền giảm giá
-    const discountAmount = 0;
-
     // Tổng tiền cuối cùng
-    const finalTotal = calculateTotal() + shippingFee - discountAmount;
+    const finalTotal = calculateTotal() + shippingFee - discount;
 
     // Hàm định dạng tiền tệ
     const formatCurrency = (value) => {
         return new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(value);
+    };
+
+    // Hàm để gọi API lấy phương thức thanh toán
+    const fetchPaymentMethods = async () => {
+        try {
+            const methods = await getAllPaymentMethod(); // Gọi API để lấy phương thức thanh toán
+            setPaymentMethods(methods); // Lưu phương thức vào state
+        } catch (error) {
+            console.error('Error fetching payment methods:', error);
+        }
+    };
+
+    // const navigate = useNavigate();
+
+    // Hàm gọi khi nhấn đặt hàng
+    const handleSubmit = async () => {
+        const fullName = document.querySelector('input[name="full_name"]').value; // Lấy giá trị ô input họ và tên
+        const phone = document.querySelector('input[name="phone"]').value; // Lấy giá trị ô input số điện thoại
+        const address = document.querySelector('input[name="address"]').value; // Lấy giá trị ô input địa chỉ
+        // Cập nhật customer với thông tin cần thiết
+        const Customer = {
+            full_name: fullName,
+            phone: phone,
+            address: address,
+            province: selectedProvince, // Thêm tỉnh
+            district: selectedDistrict, // Thêm huyện
+            ward: selectedCommune, // Thêm xã/phường
+        };
+
+        // Cập nhật order với các thông tin cần thiết
+        const Order = {
+            description: '', // Có thể thêm mô tả nếu cần
+            shipping_price: shippingFee, // Thêm phí vận chuyển vào đơn hàng
+            total_price: calculateTotal(), // Thêm tổng tiền vào đơn hàng
+            discount_price: parseInt(discount), // Thêm giá trị giảm giá vào đơn hàng
+            final_price: finalTotal, // Thêm tổng cuối cùng vào đơn hàng
+            payment_method: parseInt(selectedPaymentMethod), // Phương thức thanh toán đã chọn
+            id_voucher: voucherCode, // ID voucher nếu có
+            details: products.map((product, index) => ({
+                id_product: product.id_product,
+                unit_price: product.unit_price,
+                quantity: values[index],
+                // Có thể thêm các thông tin khác nếu cần
+            })), // Danh sách sản phẩm trong đơn hàng
+        };
+        console.log(Customer);
+        console.log(Order);
+
+        try {
+            // Gọi API để tạo đơn hàng
+            const res = await callCreateOrder({
+                customer: Customer, // Truyền thông tin customer đã cập nhật
+                order: Order, // Truyền thông tin order đã cập nhật
+            });
+
+            if (res.payment_url === '') {
+                // thanh toán COD => Chuyển đến trang thanh toán thành công
+                const id_order = res.id_order;
+                navigate(`/CompleteOrder?id_order=${id_order}`);
+            } else {
+                // Chuyển đến trang thanh toán VN Pay
+                window.location.href = res.payment_url;
+            }
+        } catch (error) {
+            console.error('Error creating order:', error);
+            alert('Đặt hàng thất bại 2');
+        }
     };
 
     return (
@@ -126,11 +236,13 @@ function Order() {
                         <h2 className="text-xl">Thông tin giao hàng</h2>
                         <input
                             type="text"
+                            name="full_name"
                             className="block w-full mt-[10px] p-[8px] border rounded-md"
                             placeholder="Họ và tên"
                         />
                         <input
                             type="text"
+                            name="phone"
                             className="block w-full mt-[10px] p-[8px] border rounded-md"
                             placeholder="Số điện thoại"
                         />
@@ -189,6 +301,7 @@ function Order() {
 
                         <input
                             type="text"
+                            name="address"
                             className="block w-full mt-[10px] p-[8px] border rounded-md"
                             placeholder="Địa chỉ chi tiết"
                         />
@@ -228,49 +341,26 @@ function Order() {
                     {/* Phương thức thanh toán */}
                     <div className="space-y-5">
                         <p className="text-lg mt-12">Phương thức thanh toán</p>
-                        <div className="border rounded-md flex items-center p-2">
-                            <input
-                                type="radio"
-                                name="paymentMethod"
-                                value="cod"
-                                className="mr-2"
-                                checked={selectedPaymentMethod === 'cod'}
-                                onChange={handlePaymentMethodChange}
-                            />
-                            <img src={cod} alt="" className="w-[auto] h-[40px] object-cover" />
-                            <p className="ml-2">Thanh toán khi nhận hàng (COD)</p>
-                        </div>
-                        <div className="border rounded-md flex items-center p-2">
-                            <input
-                                type="radio"
-                                name="paymentMethod"
-                                value="bankTransfer"
-                                className="mr-2"
-                                checked={selectedPaymentMethod === 'bankTransfer'}
-                                onChange={handlePaymentMethodChange}
-                            />
-                            <img src={other} alt="" className="w-[auto] h-[40px] object-cover" />
-                            <p className="ml-2">Chuyển khoản ngân hàng</p>
-                        </div>
-                        <div className="border rounded-md flex items-center p-2">
-                            <input
-                                type="radio"
-                                name="paymentMethod"
-                                value="vnpay"
-                                className="mr-2"
-                                checked={selectedPaymentMethod === 'vnpay'}
-                                onChange={handlePaymentMethodChange}
-                            />
-                            <img src={vnpay} alt="" className="w-[auto] h-[40px] object-cover" />
-                            <p className="ml-2">Thanh toán VNPay</p>
-                        </div>
+                        {paymentMethods.map((paymentMethod) => (
+                            <div className="border rounded-md flex items-center p-2" key={paymentMethod.id}>
+                                <input
+                                    type="radio"
+                                    name="paymentMethod" // Đổi tên thành "paymentMethod"
+                                    value={paymentMethod.id}
+                                    className="mr-2"
+                                    checked={selectedPaymentMethod === paymentMethod.id.toString()} // So sánh với id của phương thức thanh toán
+                                    onChange={handlePaymentMethodChange}
+                                />
+                                <p className="ml-2">{paymentMethod.method}</p>
+                            </div>
+                        ))}
                     </div>
 
                     <div className="flex justify-between items-center space-y-5">
-                        <a href="" className="text-blue-500">
+                        <a href="#" className="text-blue-500">
                             Quay lại giỏ hàng
                         </a>
-                        <button className="w-[200px] h-[50px] bg-blue-500 text-white rounded-md">
+                        <button className="w-[200px] h-[50px] bg-blue-500 text-white rounded-md" onClick={handleSubmit}>
                             Hoàn tất đơn hàng
                         </button>
                     </div>
@@ -299,19 +389,33 @@ function Order() {
                         </div>
                     ))}
 
-                    {/* Hiển thị phí vận chuyển */}
+                    {/* input discount code */}
+                    <div className="flex mt-[50px]">
+                        <input
+                            type="text"
+                            className="border border-gray-300 rounded w-[60%] h-[40px]"
+                            placeholder="Nhập mã giảm giá"
+                            defaultValue={discountCodeFromCart}
+                            onChange={(e) => setVoucherCode(e.target.value)}
+                        />
+                        <button
+                            className="bg-black text-white rounded w-[100px] h-[40px] ml-[20px]"
+                            onClick={applyVoucher}
+                        >
+                            Áp dụng
+                        </button>
+                    </div>
+
+                    {/* Hiển thị giảm giá */}
+                    <div className="w-[450px] flex justify-between py-3">
+                        <span>Giảm giá:</span>
+                        <span>-{formatCurrency(discount)}</span>
+                    </div>
+
                     <div className="w-[450px] flex justify-between py-3">
                         <span>Phí vận chuyển:</span>
                         <span>{formatCurrency(shippingFee)}</span>
                     </div>
-
-                    {/* Hiển thị số tiền giảm giá (nếu có) */}
-                    {discountAmount > 0 && (
-                        <div className="w-[450px] flex justify-between py-3">
-                            <span>Giảm giá:</span>
-                            <span>{formatCurrency(discountAmount)}</span>
-                        </div>
-                    )}
 
                     {/* Hiển thị tổng tiền */}
                     <div className="w-[450px] flex justify-between py-3 font-bold">

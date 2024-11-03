@@ -3,14 +3,24 @@ import { SearchOutlined, ShoppingCartOutlined, UserOutlined } from '@ant-design/
 import { Input } from 'antd';
 import './Header.css'; // Giữ lại import CSS của bạn
 import logo from '../image/logo.png';
-import products from './data';
 import { searchProducts } from '../../../Services/ProductService';
 import useAuth from '../../../Hooks/useAuth';
-import productsCart from './dataCart';
 
 import { fetchCartOfUser } from '../../../Services/ProductService';
 
+import { useNavigate } from 'react-router-dom';
+
 function Header() {
+    const navigate = useNavigate();
+    // Điều hướng đến trang Cart
+    const handleToCart = () => {
+        navigate(`/Cart`);
+    };
+    // Điều hướng đến trang Order
+    const handleToOrder = () => {
+        navigate(`/Order`);
+    };
+
     const { auth } = useAuth();
     const [isSearchActive, setIsSearchActive] = useState(false);
     const [showAll, setShowAll] = useState(false);
@@ -37,31 +47,55 @@ function Header() {
         fetchCart();
     }, []);
 
-    // Hàm tính tổng tiền cho sản phẩm được chọn
-    const calculateTotal = () => {
-        return values.reduce((total, quantity, index) => {
-            // Kiểm tra nếu sản phẩm có thuộc tính check = true
-            if (products[index].check) {
-                return total + quantity * products[index].unit_price; // Tính tổng cho sản phẩm đó
-            }
-            return total; // Không tính cho sản phẩm không được chọn
+    // Hàm tính tiền: giá gốc
+    const calculateOriginPrice = () => {
+        if (!Array.isArray(products) || products.length === 0) {
+            return 0; // Nếu products không phải là mảng hoặc rỗng, trả về 0
+        }
+        const originPrice = products.reduce((sum, item) => {
+            return sum + item.original_price * item.quantity;
         }, 0);
+        return originPrice;
     };
 
-    // Hàm tính thành tiền sau giảm giá
-    const calculateFinalTotal = () => {
-        return calculateTotal() - discount;
+    // Hàm tính tiền: giá đã giảm
+    const calculateFinalPrice = () => {
+        if (!Array.isArray(products) || products.length === 0) {
+            return 0; // Nếu products không phải là mảng hoặc rỗng, trả về 0
+        }
+        const finalPrice = products.reduce((sum, item) => {
+            return sum + item.unit_price * item.quantity;
+        }, 0);
+        return finalPrice;
     };
 
+    // Hàm tính discount
+    const calculateDiscount = () => {
+        const price_origin = calculateOriginPrice();
+        const price_final = calculateFinalPrice();
+
+        const discount = price_origin - price_final;
+        setDiscount(discount);
+        return discount;
+    };
+    // Gọi calculateDiscount khi products thay đổi
+    useEffect(() => {
+        calculateDiscount();
+    }, [products]); // Chỉ gọi khi products thay đổi
+
+    // Focus vào ô tìm kiếm
     const handleFocus = () => {
         setIsSearchActive(true);
     };
 
+    // Blur ô tìm kiếm
     const handleBlur = () => {
         setTimeout(() => {
             setIsSearchActive(false);
         }, 200);
     };
+
+    // Fotmat money
     const formatCurrency = (amount) => {
         return new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(amount);
     };
@@ -163,7 +197,7 @@ function Header() {
                                     className="cart-overlay fixed top-0 left-0 w-screen h-screen bg-black bg-opacity-50 z-10"
                                     onClick={handleOverlayClick}
                                 >
-                                    <div className="w-[450px] h-[550px] bg-white mt-[60px] ml-[1000px] p-[20px] rounded-xl shadow-md">
+                                    <div className="w-[450px] max-h-[550px] bg-white mt-[60px] ml-[1000px] p-[20px] rounded-xl shadow-md">
                                         <p className="font-medium text-center text-xl mb-[10px]">GIỎ HÀNG</p>
                                         <div className="max-h-[300px] overflow-y-auto scrollbar">
                                             {products.map((product, index) => (
@@ -191,22 +225,28 @@ function Header() {
                                         <div className="mt-[15px] mb-[15px] space-y-1">
                                             <div className="w-full flex justify-between font-medium text-lg ">
                                                 <p>Tạm tính:</p>
-                                                <p className="">{formatCurrency(150000)}</p>
+                                                <p className="">{formatCurrency(calculateOriginPrice())}</p>
                                             </div>
                                             <div className="w-full flex justify-between font-medium text-lg ">
                                                 <p>Giảm giá:</p>
-                                                <p className="">{formatCurrency(20000)}</p>
+                                                <p className="">{formatCurrency(discount)}</p>
                                             </div>
                                             <div className="w-full flex justify-between font-medium text-lg ">
                                                 <p>Tổng tiền:</p>
-                                                <p className="text-red-500">{formatCurrency(130000)}</p>
+                                                <p className="text-red-500">{formatCurrency(calculateFinalPrice())}</p>
                                             </div>
                                         </div>
                                         <div className="w-full flex justify-between">
-                                            <button className="w-[48%] h-[50px] font-medium rounded border border-black-500">
+                                            <button
+                                                className="w-[48%] h-[50px] font-medium rounded border border-black-500"
+                                                onClick={handleToCart}
+                                            >
                                                 Chỉnh sửa giỏ hàng
                                             </button>
-                                            <button className="w-[48%] h-[50px] font-medium rounded border border-black bg-black text-white">
+                                            <button
+                                                className="w-[48%] h-[50px] font-medium rounded border border-black bg-black text-white"
+                                                onClick={handleToOrder}
+                                            >
                                                 Thanh toán
                                             </button>
                                         </div>

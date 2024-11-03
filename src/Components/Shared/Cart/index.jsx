@@ -1,15 +1,22 @@
-import banhbeo from "../image/banhbeo.jpg";
+import banhbeo from '../image/banhbeo.jpg';
 import { Button, InputNumber, Space } from 'antd';
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 function Cart() {
     const [values, setValues] = useState([1, 1, 1]); // Mặc định 1 sản phẩm cho mỗi sản phẩm
-    const cost = 20000; // Giá của mỗi sản phẩm
     const [discount, setDiscount] = useState(0); // Giá trị giảm giá
+
+    const navigate = useNavigate();
+
+    const handlePlaceOrder = () => {
+        // Điều hướng đến trang Order với mã giảm giá trong URL
+        navigate(`/order?discount=${discount}`);
+    };
 
     // Hàm để giảm số lượng
     const decrease = (index) => {
-        setValues(prevValues => {
+        setValues((prevValues) => {
             const newValues = [...prevValues];
             newValues[index] = Math.max(newValues[index] - 1, 1); // Đảm bảo số lượng không nhỏ hơn 1
             return newValues;
@@ -18,7 +25,7 @@ function Cart() {
 
     // Hàm để tăng số lượng
     const increase = (index) => {
-        setValues(prevValues => {
+        setValues((prevValues) => {
             const newValues = [...prevValues];
             newValues[index] += 1; // Tăng số lượng
             return newValues;
@@ -54,11 +61,13 @@ function Cart() {
                                 <InputNumber
                                     min={0}
                                     value={values[0]}
-                                    onChange={(value) => setValues(prevValues => {
-                                        const newValues = [...prevValues];
-                                        newValues[0] = value; // Cập nhật số lượng cho sản phẩm 1
-                                        return newValues;
-                                    })}
+                                    onChange={(value) =>
+                                        setValues((prevValues) => {
+                                            const newValues = [...prevValues];
+                                            newValues[0] = value; // Cập nhật số lượng cho sản phẩm 1
+                                            return newValues;
+                                        })
+                                    }
                                     style={{ width: 50, textAlign: 'center' }}
                                 />
                                 <Button onClick={() => increase(0)}>+</Button>
@@ -79,11 +88,13 @@ function Cart() {
                                 <InputNumber
                                     min={0}
                                     value={values[1]}
-                                    onChange={(value) => setValues(prevValues => {
-                                        const newValues = [...prevValues];
-                                        newValues[1] = value; // Cập nhật số lượng cho sản phẩm 2
-                                        return newValues;
-                                    })}
+                                    onChange={(value) =>
+                                        setValues((prevValues) => {
+                                            const newValues = [...prevValues];
+                                            newValues[1] = value; // Cập nhật số lượng cho sản phẩm 2
+                                            return newValues;
+                                        })
+                                    }
                                     style={{ width: 50, textAlign: 'center' }}
                                 />
                                 <Button onClick={() => increase(1)}>+</Button>
@@ -104,11 +115,13 @@ function Cart() {
                                 <InputNumber
                                     min={0}
                                     value={values[2]}
-                                    onChange={(value) => setValues(prevValues => {
-                                        const newValues = [...prevValues];
-                                        newValues[2] = value; // Cập nhật số lượng cho sản phẩm 3
-                                        return newValues;
-                                    })}
+                                    onChange={(value) =>
+                                        setValues((prevValues) => {
+                                            const newValues = [...prevValues];
+                                            newValues[2] = value; // Cập nhật số lượng cho sản phẩm 3
+                                            return newValues;
+                                        })
+                                    }
                                     style={{ width: 50, textAlign: 'center' }}
                                 />
                                 <Button onClick={() => increase(2)}>+</Button>
@@ -146,12 +159,9 @@ function Cart() {
                     </div>
 
                     <div className="flex justify-center">
-                        <button className="bg-black text-white rounded w-[400px] h-[56px]">
-                            Đặt hàng
-                        </button>
+                        <button className="bg-black text-white rounded w-[400px] h-[56px]">Đặt hàng</button>
                     </div>
                 </div>
-
             </div>
         </>
     );

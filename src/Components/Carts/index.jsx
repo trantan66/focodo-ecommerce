@@ -10,8 +10,15 @@ import {
     updateCheckInCart,
 } from '../../Services/ProductService';
 import { checkVoucher, getVoucher } from '../../Services/VoucherService';
+import { useNavigate } from 'react-router-dom';
 
 function Carts() {
+    const navigate = useNavigate();
+    // Điều hướng đến trang Order với mã giảm giá trong URL
+    const handlePlaceOrder = () => {
+        navigate(`/Order?discountValue=${discount}&discountCode=${encodeURIComponent(voucherCode)}`);
+    };
+
     const [products, setProducts] = useState([]); // Danh sách sản phẩm trong giỏ hàng
     const [values, setValues] = useState([]); // Số lượng của từng sản phẩm
     const [checkedItems, setCheckedItems] = useState([]); // Trạng thái checkbox
@@ -238,7 +245,9 @@ function Carts() {
                 </div>
 
                 <div className="flex justify-center">
-                    <button className="bg-black text-white rounded w-[400px] h-[56px]">Đặt hàng</button>
+                    <button className="bg-black text-white rounded w-[400px] h-[56px]" onClick={handlePlaceOrder}>
+                        Đặt hàng
+                    </button>
                 </div>
             </div>
         </div>
