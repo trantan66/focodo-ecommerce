@@ -67,7 +67,7 @@ function Productlist(props) {
             {/* rating */}
             <div className="flex items-center mt-[10px]">
                 <a
-                    href={`productdetail/${props.id}`}
+                    href={`/productdetail/${props.id}`}
                     className="inline-block font-semibold text-[14px] px-[20px] py-[6px] rounded-[8px] text-black bg-[#ffffffeb] border-[1px] border-black hover:no-underline hover:text-white hover:bg-black"
                 >
                     Mua ngay
