@@ -65,21 +65,19 @@ export const fetchProductByIdFromAPI = async (id) => {
 };
 export const updateProductToAPI = async (id, product, images, currentImages, removeselectedCategories) => {
     try {
-        const formData = new FormData();
-        const formDataForDescription = new FormData();
-
-        formDataForDescription.append('sub_description', product.sub_description);
-        formDataForDescription.append('main_description', product.main_description);
-
-        const formDataForCategory = new FormData();
-        formDataForCategory.append('id_product', id);
         product.categories.forEach((element) => {
-            addProductToCategory(formDataForCategory, element, id);
+            addProductToCategory(id, element);
         });
 
         removeselectedCategories.forEach((element) => {
             removeProductFromCategory(element, id);
         });
+
+        const formData = new FormData();
+        const formDataForDescription = new FormData();
+
+        formDataForDescription.append('sub_description', product.sub_description);
+        formDataForDescription.append('main_description', product.main_description);
 
         formData.append('product', new Blob([JSON.stringify(product)], { type: 'application/json' }));
         images.forEach((element) => {
@@ -88,7 +86,7 @@ export const updateProductToAPI = async (id, product, images, currentImages, rem
         currentImages.forEach((element) => {
             formData.append('images', element);
         });
-        const response = await axiosInstance.put(`products/update/${id}`, formData, {
+        await axiosInstance.put(`products/update/${id}`, formData, {
             headers: {
                 ...getHeader(),
                 'Content-Type': 'multipart/form-data',
@@ -100,8 +98,6 @@ export const updateProductToAPI = async (id, product, images, currentImages, rem
                 'Content-Type': 'multipart/form-data',
             },
         });
-
-        return response;
     } catch (error) {
         if (error.response) {
             console.error('Error response from server:', error.response.data);
@@ -113,15 +109,17 @@ export const updateProductToAPI = async (id, product, images, currentImages, rem
         throw error;
     }
 };
-export const addProductToCategory = async (formDataForCategory, CategoryId) => {
+export const addProductToCategory = async (productId, categoryId) => {
     try {
         const response = await axiosInstance.post(
-            `categories/addProductToCategory/${CategoryId}`,
-            formDataForCategory,
+            `categories/addProductToCategory/${categoryId}`,
+            null,
+            {
+                params: { id_product: productId },
+            },
             {
                 headers: {
                     ...getHeader(),
-                    'Content-Type': 'multipart/form-data',
                 },
             },
         );
@@ -186,6 +184,40 @@ export const DeleteProduct = async (productId) => {
         } else {
             console.error('Error setting up request:', error.message);
         }
+        throw error;
+    }
+};
+export const fetchProductsBestSellerFromAPI = async () => {
+    try {
+        const response = await axiosInstance.get(`products/getProductsBestSeller`);
+        return {
+            data: response.result,
+        };
+    } catch (error) {
+        console.error('Error fetching product by id:', error);
+        throw error;
+    }
+};
+export const fetchProductsByCategoryFromAPI = async (id, page, size) => {
+    try {
+        const response = await axiosInstance.get(`products/getProductsOfCategory/${id}?page=${page - 1}&size=${size}`);
+        return {
+            data: response.result.data,
+            total: response.result.pagination.total_records,
+        };
+    } catch (error) {
+        console.error('Error fetching product by id:', error);
+        throw error;
+    }
+};
+export const fetchAllProduct = async () => {
+    try {
+        const response = await axiosInstance.get(`products/all`);
+        return {
+            data: response.result,
+        };
+    } catch (error) {
+        console.error('Error fetching products:', error);
         throw error;
     }
 };

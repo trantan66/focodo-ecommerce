@@ -27,7 +27,7 @@ function Category() {
                             </p>
                             <div className="flex items-center ml-[35px] mt-[20px]">
                                 <a
-                                    href=""
+                                    href={`/product/${category.id}`}
                                     className="inline-block font-semibold text-[14px] px-[25px] py-[8px] rounded-[8px] text-black bg-[#ffffffeb] border-[1px] border-black hover:no-underline hover:text-white hover:bg-black"
                                 >
                                     Mua ngay

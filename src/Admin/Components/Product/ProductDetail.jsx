@@ -35,6 +35,7 @@ function ProductDetail() {
   const [currentImages, setCurrentImages] = useState([]);
 
   const [loadingIcon, setLoadingIcon] = useState(false);
+  const [loadingScreen, setLoadingScreen] = useState(false);
 
   useEffect(() => {
     const fetchCategories = async () => {
@@ -79,6 +80,7 @@ function ProductDetail() {
 
   const handleSubmit = async (e) => {
     setLoadingIcon(true);
+    setLoadingScreen(true);
 
     e.preventDefault();
     const categoryIds = selectedCategories.map((category) => category.id);
@@ -99,10 +101,6 @@ function ProductDetail() {
       quantity: parseInt(quantity, 10),
       categories: categoryIds,
     };
-    console.log(product);
-    console.log(images);
-    console.log(currentImages);
-    console.log(categoryRemovedIds);
 
     try {
       await updateProductToAPI(
@@ -112,7 +110,13 @@ function ProductDetail() {
         currentImages,
         categoryRemovedIds
       );
-
+    } catch (error) {
+      console.error("Error updating the product:", error);
+      notification.error({
+        message: "Có lỗi xảy ra!",
+        description: "Không thể cập nhật sản phẩm. Vui lòng thử lại.",
+      });
+    }finally{
       notification.success({
         message: "Cập nhật sản phẩm thành công!",
         description: "Sản phẩm đã được cập nhật.",
@@ -120,32 +124,34 @@ function ProductDetail() {
 
       setTimeout(() => {
         window.location.reload();
-      }, 1000);
-    } catch (error) {
-      console.error("Error updating the product:", error);
-      notification.error({
-        message: "Có lỗi xảy ra!",
-        description: "Không thể cập nhật sản phẩm. Vui lòng thử lại.",
-      });
+      }, 500);
     }
   };
 
   const handleImageUpload = (e) => {
     const files = Array.from(e.target.files);
     setImages(files);
-
+  
     const previewUrls = files.map((file) => URL.createObjectURL(file));
     setImagePreviews(previewUrls);
+  
+    e.target.value = null;
   };
+  
 
   const handleRemoveImage = (indexToRemove) => {
-    setImages((prevImages) =>
-      prevImages.filter((_, index) => index !== indexToRemove)
-    );
+    setImages((prevImages) => {
+      const updatedImages = prevImages.filter((_, index) => index !== indexToRemove);   
+      URL.revokeObjectURL(imagePreviews[indexToRemove]);
+  
+      return updatedImages;
+    });
+  
     setImagePreviews((prevPreviews) =>
       prevPreviews.filter((_, index) => index !== indexToRemove)
     );
   };
+  
 
   const handleCategoryChange = (selectedCategoryName) => {
     const selectedCategory = categories.find(
@@ -200,6 +206,12 @@ function ProductDetail() {
   };
 
   return (
+    <div className="relative">
+    {loadingScreen && (
+        <div className="fixed inset-0 flex items-center justify-center bg-black/50 z-50">
+            <FiLoader className="text-white text-6xl animate-spin" />
+        </div>
+    )}
     <div className="px-4 flex flex-col flex-1">
       <div className="rounded-md flex flex-row justify-between flex-1">
         <span className="text-white text-3xl mb-4">Sản phẩm #{productId}</span>
@@ -429,6 +441,7 @@ function ProductDetail() {
           </form>
         </div>
       </div>
+    </div>
     </div>
   );
 }

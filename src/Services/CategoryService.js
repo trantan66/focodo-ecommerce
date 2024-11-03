@@ -82,17 +82,43 @@ export const fetchCategoryByIdFromAPI = async (id) => {
     }
 };
 const getCategoriesByOptions = async (options) => {
-  const formData = new FormData();
-  options.forEach((option) => {
-      formData.append('options', option);
-  });
+    const formData = new FormData();
+    options.forEach((option) => {
+        formData.append('options', option);
+    });
 
-  const response = await axiosInstance.post('/categories/getCategoriesByOptions', formData, {
-      headers: {
-          'Content-Type': 'multipart/form-data',
-      },
-  });
-  return response;
+    const response = await axiosInstance.post('/categories/getCategoriesByOptions', formData, {
+        headers: {
+            'Content-Type': 'multipart/form-data',
+        },
+    });
+    return response;
 };
 
 export { getCategoriesByOptions };
+
+export const updateCategoryToAPI = async (id, category, image) => {
+    try {
+        const formData = new FormData();
+
+        formData.append('category', new Blob([JSON.stringify(category)], { type: 'application/json' }));
+        formData.append('image', image[0]);
+
+        const response = await axiosInstance.put(`categories/update/${id}`, formData, {
+            headers: {
+                ...getHeader(),
+                'Content-Type': 'multipart/form-data',
+            },
+        });
+        return response;
+    } catch (error) {
+        if (error.response) {
+            console.error('Error response from server:', error.response.data);
+        } else if (error.request) {
+            console.error('No response received:', error.request);
+        } else {
+            console.error('Error setting up request:', error.message);
+        }
+        throw error;
+    }
+};

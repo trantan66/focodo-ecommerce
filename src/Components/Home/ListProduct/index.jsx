@@ -46,9 +46,12 @@ function ListProduct() {
                         </div>
                     </div>
                     <div className="flex items-center justify-center mt-[30px]">
-                        <button className="inline-block font-semibold text-[16px] px-[30px] py-[10px] rounded-[8px] text-black bg-[#ffffffeb] border-[1px] border-black hover:no-underline hover:text-white hover:bg-black">
+                        <a
+                            href={`/product/${category}`}
+                            className="inline-block font-semibold text-[16px] px-[30px] py-[10px] rounded-[8px] text-black bg-[#ffffffeb] border-[1px] border-black hover:no-underline hover:text-white hover:bg-black"
+                        >
                             Xem thêm
-                        </button>
+                        </a>
                     </div>
                 </div>
             )}

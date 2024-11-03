@@ -1,9 +1,12 @@
-import React, { useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { Pagination } from 'antd';
-import { useNavigate } from 'react-router-dom';
-import products from '../Home/ListProduct/data';
+import { useNavigate, useParams } from 'react-router-dom';
 import { StarFilled, StarOutlined } from '@ant-design/icons';
 import Rating from 'react-rating';
+import { fetchAllProduct, fetchProductsByCategoryFromAPI, fetchProductsFromAPI } from '../../Services/ProductService';
+import Filter from './Filter';
+import ProductCard from '../Shared/ProductCard';
+
 const ArrangeFilter = [
     {
         key: 'ByRating',
@@ -58,14 +61,14 @@ function Productlist(props) {
                     </span>
                 </div>
                 <div className="flex items-center justify-center leading-[18px] h-[18px] p-[5px] bg-green-500 rounded-[8px]">
-                    <span className="inline-block text-white font-bold text-[15px]">{props.Discount}%</span>
+                    <span className="inline-block text-white font-bold text-[15px]">{props.Discount * 100}%</span>
                 </div>
             </div>
 
             {/* rating */}
             <div className="flex items-center mt-[10px]">
                 <a
-                    href=""
+                    href={`/productdetail/${props.id}`}
                     className="inline-block font-semibold text-[14px] px-[20px] py-[6px] rounded-[8px] text-black bg-[#ffffffeb] border-[1px] border-black hover:no-underline hover:text-white hover:bg-black"
                 >
                     Mua ngay
@@ -76,76 +79,90 @@ function Productlist(props) {
 }
 
 function ProductList() {
+    const navigate = useNavigate();
+    const [products, setProducts] = useState([]);
     const [currentPage, setCurrentPage] = useState(1);
-    const [selectedCategory, setSelectedCategory] = useState('');
+    const [searchTerm, setSearchTerm] = useState('');
     const [productsPerPage, setProductsPerPage] = useState(6);
+    const [totalProducts, setTotalProducts] = useState(0);
 
-    const indexOfLastProduct = currentPage * productsPerPage;
-    const indexOfFirstProduct = indexOfLastProduct - productsPerPage;
+    const [selectedCategory, setSelectedCategory] = useState({});
+    const { categoryId = 1 } = useParams();
 
-    const handlePageChange = (page) => {
+    const fetchProducts = useCallback(async () => {
+        try {
+            const { data, total } = await fetchProductsByCategoryFromAPI(categoryId, currentPage, productsPerPage);
+            setProducts(data);
+            setTotalProducts(total);
+            console.log(data);
+        } catch (error) {
+            console.error('Lỗi khi lấy sản phẩm:', error);
+        }
+    }, [currentPage, productsPerPage]);
+
+    useEffect(() => {
+        fetchProducts();
+    }, [fetchProducts]);
+
+    // const filteredData = useMemo(
+    //     () =>
+    //         Array.isArray(products)
+    //             ? products.filter((product) => product.name.toLowerCase().includes(searchTerm.toLowerCase()))
+    //             : [],
+    //     [products, searchTerm],
+    // );
+
+    const handlePageChange = useCallback((page) => {
         setCurrentPage(page);
-    };
-    const filterProducts = (products, value) => {
-        if (value === 'Giá từ thấp đến cao') {
-            return products.sort((a, b) => parseFloat(a.salePrice) - parseFloat(b.salePrice));
-        }
+    }, []);
 
-        if (value === 'Giá từ cao đến thấp') {
-            return products.sort((a, b) => parseFloat(b.salePrice) - parseFloat(a.salePrice));
-        }
-
-        if (value === 'Theo đánh giá') {
-            return products.sort((a, b) => b.rating - a.rating);
-        }
-
-        return products;
-    };
-    const currentProducts = filterProducts(products, selectedCategory).slice(indexOfFirstProduct, indexOfLastProduct);
+    const handleProductsPerPageChange = useCallback((value) => {
+        setProductsPerPage(value);
+    }, []);
 
     return (
-        <div className="">
-            <div className="flex ml-10">
-                <span>Số lượng sản phẩm: </span>
-                <span className="font-bold ml-1">85</span>
+        <div className="flex justify-center mx-auto my-4 w-[1200px]">
+            <Filter />
+            <div className="">
+                <div className="flex ml-10">
+                    <span>Số lượng sản phẩm: </span>
+                    <span className="font-bold ml-1">{totalProducts}</span>
 
-                <select
-                    value={selectedCategory}
-                    onChange={(e) => setSelectedCategory(e.target.value)}
-                    className="border border-gray-300 p-2 rounded ml-auto"
-                >
-                    <option value="">Tất cả</option>
-                    {ArrangeFilter.map((item) => (
-                        <option key={item.key} value={item.value}>
-                            {item.value}
-                        </option>
-                    ))}
-                </select>
-            </div>
+                    <select
+                        value={selectedCategory}
+                        onChange={(e) => setSelectedCategory(e.target.value)}
+                        className="border border-gray-300 p-2 rounded ml-auto"
+                    >
+                        <option value="">Tất cả</option>
+                        {ArrangeFilter.map((item) => (
+                            <option key={item.key} value={item.value}>
+                                {item.value}
+                            </option>
+                        ))}
+                    </select>
+                </div>
 
-            <div className="grid grid-cols-3 ml-10 mt-3 gap-4 ">
-                {currentProducts.map((item, index) => (
-                    <Productlist
-                        id={item.id}
-                        key={item.id}
-                        rating={item.rating}
-                        image={item.image}
-                        Name={item.Name}
-                        salePrice={item.salePrice}
-                        OriginalPrice={item.OriginalPrice}
-                        Discount={item.Discount}
+                <div className="grid grid-cols-3 ml-10 mt-3 gap-4 ">
+                    {products.length > 0 ? (
+                        products.map((item, index) => (
+                            <div key={index}>
+                                <ProductCard product={item} />
+                            </div>
+                        ))
+                    ) : (
+                        <span className=" text-2xl ">Không có sản phẩm nào </span>
+                    )}
+                </div>
+                <div className="mt-5  ">
+                    <Pagination
+                        showSizeChanger={false}
+                        current={currentPage}
+                        onChange={handlePageChange}
+                        total={totalProducts}
+                        pageSize={productsPerPage}
+                        align="center"
                     />
-                ))}
-            </div>
-            <div className="mt-5">
-                <Pagination
-                    showSizeChanger={false}
-                    current={currentPage}
-                    onChange={handlePageChange}
-                    total={products.length}
-                    pageSize={productsPerPage}
-                    className="flex justify-center items-center"
-                />
+                </div>
             </div>
         </div>
     );

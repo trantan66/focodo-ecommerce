@@ -22,7 +22,7 @@ function Navigation() {
         },
         {
             label: (
-                <Link to="product" className="no-underline hover:no-underline">
+                <Link to="product/1" className="no-underline hover:no-underline">
                     Danh mục sản phẩm
                 </Link>
             ),
