@@ -2,9 +2,17 @@ import { useEffect, useState } from 'react';
 import { CheckCircleOutlined } from '@ant-design/icons';
 import logo from '../image/logo.png';
 import { useLocation } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
+
 import { getOrderById } from '../../../Services/OrderService';
 
 function CompleteOrder() {
+    // chuyển về trang chủ
+    const navigate = useNavigate();
+    const backToIndex = () => {
+        navigate(`/`);
+    };
+
     const location = useLocation();
     const queryParams = new URLSearchParams(location.search);
     const id_order = queryParams.get('id_order') || 0;
@@ -80,7 +88,9 @@ function CompleteOrder() {
                                 Liên hệ chúng tôi
                             </a>
                         </p>
-                        <button className="w-[175px] h-[50px] bg-black text-white">Hoàn tất</button>
+                        <button className="w-[175px] h-[50px] bg-black text-white" onClick={backToIndex}>
+                            Hoàn tất
+                        </button>
                     </div>
                 </div>
 
@@ -97,7 +107,7 @@ function CompleteOrder() {
                                 <div className="flex-grow flex justify-between">
                                     <div className="flex flex-col">
                                         <span>{product.product.name}</span>
-                                        <span>Số lượng: {product.product.quantity}</span>
+                                        <span>Số lượng: {product.quantity}</span>
                                     </div>
                                     <div>
                                         <span>{formatCurrency(product.product.sell_price)}</span>

@@ -25,6 +25,8 @@ import AdminReview from './Admin/Pages/Review';
 import AdminAddProduct from './Admin/Components/AddProduct/AddProduct';
 
 import CompleteOrder from './Components/Shared/CompleteOrder';
+import ErrorOrder from './Components/Shared/ErrorOrder';
+
 const roles = {
     user: 'USER',
     admin: 'ADMIN',
@@ -65,6 +67,7 @@ function App() {
                     </Route>
                 </Route>
                 <Route path="/CompleteOrder" element={<CompleteOrder />}></Route>
+                <Route path="/ErrorOrder" element={<ErrorOrder />}></Route>
             </Routes>
         </Router>
     );

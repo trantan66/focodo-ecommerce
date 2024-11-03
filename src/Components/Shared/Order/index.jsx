@@ -222,8 +222,7 @@ function Order() {
                 window.location.href = res.payment_url;
             }
         } catch (error) {
-            console.error('Error creating order:', error);
-            alert('Đặt hàng thất bại 2');
+            navigate(`/ErrorOrder`);
         }
     };
 
