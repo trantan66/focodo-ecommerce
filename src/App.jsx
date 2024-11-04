@@ -47,8 +47,6 @@ function App() {
                     <Route path="cart" element={<Cart />}></Route>
                     <Route path="order" element={<Order />}></Route>
                     <Route path="orderdetail" element={<OrderDetail />}></Route>
-                    <Route path="CompleteOrder" element={<CompleteOrder />}></Route>
-                    <Route path="ErrorOrder" element={<ErrorOrder />}></Route>
                     <Route element={<AuthRoutes />}>
                         <Route path="login" element={<Login />}></Route>
                     </Route>
@@ -72,6 +70,9 @@ function App() {
                         <Route path="profile" element={<AdminProfile />} />
                     </Route>
                 </Route>
+
+                <Route path="CompleteOrder" element={<CompleteOrder />}></Route>
+                <Route path="ErrorOrder" element={<ErrorOrder />}></Route>
             </Routes>
         </Router>
     );
