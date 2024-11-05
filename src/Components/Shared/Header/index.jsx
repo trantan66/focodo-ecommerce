@@ -36,11 +36,7 @@ function Header() {
     // check xem đã đăng nhập hay chưa
     const { auth } = useAuth();
     const checkLogin = localStorage.getItem('access_token');
-    if (checkLogin) {
-        console.log('da dang nhap');
-    } else {
-        console.log('chua dang nhap');
-    }
+
     const [isSearchActive, setIsSearchActive] = useState(false);
     const [showAll, setShowAll] = useState(false);
     const [valueInput, setValueInput] = useState('');
@@ -79,6 +75,13 @@ function Header() {
     // đăng nhập
     const handleLogin = () => {
         navigate('/Login');
+        setIsCartVisible(false);
+        setIsUserVisible(false);
+    };
+
+    // đăng kí
+    const handleRegister = () => {
+        navigate('/register');
         setIsCartVisible(false);
         setIsUserVisible(false);
     };
@@ -316,7 +319,7 @@ function Header() {
                                                 <AiOutlineLogin className="w-[30px] text-xl mr-[20px] mt-[5px]" />{' '}
                                                 <span className="text-lg">Đăng nhập</span>
                                             </div>
-                                            <div className="cursor-pointer flex align-center">
+                                            <div className="cursor-pointer flex align-center" onClick={handleRegister}>
                                                 <AiOutlineUserAdd className="w-[30px] text-xl mr-[20px] mt-[5px]" />{' '}
                                                 <span className="text-lg">Đăng kí</span>
                                             </div>

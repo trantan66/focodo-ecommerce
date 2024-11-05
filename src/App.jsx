@@ -10,7 +10,7 @@ import Order from './Pages/LayoutOrder';
 import OrderDetail from './Pages/OrderDetail';
 import Search from './Pages/Search';
 import Login from './Pages/Login';
-import SignUp from './Pages/SignUp';
+import Register from './Pages/Register';
 import PrivateRoutes from './Roots/PrivateRoutes';
 import AuthRoutes from './Roots/AuthRoutes';
 import AdminLayout from './Admin/Components/Shared/Layout';
@@ -47,7 +47,7 @@ function App() {
                     <Route path="orderdetail" element={<OrderDetail />}></Route>
                     <Route element={<AuthRoutes />}>
                         <Route path="login" element={<Login />}></Route>
-                        <Route path="SignUp" element={<SignUp />}></Route>
+                        <Route path="register" element={<Register />}></Route>
                     </Route>
                     <Route element={<PrivateRoutes allowedRoles={[roles.user, roles.admin]} />}>
                         <Route path="userprofile" element={<UserProfile />} />
