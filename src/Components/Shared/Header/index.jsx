@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from 'react';
-import { SearchOutlined, ShoppingCartOutlined, UserOutlined } from '@ant-design/icons';
+import { SearchOutlined, ShoppingCartOutlined, UserOutlined, ProfileOutlined, LogoutOutlined } from '@ant-design/icons';
+import { AiOutlineUser, AiOutlineLogout, AiOutlineLogin, AiOutlineUserAdd } from 'react-icons/ai';
 import { Input } from 'antd';
 import './Header.css'; // Giữ lại import CSS của bạn
 import logo from '../image/logo.png';
 import { searchProducts } from '../../../Services/ProductService';
 import useAuth from '../../../Hooks/useAuth';
-
 import { fetchCartOfUser } from '../../../Services/ProductService';
 
 import { useNavigate } from 'react-router-dom';
@@ -15,20 +15,37 @@ function Header() {
     // Điều hướng đến trang Cart
     const handleToCart = () => {
         navigate(`/Cart`);
+        // đóng giỏ hàng nhỏ,userProfile
+        setIsCartVisible(false);
+        setIsUserVisible(false);
     };
     // Điều hướng đến trang Order
-    const handleToProductDetail = () => {
-        navigate(`/productdetail`);
-    };
     const handleToOrder = () => {
         navigate(`/Order`);
+        // đóng giỏ hàng nhỏ,userProfile
+        setIsCartVisible(false);
+        setIsUserVisible(false);
+    };
+    // Điều hướng đến trang UserProfile
+    const handleToUserProfile = () => {
+        navigate('/userprofile');
+        setIsCartVisible(false);
+        setIsUserVisible(false);
     };
 
+    // check xem đã đăng nhập hay chưa
     const { auth } = useAuth();
+    const checkLogin = localStorage.getItem('access_token');
+    if (checkLogin) {
+        console.log('da dang nhap');
+    } else {
+        console.log('chua dang nhap');
+    }
     const [isSearchActive, setIsSearchActive] = useState(false);
     const [showAll, setShowAll] = useState(false);
     const [valueInput, setValueInput] = useState('');
     const [isCartVisible, setIsCartVisible] = useState(false);
+    const [isUserVisible, setIsUserVisible] = useState(false);
 
     const [products, setProducts] = useState([]); // Danh sách sản phẩm trong giỏ hàng
     const [values, setValues] = useState([]); // Số lượng của từng sản phẩm
@@ -49,6 +66,22 @@ function Header() {
     useEffect(() => {
         fetchCart();
     }, []);
+
+    // đăng xuất
+    const logout = async () => {
+        localStorage.removeItem('access_token');
+        localStorage.removeItem('refresh_token');
+        navigate('/');
+        setIsCartVisible(false);
+        setIsUserVisible(false);
+    };
+
+    // đăng nhập
+    const handleLogin = () => {
+        navigate('/Login');
+        setIsCartVisible(false);
+        setIsUserVisible(false);
+    };
 
     // Hàm tính tiền: giá gốc
     const calculateOriginPrice = () => {
@@ -109,10 +142,14 @@ function Header() {
     const toggleCart = () => {
         setIsCartVisible(!isCartVisible);
     };
+    const toggleUser = () => {
+        setIsUserVisible(!isUserVisible);
+    };
 
     const handleOverlayClick = (e) => {
         if (e.target.className.includes('cart-overlay')) {
             setIsCartVisible(false);
+            setIsUserVisible(false);
         }
     };
     useEffect(() => {
@@ -256,7 +293,37 @@ function Header() {
                                     </div>
                                 </div>
                             )}
-                            <UserOutlined />
+                            <UserOutlined onClick={toggleUser} />
+                            {isUserVisible && (
+                                <div
+                                    className="cart-overlay fixed top-0 left-0 w-screen h-screen bg-black bg-opacity-50 z-10"
+                                    onClick={handleOverlayClick}
+                                >
+                                    {checkLogin ? (
+                                        <div className="w-[250px] h-[150px] bg-white mt-[60px] ml-[1225px] p-[20px] rounded-xl shadow-md">
+                                            <div className="cursor-pointer" onClick={handleToUserProfile}>
+                                                <ProfileOutlined className="w-[30px] text-xl mt-[20px] mb-[20px]" />{' '}
+                                                <span className="text-lg">Hồ sơ cá nhân</span>
+                                            </div>
+                                            <div className="cursor-pointer" onClick={logout}>
+                                                <LogoutOutlined className="w-[30px] text-xl" />{' '}
+                                                <span className="text-lg">Đăng xuất</span>
+                                            </div>
+                                        </div>
+                                    ) : (
+                                        <div className="w-[250px] h-[150px] bg-white mt-[60px] ml-[1225px] p-[20px] rounded-xl shadow-md space-y-5">
+                                            <div className="cursor-pointer flex align-center" onClick={handleLogin}>
+                                                <AiOutlineLogin className="w-[30px] text-xl mr-[20px] mt-[5px]" />{' '}
+                                                <span className="text-lg">Đăng nhập</span>
+                                            </div>
+                                            <div className="cursor-pointer flex align-center">
+                                                <AiOutlineUserAdd className="w-[30px] text-xl mr-[20px] mt-[5px]" />{' '}
+                                                <span className="text-lg">Đăng kí</span>
+                                            </div>
+                                        </div>
+                                    )}
+                                </div>
+                            )}
                         </div>
                     </div>
                 </div>
