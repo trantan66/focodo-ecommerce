@@ -11,6 +11,10 @@ import OrderDetail from './Pages/OrderDetail';
 import Search from './Pages/Search';
 import Login from './Pages/Login';
 import Register from './Pages/Register';
+import ForgotPassword1 from './Pages/ForgotPassword1';
+import ForgotPassword2 from './Pages/ForgotPassword2';
+import ForgotPassword3 from './Pages/ForgotPassword3';
+
 import PrivateRoutes from './Roots/PrivateRoutes';
 import AuthRoutes from './Roots/AuthRoutes';
 import AdminLayout from './Admin/Components/Shared/Layout';
@@ -48,6 +52,9 @@ function App() {
                     <Route element={<AuthRoutes />}>
                         <Route path="login" element={<Login />}></Route>
                         <Route path="register" element={<Register />}></Route>
+                        <Route path="forgotpassword1" element={<ForgotPassword1 />}></Route>
+                        <Route path="forgotpassword2" element={<ForgotPassword2 />}></Route>
+                        <Route path="forgotpassword3" element={<ForgotPassword3 />}></Route>
                     </Route>
                     <Route element={<PrivateRoutes allowedRoles={[roles.user, roles.admin]} />}>
                         <Route path="userprofile" element={<UserProfile />} />

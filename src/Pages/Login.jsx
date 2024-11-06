@@ -83,7 +83,7 @@ const Login = () => {
                                 </div>
                                 <div className="flex items-center justify-between">
                                     <a
-                                        href="#"
+                                        href="forgotpassword1"
                                         className="text-sm font-medium text-primary-600 hover:no-underline dark:text-primary-500"
                                     >
                                         Quên mật khẩu?

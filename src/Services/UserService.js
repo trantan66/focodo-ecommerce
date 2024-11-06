@@ -23,3 +23,11 @@ const getUserFromToken = async () => {
 };
 
 export { getUserFromToken };
+
+export const callVerifyEmail = async (email) => {
+    return await axiosInstance.post(`/auth/verifyEmail?email=${email}`);
+};
+
+export const callVerifyOtp = async (email, otp) => {
+    return await axiosInstance.post(`/auth/verifyOtp?email=${email}&otp=${otp}`);
+};
