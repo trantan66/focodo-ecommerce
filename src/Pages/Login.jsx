@@ -99,7 +99,7 @@ const Login = () => {
                                 <p className="text-sm font-light text-gray-500 dark:text-gray-400">
                                     Bạn chưa có tài khoản?{' '}
                                     <a
-                                        href="#"
+                                        href="/register"
                                         className="font-medium text-primary-600 hover:no-underline dark:text-primary-500"
                                     >
                                         Đăng ký

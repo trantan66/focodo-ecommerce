@@ -1,19 +1,33 @@
 import React, { useState } from 'react';
+import { callResetPassword } from '../Services/UserService';
+import { useNavigate, useLocation } from 'react-router-dom';
 
 const ForgotPassword3 = () => {
     const [newPassword, setNewPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
     const [error, setError] = useState('');
 
-    const handleConfirmClick = () => {
+    const navigate = useNavigate();
+    const location = useLocation(); // Lấy thông tin từ location
+    const { email } = location.state || {}; // Lấy giá trị email từ state, nếu có
+
+    const handleConfirmClick = async () => {
         if (!newPassword || !confirmPassword) {
             setError('Vui lòng nhập tất cả các trường');
         } else if (newPassword !== confirmPassword) {
             setError('Mật khẩu không khớp');
+        } else if (newPassword.length < 6) {
+            setError('Mật khẩu phải có ít nhất 6 kí tự');
         } else {
             setError('');
             // Logic để đặt lại mật khẩu sẽ được thực hiện ở đây
-            console.log('Mật khẩu mới đã được đặt:', newPassword);
+            const res = await callResetPassword(email, newPassword);
+            if (res && res.result) {
+                alert('Cập nhật mật khẩu thành công!');
+                navigate('/login'); // Chuyển về màn hình đăng nhập
+            } else {
+                setError('Có lỗi xảy ra, vui lòng thử lại');
+            }
         }
     };
 

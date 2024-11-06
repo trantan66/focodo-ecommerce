@@ -31,3 +31,7 @@ export const callVerifyEmail = async (email) => {
 export const callVerifyOtp = async (email, otp) => {
     return await axiosInstance.post(`/auth/verifyOtp?email=${email}&otp=${otp}`);
 };
+
+export const callResetPassword = async (email, password) => {
+    return await axiosInstance.post(`/auth/resetPassword?email=${email}&password=${password}`);
+};
