@@ -29,6 +29,7 @@ const Login = () => {
                     navigate('/admin', { replace: true });
                 } else {
                     navigate('/userprofile', { replace: true });
+                    window.location.reload();
                 }
             }
         } catch (e) {

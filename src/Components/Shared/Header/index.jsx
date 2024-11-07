@@ -70,6 +70,7 @@ function Header() {
         navigate('/');
         setIsCartVisible(false);
         setIsUserVisible(false);
+        window.location.reload();
     };
 
     // đăng nhập

@@ -7,10 +7,12 @@ const ForgotPassword2 = () => {
     const [timer, setTimer] = useState(60);
     const [isTimerActive, setIsTimerActive] = useState(true);
     const [error, setError] = useState('');
+    const [isLoading, setIsLoading] = useState(false); // Trạng thái loading cho xác thực OTP
+    const [isResendLoading, setIsResendLoading] = useState(false); // Trạng thái loading cho gửi lại OTP
 
     const navigate = useNavigate();
-    const location = useLocation(); // Lấy thông tin từ location
-    const { email } = location.state || {}; // Lấy giá trị email từ state, nếu có
+    const location = useLocation();
+    const { email } = location.state || {};
 
     useEffect(() => {
         let interval = null;
@@ -29,37 +31,37 @@ const ForgotPassword2 = () => {
             setError('Vui lòng nhập mã OTP của bạn');
         } else {
             setError('');
+            setIsLoading(true); // Bắt đầu trạng thái loading
             try {
-                const res = await callVerifyOtp(email, otp); // Gọi API verify OTP
-
+                const res = await callVerifyOtp(email, otp);
                 if (res && res.result) {
-                    navigate('/forgotpassword3', { state: { email } }); // Chuyển qua màn hình đặt mật khẩu mới
+                    navigate('/forgotpassword3', { state: { email } });
                 } else {
-                    setError('Mã OTP không hợp lệ');
+                    setError('Mã OTP không hợp lệ');
                 }
             } catch (error) {
-                setError('Có lỗi khi xác thực OTP');
+                setError('Có lỗi khi xác thực OTP');
             }
+            setIsLoading(false); // Kết thúc trạng thái loading
         }
     };
 
-    // Hàm gởi lại mã Otp
     const handleResendOtp = async () => {
         setTimer(60);
         setIsTimerActive(true);
         setError('');
-        // Logic gửi lại mã OTP sẽ được thực hiện ở đây
+        setIsResendLoading(true); // Bắt đầu trạng thái loading cho gửi lại OTP
         try {
-            const res = await callVerifyEmail(email); // Gọi API gửi lại mã OTP
-
+            const res = await callVerifyEmail(email);
             if (res && res.result) {
-                alert('Thành công Mã OTP đã được gửi lại');
+                alert('Thành công! Mã OTP đã được gửi lại');
             } else {
                 setError('Có lỗi xảy ra khi gửi lại mã OTP');
             }
         } catch (error) {
-            alert('Có lỗi xảy ra khi gửi lại mã OTP DB');
+            alert('Có lỗi xảy ra khi gửi lại mã OTP');
         }
+        setIsResendLoading(false); // Kết thúc trạng thái loading
     };
 
     return (
@@ -84,9 +86,38 @@ const ForgotPassword2 = () => {
 
                     <button
                         onClick={handleConfirmClick}
-                        className="w-full text-white bg-primaryColor focus:outline-none hover:opacity-[0.95] font-medium rounded-lg text-sm px-5 py-2.5 text-center"
+                        disabled={isLoading} // Vô hiệu hóa khi đang tải
+                        className={`w-full text-white bg-primaryColor focus:outline-none font-medium rounded-lg text-sm px-5 py-2.5 text-center ${
+                            isLoading ? 'opacity-70 cursor-not-allowed' : 'hover:opacity-[0.95]'
+                        }`}
                     >
-                        Xác nhận
+                        {isLoading ? (
+                            <div className="flex items-center justify-center">
+                                <svg
+                                    className="w-5 h-5 mr-2 text-white animate-spin"
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    fill="none"
+                                    viewBox="0 0 24 24"
+                                >
+                                    <circle
+                                        className="opacity-25"
+                                        cx="12"
+                                        cy="12"
+                                        r="10"
+                                        stroke="currentColor"
+                                        strokeWidth="4"
+                                    ></circle>
+                                    <path
+                                        className="opacity-75"
+                                        fill="currentColor"
+                                        d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"
+                                    ></path>
+                                </svg>
+                                Đang xử lý...
+                            </div>
+                        ) : (
+                            'Xác nhận'
+                        )}
                     </button>
 
                     <div className="mt-4 text-center">
@@ -97,8 +128,40 @@ const ForgotPassword2 = () => {
                         ) : (
                             <div>
                                 <span className="text-sm text-gray-700">Thời gian hết hạn!</span>
-                                <button onClick={handleResendOtp} className="text-blue-600 hover:underline ml-2">
-                                    Gửi lại mã
+                                <button
+                                    onClick={handleResendOtp}
+                                    disabled={isResendLoading} // Vô hiệu hóa khi đang tải lại OTP
+                                    className={`text-blue-600 hover:underline ml-2 ${
+                                        isResendLoading ? 'opacity-70 cursor-not-allowed' : ''
+                                    }`}
+                                >
+                                    {isResendLoading ? (
+                                        <div className="flex items-center justify-center">
+                                            <svg
+                                                className="w-4 h-4 mr-1 text-blue-600 animate-spin"
+                                                xmlns="http://www.w3.org/2000/svg"
+                                                fill="none"
+                                                viewBox="0 0 24 24"
+                                            >
+                                                <circle
+                                                    className="opacity-25"
+                                                    cx="12"
+                                                    cy="12"
+                                                    r="10"
+                                                    stroke="currentColor"
+                                                    strokeWidth="4"
+                                                ></circle>
+                                                <path
+                                                    className="opacity-75"
+                                                    fill="currentColor"
+                                                    d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"
+                                                ></path>
+                                            </svg>
+                                            Đang gửi...
+                                        </div>
+                                    ) : (
+                                        'Gửi lại mã'
+                                    )}
                                 </button>
                             </div>
                         )}

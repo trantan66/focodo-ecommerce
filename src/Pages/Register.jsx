@@ -9,6 +9,7 @@ const Register = () => {
     const [phone, setPhone] = useState('');
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
+    const [error, setError] = useState('');
     const navigate = useNavigate();
 
     // useEffect để clear các ô input khi component được render
@@ -18,10 +19,23 @@ const Register = () => {
         setPhone('');
         setUsername('');
         setPassword('');
+        setError('');
     }, []);
 
     const handleRegister = async (e) => {
         e.preventDefault();
+
+        // Kiểm tra các điều kiện đầu vào
+        if (!fullName || !email || !phone || !username || !password) {
+            setError('Vui lòng điền đầy đủ các trường.');
+            return;
+        }
+
+        if (password.length < 6) {
+            setError('Mật khẩu phải có ít nhất 6 ký tự.');
+            return;
+        }
+
         try {
             const response = await register({ fullName, email, phone, username, password });
             if (response && response.result) {
@@ -30,10 +44,12 @@ const Register = () => {
                 setPhone('');
                 setUsername('');
                 setPassword('');
+                setError('');
                 navigate('/login', { replace: true });
             }
         } catch (e) {
             console.log(e);
+            setError('Đăng ký thất bại, vui lòng thử lại.');
         }
     };
 
@@ -134,6 +150,8 @@ const Register = () => {
                                         onChange={(e) => setPassword(e.target.value)}
                                     />
                                 </div>
+                                {error && <div className="p-2 text-sm text-red-600 bg-red-100 rounded">{error}</div>}
+
                                 <button
                                     type="submit"
                                     className="w-full text-white bg-primaryColor focus:outline-none hover:opacity-[0.95] font-medium rounded-lg text-sm px-5 py-2.5 text-center"
