@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { CloseCircleOutlined } from '@ant-design/icons';
 import logo from '../image/logo.png';
 import { useLocation } from 'react-router-dom';
-import { getOrderById } from '../../../Services/OrderService';
+import { fetchOrderByIdFromAPI } from '../../../Services/OrderService';
 import { useNavigate } from 'react-router-dom';
 
 function ErrorOrder() {
@@ -21,7 +21,7 @@ function ErrorOrder() {
 
     const getOrder = async () => {
         try {
-            const orderInfo = await getOrderById(id_order);
+            const orderInfo = await fetchOrderByIdFromAPI(id_order);
             console.log(orderInfo); // Kiểm tra cấu trúc của orderInfo
             setOrder(orderInfo);
             setCustomer(orderInfo.customer);

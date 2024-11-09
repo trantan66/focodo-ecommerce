@@ -65,21 +65,19 @@ export const fetchProductByIdFromAPI = async (id) => {
 };
 export const updateProductToAPI = async (id, product, images, currentImages, removeselectedCategories) => {
     try {
-        const formData = new FormData();
-        const formDataForDescription = new FormData();
-
-        formDataForDescription.append('sub_description', product.sub_description);
-        formDataForDescription.append('main_description', product.main_description);
-
-        const formDataForCategory = new FormData();
-        formDataForCategory.append('id_product', id);
         product.categories.forEach((element) => {
-            addProductToCategory(formDataForCategory, element, id);
+            addProductToCategory(id, element);
         });
 
         removeselectedCategories.forEach((element) => {
             removeProductFromCategory(element, id);
         });
+
+        const formData = new FormData();
+        const formDataForDescription = new FormData();
+
+        formDataForDescription.append('sub_description', product.sub_description);
+        formDataForDescription.append('main_description', product.main_description);
 
         formData.append('product', new Blob([JSON.stringify(product)], { type: 'application/json' }));
         images.forEach((element) => {
@@ -88,7 +86,7 @@ export const updateProductToAPI = async (id, product, images, currentImages, rem
         currentImages.forEach((element) => {
             formData.append('images', element);
         });
-        const response = await axiosInstance.put(`products/update/${id}`, formData, {
+        await axiosInstance.put(`products/update/${id}`, formData, {
             headers: {
                 ...getHeader(),
                 'Content-Type': 'multipart/form-data',
@@ -100,8 +98,6 @@ export const updateProductToAPI = async (id, product, images, currentImages, rem
                 'Content-Type': 'multipart/form-data',
             },
         });
-
-        return response;
     } catch (error) {
         if (error.response) {
             console.error('Error response from server:', error.response.data);
@@ -113,15 +109,17 @@ export const updateProductToAPI = async (id, product, images, currentImages, rem
         throw error;
     }
 };
-export const addProductToCategory = async (formDataForCategory, CategoryId) => {
+export const addProductToCategory = async (productId, categoryId) => {
     try {
         const response = await axiosInstance.post(
-            `categories/addProductToCategory/${CategoryId}`,
-            formDataForCategory,
+            `categories/addProductToCategory/${categoryId}`,
+            null,
+            {
+                params: { id_product: productId },
+            },
             {
                 headers: {
                     ...getHeader(),
-                    'Content-Type': 'multipart/form-data',
                 },
             },
         );
@@ -189,154 +187,37 @@ export const DeleteProduct = async (productId) => {
         throw error;
     }
 };
-
-// Hàm lấy giỏ hàng của người dùng
-export const fetchCartOfUser = async () => {
+export const fetchProductsBestSellerFromAPI = async () => {
     try {
-        const response = await axiosInstance.get('carts/getCartOfUser');
-        return response.result; // Sử dụng response.data.result
+        const response = await axiosInstance.get(`products/getProductsBestSeller`);
+        return {
+            data: response.result,
+        };
     } catch (error) {
-        console.error('Error fetching user cart:', error);
+        console.error('Error fetching product by id:', error);
         throw error;
     }
 };
-
-// Hàm thêm sản phẩm vào giỏ hàng
-export const addProductToCart = async (cartRequest) => {
+export const fetchProductsByCategoryFromAPI = async (id, page, size) => {
     try {
-        const response = await axiosInstance.post('carts/addCart', cartRequest, {
-            headers: {
-                ...getHeader(),
-            },
-        });
-        return response.result; // Trả về response.data.result nếu cần
+        const response = await axiosInstance.get(`products/getProductsOfCategory/${id}?page=${page - 1}&size=${size}`);
+        return {
+            data: response.result.data,
+            total: response.result.pagination.total_records,
+        };
     } catch (error) {
-        console.error('Lỗi khi thêm sản phẩm vào giỏ hàng:', error);
+        console.error('Error fetching product by id:', error);
         throw error;
     }
 };
-
-// Hàm cập nhật trạng thái sản phẩm trong giỏ hàng
-export const updateCheckInCart = async (IdCart) => {
+export const fetchAllProduct = async () => {
     try {
-        const response = await axiosInstance.put(`carts/updateCart/${IdCart}`, {
-            headers: {
-                ...getHeader(),
-            },
-        });
-        return response.result; // Sử dụng response.data.result
+        const response = await axiosInstance.get(`products/all`);
+        return {
+            data: response.result,
+        };
     } catch (error) {
-        if (error.response) {
-            console.error('Error response from server:', error.response.data);
-        } else if (error.request) {
-            console.error('No response received:', error.request);
-        } else {
-            console.error('Error setting up request:', error.message);
-        }
-        throw error;
-    }
-};
-
-// Hàm cập nhật số lượng sản phẩm trong giỏ hàng
-export const updateQuantityInCart = async (productId, quantity) => {
-    try {
-        const response = await axiosInstance.put(
-            `carts/updateQuantityCart/${productId}`,
-            { quantity },
-            {
-                headers: {
-                    ...getHeader(),
-                },
-            },
-        );
-        return response.result; // Sử dụng response.data.result
-    } catch (error) {
-        if (error.response) {
-            console.error('Error response from server:', error.response.data);
-        } else if (error.request) {
-            console.error('No response received:', error.request);
-        } else {
-            console.error('Error setting up request:', error.message);
-        }
-        throw error;
-    }
-};
-
-// Hàm tăng số lượng sản phẩm trong giỏ hàng
-export const increaseQuantityInCart = async (productId) => {
-    try {
-        const response = await axiosInstance.put(`carts/increaseQuantityCart/${productId}`, null, {
-            headers: {
-                ...getHeader(),
-            },
-        });
-        return response.result; // Sử dụng response.data.result
-    } catch (error) {
-        console.error('Lỗi khi tăng số lượng sản phẩm trong giỏ hàng:', error);
-        throw error;
-    }
-};
-
-// Hàm giảm số lượng sản phẩm trong giỏ hàng
-export const decreaseQuantityInCart = async (productId) => {
-    try {
-        const response = await axiosInstance.put(`carts/decreaseQuantityCart/${productId}`, null, {
-            headers: {
-                ...getHeader(),
-            },
-        });
-        return response.result; // Sử dụng response.data.result
-    } catch (error) {
-        console.error('Lỗi khi giảm số lượng sản phẩm trong giỏ hàng:', error);
-        throw error;
-    }
-};
-
-// Hàm xóa sản phẩm khỏi giỏ hàng
-export const deleteProductFromCart = async (productId) => {
-    try {
-        const response = await axiosInstance.delete(`carts/deleteCart/${productId}`, {
-            headers: {
-                ...getHeader(),
-            },
-        });
-        return response.result; // Sử dụng response.data.result nếu cần
-    } catch (error) {
-        if (error.response) {
-            console.error('Lỗi phản hồi từ server:', error.response.data);
-        } else if (error.request) {
-            console.error('Không nhận được phản hồi:', error.request);
-        } else {
-            console.error('Lỗi khi thiết lập yêu cầu:', error.message);
-        }
-        throw error;
-    }
-};
-
-// Thêm sản phẩm vào giỏ hàng
-export const AddToCart = async (productId, quantity) => {
-    try {
-        const response = await axiosInstance.post(
-            'carts/addCart',
-            {
-                id_product: productId,
-                quantity: quantity,
-            },
-            {
-                headers: {
-                    ...getHeader(),
-                },
-            },
-        );
-        return response.result; // Sử dụng response.data.result nếu cần
-    } catch (error) {
-        if (error.response) {
-            console.error('Lỗi phản hồi từ server:', error.response.data);
-        } else if (error.request) {
-            console.error('Không nhận được phản hồi:', error.request);
-        } else {
-            console.error('Lỗi khi thiết lập yêu cầu:', error.message);
-        }
+        console.error('Error fetching products:', error);
         throw error;
     }
 };

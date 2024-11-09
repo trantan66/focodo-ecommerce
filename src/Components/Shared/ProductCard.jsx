@@ -5,7 +5,7 @@ import { formatCurrency } from '../../utils/FormatCurrency.js';
 const ProductCard = ({ product }) => {
     return (
         <div key={product.id} className="bg-[#F6F6F6] p-[15px] rounded-[8px]">
-            <a href={`productdetail/${product.id}`}>
+            <a href={`/productdetail/${product.id}`}>
                 <img src={product.image} alt={product.name} className="w-full h-[200px] object-cover" />
             </a>
 
@@ -14,12 +14,16 @@ const ProductCard = ({ product }) => {
             </div>
 
             <div className="flex mt-[8px]">
-                <Rating
-                    initialRating={product.review}
-                    emptySymbol={<StarOutlined className="text-[#FFDF00]" />}
-                    fullSymbol={<StarFilled className="text-[#FFDF00]" />}
-                    readonly
-                />
+                {product.review !== 'NaN' ? (
+                    <Rating
+                        initialRating={product.review}
+                        emptySymbol={<StarOutlined className="text-[#FFDF00]" />}
+                        fullSymbol={<StarFilled className="text-[#FFDF00]" />}
+                        readonly
+                    />
+                ) : (
+                    <div className="text-[14px] text-[#a79f9f] font-medium italic">Chưa có đánh giá</div>
+                )}
             </div>
 
             <div className="flex items-center mt-[8px] gap-2">
@@ -44,7 +48,7 @@ const ProductCard = ({ product }) => {
 
             <div className="flex items-center mt-[10px]">
                 <a
-                    href={`productdetail/${product.id}`}
+                    href={`/productdetail/${product.id}`}
                     className="inline-block font-semibold text-[14px] px-[20px] py-[6px] rounded-[8px] text-black bg-[#ffffffeb] border-[1px] border-black hover:no-underline hover:text-white hover:bg-black"
                 >
                     Mua ngay

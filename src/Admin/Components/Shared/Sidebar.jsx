@@ -18,7 +18,9 @@ function Sidebar() {
         <div className="sticky top-0 bg-[#2B2C40] w-60 p-4 flex flex-col text-white">
             <div className="flex items-center gap-2 px-1 py-3">
                 <FcComboChart size={24} />
-                <span className="text-neutral-100 text-lg">Focodo Admin</span>
+                <Link to="/admin" className="text-neutral-100 text-lg" style={{ textDecoration: 'none' }}>
+                    Focodo Admin
+                </Link>
             </div>
             <div className="flex-1 py-8 flex flex-col gap-0.5">
                 {DASHBOARD_SIDEBAR_LINKS.map((item) => (

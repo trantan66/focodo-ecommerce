@@ -64,7 +64,7 @@ function ProductTableHeader({
           options={
             Array.isArray(categories)
               ? categories.map((category) => ({
-                  value: category.name,
+                  value: category.id,
                   label: category.name,
                 }))
               : []

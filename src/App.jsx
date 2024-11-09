@@ -7,6 +7,7 @@ import ProductDetail from './Pages/ProductDetail';
 import Cart from './Pages/Cart';
 import UserProfile from './Pages/UserProfile';
 import Order from './Pages/LayoutOrder';
+import Review from './Pages/ReviewPage';
 import OrderDetail from './Pages/OrderDetail';
 import Search from './Pages/Search';
 import Login from './Pages/Login';
@@ -28,6 +29,7 @@ import AdminCustomerDetail from './Admin/Pages/CustomerDetail';
 import AdminCategory from './Admin/Pages/Category';
 import AdminReview from './Admin/Pages/Review';
 import AdminAddProduct from './Admin/Components/AddProduct/AddProduct';
+import AdminProfile from './Admin/Pages/Profile';
 
 import CompleteOrder from './Components/Shared/CompleteOrder';
 import ErrorOrder from './Components/Shared/ErrorOrder';
@@ -42,13 +44,16 @@ function App() {
             <Routes>
                 <Route path="/" element={<Layout />}>
                     <Route index element={<Home />} />
-                    <Route path="product" element={<Product />} />
+                    <Route path="product/:categoryId" element={<Product />} />
+                    <Route path="review" element={<Review />} />
                     <Route path="search" element={<Search />} />
                     <Route path="presentation" element={<Present />} />
-                    <Route path="productdetail/:producId" element={<ProductDetail />} />
+                    <Route path="productdetail/:id" element={<ProductDetail />} />
                     <Route path="cart" element={<Cart />}></Route>
                     <Route path="order" element={<Order />}></Route>
                     <Route path="orderdetail" element={<OrderDetail />}></Route>
+                    <Route path="CompleteOrder" element={<CompleteOrder />}></Route>
+                    <Route path="ErrorOrder" element={<ErrorOrder />}></Route>
                     <Route element={<AuthRoutes />}>
                         <Route path="login" element={<Login />}></Route>
                         <Route path="register" element={<Register />}></Route>
@@ -73,10 +78,9 @@ function App() {
                         <Route path="order/orderdetail/:orderId" element={<AdminOrderDetail />} />
                         <Route path="category" element={<AdminCategory />} />
                         <Route path="review" element={<AdminReview />} />
+                        <Route path="profile" element={<AdminProfile />} />
                     </Route>
                 </Route>
-                <Route path="/CompleteOrder" element={<CompleteOrder />}></Route>
-                <Route path="/ErrorOrder" element={<ErrorOrder />}></Route>
             </Routes>
         </Router>
     );

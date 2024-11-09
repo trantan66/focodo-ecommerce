@@ -6,6 +6,8 @@ import './Header.css'; // Giữ lại import CSS của bạn
 import logo from '../image/logo.png';
 import { searchProducts } from '../../../Services/ProductService';
 import useAuth from '../../../Hooks/useAuth';
+
+import { fetchCartOfUser } from '../../../Services/CartService';
 import { fetchCartOfUser } from '../../../Services/ProductService';
 
 import { useNavigate } from 'react-router-dom';
@@ -125,7 +127,7 @@ function Header() {
 
     // Focus vào ô tìm kiếm
     const handleFocus = () => {
-        setIsSearchActive(true);
+        setIsSearchActive(valueInput !== '');
     };
 
     // Blur ô tìm kiếm
@@ -141,6 +143,7 @@ function Header() {
     };
     const fetchProducts = async () => {
         const response = await searchProducts(valueInput);
+        console.log(response);
         setProducts(response.result.data);
     };
     const toggleCart = () => {
@@ -190,7 +193,7 @@ function Header() {
                                     }
                                 }}
                             />
-                            {isSearchActive && products && products.length !== 0 && (
+                            {isSearchActive && products != null && products.length !== 0 && (
                                 <div className="search-dropdown">
                                     <div className="mb-[10px] flex items-center justify-between bg-[#f5f5f5] p-[2px_15px]">
                                         <span className="text-[15px] font-semibold uppercase">Sản phẩm</span>

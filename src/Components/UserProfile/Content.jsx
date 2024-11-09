@@ -1,19 +1,15 @@
-import React, { useState } from 'react';
-import { Button, Input, Tabs } from 'antd';
+import React, { useCallback, useEffect, useState } from 'react';
+import { Button, Input, Pagination, Tabs } from 'antd';
 import UserIn4 from './UserIn4';
 import { UserData } from './UserData';
 import { PlusOutlined } from '@ant-design/icons';
 import Adress from './Address';
-import { CanceledOrders } from './OrderList';
-import { CompletedOrders } from './OrderList';
-import { ProcessingOrders } from './OrderList';
-import { ShippingOrders } from './OrderList';
+import { Orders, ProductList } from './OrderList';
 import './Style.css';
+import { fetchOrderByStatus } from '../../Services/OrderService';
+
 function Content() {
     const user = UserData[0];
-    const onChange = (key) => {
-        console.log(key);
-    };
     const [oldPassword, setOldPassword] = useState('');
     const [newPassword, setNewPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
@@ -36,61 +32,82 @@ function Content() {
         console.log(user);
         setMessage('Đổi mật khẩu thành công!');
     };
+    //phan trang cho orders
+    const status = ['Chưa xác nhận', 'Đã xác nhận', 'Đã giao', 'Đã hủy'];
+    const [orders, setOrders] = useState([]);
+    const [currentPage, setCurrentPage] = useState(1);
+    const [ordersPerPage, setOrdersPerPage] = useState(2);
 
-    const orderdisplay = [
-        {
-            key: '1',
-            label: 'Tất cả',
-            children: (
-                <div className="h-[375px] overflow-auto ">
-                    <p className="font-semibold py-2">Đang xử lý</p>
-                    <ProcessingOrders></ProcessingOrders>
-                    <p className="font-semibold py-2 text-[#FCCD2A]">Chờ giao hàng</p>
-                    <ShippingOrders></ShippingOrders>
-                    <p className="font-semibold py-2 text-[#00712D]">Hoàn thành</p>
-                    <CompletedOrders></CompletedOrders>
-                    <p className="font-semibold py-2 text-[#FF0000]">Đã hủy</p>
-                    <CanceledOrders></CanceledOrders>
+    const [totalOrders, setTotalOrders] = useState(0);
+
+    const [selectedStatus, setSelectedStatus] = useState(status[0]);
+
+    const fetchOrders = useCallback(async () => {
+        try {
+            const { data, total } = await fetchOrderByStatus(currentPage, ordersPerPage, selectedStatus);
+            setOrders(data);
+            console.log(data);
+            console.log(total);
+            setTotalOrders(total);
+        } catch (error) {
+            console.error('Error fetching orders:', error);
+        }
+    }, [currentPage, ordersPerPage, selectedStatus]);
+
+    const handlePageChange = (page) => {
+        setCurrentPage(page);
+    };
+    useEffect(() => {
+        fetchOrders();
+    }, [fetchOrders]);
+
+    // get order status
+
+    const formatStatus = status.map((item, index) => ({
+        label: item,
+        key: index.toString(),
+        children: (
+            <div className="">
+                <div className="flex flex-col gap-4">
+                    {orders.map((data, index) => (
+                        <div className="">
+                            {data.order_details.map((data, index) => (
+                                <ProductList
+                                    name={data.product.name}
+                                    img={data.product.image}
+                                    quantity={data.quantity}
+                                    price={data.total_price}
+                                ></ProductList>
+                            ))}
+                            <Orders
+                                review={data.review_check}
+                                status={data.order_status}
+                                totalprice={data.final_price}
+                                total={totalOrders}
+                            />
+                        </div>
+                    ))}
                 </div>
-            ),
-        },
-        {
-            key: '2',
-            label: 'Đang xử lý',
-            children: (
-                <div className="h-[375px] overflow-auto">
-                    <ProcessingOrders></ProcessingOrders>
-                </div>
-            ),
-        },
-        {
-            key: '3',
-            label: 'Chờ giao hàng',
-            children: (
-                <div className="h-[375px] overflow-auto">
-                    <ShippingOrders></ShippingOrders>
-                </div>
-            ),
-        },
-        {
-            key: '4',
-            label: 'Hoàn thành',
-            children: (
-                <div className="h-[375px] overflow-auto">
-                    <CompletedOrders></CompletedOrders>
-                </div>
-            ),
-        },
-        {
-            key: '5',
-            label: 'Đã hủy',
-            children: (
-                <div className="h-[375px] overflow-auto">
-                    <CanceledOrders></CanceledOrders>
-                </div>
-            ),
-        },
-    ];
+                {totalOrders > ordersPerPage ? (
+                    <Pagination
+                        showSizeChanger={false}
+                        current={currentPage}
+                        onChange={handlePageChange}
+                        total={totalOrders}
+                        pageSize={ordersPerPage}
+                        className="flex justify-center items-center"
+                    />
+                ) : (
+                    ''
+                )}
+            </div>
+        ),
+    }));
+    const handleTabClick = (key) => {
+        setSelectedStatus(status[key]);
+        console.log(status[key]);
+        setCurrentPage(1);
+    };
 
     const items = [
         {
@@ -182,7 +199,13 @@ function Content() {
             label: 'Đơn mua',
             children: (
                 <div className="border p-3 bg-slate-100 rounded-lg ">
-                    <Tabs defaultActiveKey="1" items={orderdisplay} centered></Tabs>
+                    <Tabs
+                        className=""
+                        defaultActiveKey="0"
+                        items={formatStatus}
+                        centered
+                        onTabClick={handleTabClick}
+                    ></Tabs>
                 </div>
             ),
         },
@@ -196,13 +219,7 @@ function Content() {
                     <p className="text-[14px]  ">{user.username}</p>
                 </div>
             </div>
-            <Tabs
-                className="h-[500px] mx-3 my-3 "
-                tabPosition="left"
-                defaultActiveKey="1"
-                items={items}
-                onChange={onChange}
-            />
+            <Tabs className=" mx-3 my-3 " tabPosition="left" defaultActiveKey="4" items={items} />
         </div>
     );
 }

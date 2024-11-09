@@ -1,40 +1,68 @@
-import React from 'react';
-import { Link } from 'react-router-dom';
+import React, { useEffect, useState } from 'react';
+import { Link, useNavigate, useParams } from 'react-router-dom';
 import { SearchOutlined } from '@ant-design/icons';
 import { Input } from 'antd';
 import { Collapse, List, Typography } from 'antd';
+import { fetchCategoriesForProductFromAPI } from '../../Services/ProductService';
 
 const { Panel } = Collapse;
 const { Text } = Typography;
-const data = [
-    {
-        category: 'Bánh Huế',
-        items: ['Bánh bèo', 'Bánh ép Huế', 'Bánh lọc Huế', 'Bánh kẹo Huế'],
-    },
-    { category: 'Khuyến mãi', items: [] },
-    { category: 'Gia vị Huế', items: [] },
-    { category: 'Hạt sen Huế', items: [] },
-    { category: 'Mắm Huế', items: [] },
-    { category: 'Mè xửng Thiên Hương', items: [] },
-    { category: 'Rượu Minh Mạng', items: [] },
-    { category: 'Tinh dầu Huế', items: [] },
-    { category: 'Trà cung đình Huế', items: [] },
-    { category: 'Nem chả Huế', items: [] },
-];
 
 function Filter() {
+    const navigate = useNavigate();
+    const [categories, setCagegories] = useState([]);
+    const fetchCategories = async () => {
+        const response = await fetchCategoriesForProductFromAPI();
+        setCagegories(response.data);
+    };
+
+    const { categoryId } = useParams();
+    useEffect(() => {
+        fetchCategories();
+    }, []);
+    const handlePanelClick = (id) => {
+        console.log(id);
+        navigate(`/product/${id}`);
+        window.location.reload();
+
+        // Thực hiện các hành động khác ở đây
+    };
+    const handleClick = (id) => {
+        console.log(id);
+        navigate(`/product/${id}`);
+        window.location.reload();
+        // Thực hiện các hành động khác ở đây
+    };
     return (
         <div className="">
             <p className="text-[16px] font-semibold mb-3">DANH MỤC SẢN PHẨM</p>
             <Input className="mb-3" size="large" placeholder="Tìm sản phẩm" prefix={<SearchOutlined />} />
-            <Collapse accordion bordered={false} style={{ background: 'none' }}>
-                {data.map((section) => (
-                    <Panel header={section.category} key={section.category}>
-                        {section.items.length ? (
+            <Collapse collapsible="icon" accordion bordered={false} style={{ background: 'none' }}>
+                {categories.map((section) => (
+                    <Panel
+                        header={
+                            <span
+                                className={`${categoryId == section.id && 'text-orange-500'}`}
+                                onClick={() => handlePanelClick(section.id)}
+                                style={{ cursor: 'pointer' }}
+                            >
+                                {section.name}
+                            </span>
+                        }
+                        key={section.name}
+                    >
+                        {section.subcategories.length ? (
                             <List
                                 size="small"
-                                dataSource={section.items}
-                                renderItem={(item) => <List.Item className="hover:text-orange-500">{item}</List.Item>}
+                                dataSource={section.subcategories}
+                                renderItem={(subcategories) => (
+                                    <List.Item
+                                        onClick={() => handleClick(subcategories.id)}
+                                        className="hover:cursor-pointer hover:text-orange-500"
+                                    >
+                                        {subcategories.name}
+                                    </List.Item>
+                                )}
                             />
                         ) : (
                             <Text type="secondary">Không có dữ liệu</Text>

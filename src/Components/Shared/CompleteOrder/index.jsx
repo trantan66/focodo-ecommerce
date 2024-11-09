@@ -4,7 +4,7 @@ import logo from '../image/logo.png';
 import { useLocation } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
 
-import { getOrderById } from '../../../Services/OrderService';
+import { fetchOrderByIdFromAPI } from '../../../Services/OrderService';
 
 function CompleteOrder() {
     // chuyển về trang chủ
@@ -23,7 +23,7 @@ function CompleteOrder() {
 
     const getOrder = async () => {
         try {
-            const orderInfo = await getOrderById(id_order);
+            const orderInfo = await fetchOrderByIdFromAPI(id_order);
             console.log(orderInfo); // Kiểm tra cấu trúc của orderInfo
             setOrder(orderInfo);
             setCustomer(orderInfo.customer);
@@ -65,10 +65,12 @@ function CompleteOrder() {
                         <p>Rất hân hạnh được phục vụ.</p>
                     </div>
 
-                    <div className="w-full h-[250px] space-y-5 border border-gray-300 p-3">
+                    <div className="w-full space-y-5 border border-gray-300 p-3">
                         <h1 className="text-xl font-medium">Thông tin đơn hàng</h1>
                         <div>
                             <p className="text-xl">Thông tin giao hàng</p>
+                            <p>Người nhận: {customer?.full_name}</p>
+                            <p>Số điện thoại: {customer?.phone}</p>
                             <p>Địa chỉ: {customer?.address}</p>
                             <p>Phường/xã: {customer?.ward}</p>
                             <p>Quận/huyện: {customer?.district}</p>
