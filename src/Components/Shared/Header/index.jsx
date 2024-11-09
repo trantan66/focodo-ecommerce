@@ -241,60 +241,99 @@ function Header() {
                                     className="cart-overlay fixed top-0 left-0 w-screen h-screen bg-black bg-opacity-50 z-10"
                                     onClick={handleOverlayClick}
                                 >
-                                    <div className="w-[450px] max-h-[550px] bg-white mt-[60px] ml-[1000px] p-[20px] rounded-xl shadow-md">
-                                        <p className="font-medium text-center text-xl mb-[10px]">GIỎ HÀNG</p>
-                                        <div className="max-h-[300px] overflow-y-auto scrollbar">
-                                            {products.map((product, index) => (
-                                                <div key={product.id_cart} className="flex items-center mb-2">
-                                                    <img
-                                                        src={product.image}
-                                                        alt={product.product_name}
-                                                        className="w-[75px] h-[75px] object-cover"
-                                                    />
-                                                    <div className="ml-[10px] flex justify-between w-full">
-                                                        <div>
-                                                            <p className="font-medium text-lg">
-                                                                {product.product_name}
-                                                            </p>
-                                                            <p>x{product.quantity}</p>
-                                                        </div>
-                                                        <div className="mr-[10px] text-red-500">
-                                                            {formatCurrency(values[index] * product.unit_price)}
+                                    {checkLogin ? (
+                                        <div className="w-[450px] max-h-[550px] bg-white mt-[60px] ml-[1000px] p-[20px] rounded-xl shadow-md">
+                                            <p className="font-medium text-center text-xl mb-[10px]">GIỎ HÀNG</p>
+                                            <div className="max-h-[300px] overflow-y-auto scrollbar">
+                                                {products.map((product, index) => (
+                                                    <div key={product.id_cart} className="flex items-center mb-2">
+                                                        <img
+                                                            src={product.image}
+                                                            alt={product.product_name}
+                                                            className="w-[75px] h-[75px] object-cover"
+                                                        />
+                                                        <div className="ml-[10px] flex justify-between w-full">
+                                                            <div>
+                                                                <p className="font-medium text-lg">
+                                                                    {product.product_name}
+                                                                </p>
+                                                                <p>x{product.quantity}</p>
+                                                            </div>
+                                                            <div className="mr-[10px] text-red-500">
+                                                                {formatCurrency(values[index] * product.unit_price)}
+                                                            </div>
                                                         </div>
                                                     </div>
-                                                </div>
-                                            ))}
-                                        </div>
+                                                ))}
+                                            </div>
 
-                                        <div className="mt-[15px] mb-[15px] space-y-1">
-                                            <div className="w-full flex justify-between font-medium text-lg ">
-                                                <p>Tạm tính:</p>
-                                                <p className="">{formatCurrency(calculateOriginPrice())}</p>
+                                            <div className="mt-[15px] mb-[15px] space-y-1">
+                                                <div className="w-full flex justify-between font-medium text-lg ">
+                                                    <p>Tạm tính:</p>
+                                                    <p className="">{formatCurrency(calculateOriginPrice())}</p>
+                                                </div>
+                                                <div className="w-full flex justify-between font-medium text-lg ">
+                                                    <p>Giảm giá:</p>
+                                                    <p className="">{formatCurrency(discount)}</p>
+                                                </div>
+                                                <div className="w-full flex justify-between font-medium text-lg ">
+                                                    <p>Tổng tiền:</p>
+                                                    <p className="text-red-500">
+                                                        {formatCurrency(calculateFinalPrice())}
+                                                    </p>
+                                                </div>
                                             </div>
-                                            <div className="w-full flex justify-between font-medium text-lg ">
-                                                <p>Giảm giá:</p>
-                                                <p className="">{formatCurrency(discount)}</p>
-                                            </div>
-                                            <div className="w-full flex justify-between font-medium text-lg ">
-                                                <p>Tổng tiền:</p>
-                                                <p className="text-red-500">{formatCurrency(calculateFinalPrice())}</p>
+                                            <div className="w-full flex justify-between">
+                                                <button
+                                                    className="w-[48%] h-[50px] font-medium rounded border border-black-500"
+                                                    onClick={handleToCart}
+                                                >
+                                                    Chỉnh sửa giỏ hàng
+                                                </button>
+                                                <button
+                                                    className="w-[48%] h-[50px] font-medium rounded border border-black bg-black text-white"
+                                                    onClick={handleToOrder}
+                                                >
+                                                    Thanh toán
+                                                </button>
                                             </div>
                                         </div>
-                                        <div className="w-full flex justify-between">
-                                            <button
-                                                className="w-[48%] h-[50px] font-medium rounded border border-black-500"
-                                                onClick={handleToCart}
-                                            >
-                                                Chỉnh sửa giỏ hàng
-                                            </button>
-                                            <button
-                                                className="w-[48%] h-[50px] font-medium rounded border border-black bg-black text-white"
-                                                onClick={handleToOrder}
-                                            >
-                                                Thanh toán
-                                            </button>
+                                    ) : (
+                                        <div className="w-[450px] max-h-[550px] bg-white mt-[60px] ml-[1000px] p-[20px] rounded-xl shadow-md">
+                                            <p className="font-medium text-center text-xl mb-[10px]">GIỎ HÀNG</p>
+
+                                            <div className="mt-[15px] mb-[15px] space-y-1">
+                                                <div className="w-full flex justify-between font-medium text-lg ">
+                                                    <p>Tạm tính:</p>
+                                                    <p className="">{formatCurrency(calculateOriginPrice())}</p>
+                                                </div>
+                                                <div className="w-full flex justify-between font-medium text-lg ">
+                                                    <p>Giảm giá:</p>
+                                                    <p className="">{formatCurrency(discount)}</p>
+                                                </div>
+                                                <div className="w-full flex justify-between font-medium text-lg ">
+                                                    <p>Tổng tiền:</p>
+                                                    <p className="text-red-500">
+                                                        {formatCurrency(calculateFinalPrice())}
+                                                    </p>
+                                                </div>
+                                            </div>
+                                            <div className="w-full flex justify-between">
+                                                <button
+                                                    className="w-[48%] h-[50px] font-medium rounded border border-black-500"
+                                                    onClick={handleToCart}
+                                                >
+                                                    Chỉnh sửa giỏ hàng
+                                                </button>
+                                                <button
+                                                    className="w-[48%] h-[50px] font-medium rounded border border-black bg-black text-white"
+                                                    onClick={handleToOrder}
+                                                >
+                                                    Thanh toán
+                                                </button>
+                                            </div>
                                         </div>
-                                    </div>
+                                    )}
                                 </div>
                             )}
                             <UserOutlined onClick={toggleUser} />
