@@ -20,7 +20,7 @@ function ProductTopRating() {
     }, []);
     return (
         <div className="w-4/12 bg-[#282941] p-4 rounded-sm">
-            <strong className="text-white font-medium mb-6">Sản phẩm bán chạy</strong>
+            <strong className="text-white font-medium mb-6">Sản phẩm đánh giá cao</strong>
             <div className="pb-3"></div>
             {products.map((product) => (
                 <Link

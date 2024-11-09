@@ -172,3 +172,117 @@ export const fetchQuantityProductInActive = async () => {
         throw error;
     }
 };
+export const fetchRateCustomerByProvince = async () => {
+    try {
+        const response = await axiosInstance.get(`statistics/customer/rateCustomerByProvince`, {
+            headers: {
+                ...getHeader(),
+            },
+        });
+        return {data: response.result}
+    } catch (error) {
+        if (error.response) {
+            console.error('Error response from server:', error.response.data);
+        } else if (error.request) {
+            console.error('No response received:', error.request);
+        } else {
+            console.error('Error setting up request:', error.message);
+        }
+        throw error;
+    }
+};
+export const fetchTopCustomerBySpending = async () => {
+    try {
+        const response = await axiosInstance.get(`statistics/customer/topCustomerBySpending`, {
+            headers: {
+                ...getHeader(),
+            },
+        });
+        return {data: response.result}
+    } catch (error) {
+        if (error.response) {
+            console.error('Error response from server:', error.response.data);
+        } else if (error.request) {
+            console.error('No response received:', error.request);
+        } else {
+            console.error('Error setting up request:', error.message);
+        }
+        throw error;
+    }
+};
+export const fetchTotalCustomer = async () => {
+    try {
+        const response = await axiosInstance.get(`statistics/customer/total`, {
+            headers: {
+                ...getHeader(),
+            },
+        });
+        return {data: response.result}
+    } catch (error) {
+        if (error.response) {
+            console.error('Error response from server:', error.response.data);
+        } else if (error.request) {
+            console.error('No response received:', error.request);
+        } else {
+            console.error('Error setting up request:', error.message);
+        }
+        throw error;
+    }
+};
+export const fetchRateCustomerReturning = async () => {
+    try {
+        const response = await axiosInstance.get(`statistics/customer/rateCustomerReturning`, {
+            headers: {
+                ...getHeader(),
+            },
+        });
+        return {data: response.result}
+    } catch (error) {
+        if (error.response) {
+            console.error('Error response from server:', error.response.data);
+        } else if (error.request) {
+            console.error('No response received:', error.request);
+        } else {
+            console.error('Error setting up request:', error.message);
+        }
+        throw error;
+    }
+};
+export const fetchRatePaymentMethod = async () => {
+    try {
+        const response = await axiosInstance.get(`statistics/order/ratePaymentMethod`, {
+            headers: {
+                ...getHeader(),
+            },
+        });
+        return {data: response.result}
+    } catch (error) {
+        if (error.response) {
+            console.error('Error response from server:', error.response.data);
+        } else if (error.request) {
+            console.error('No response received:', error.request);
+        } else {
+            console.error('Error setting up request:', error.message);
+        }
+        throw error;
+    }
+};
+export const fetchTotalOrder = async () => {
+    try {
+        const response = await axiosInstance.get(`statistics/order/total`, {
+            headers: {
+                ...getHeader(),
+            },
+        });
+        return {data: response.result}
+    } catch (error) {
+        if (error.response) {
+            console.error('Error response from server:', error.response.data);
+        } else if (error.request) {
+            console.error('No response received:', error.request);
+        } else {
+            console.error('Error setting up request:', error.message);
+        }
+        throw error;
+    }
+};

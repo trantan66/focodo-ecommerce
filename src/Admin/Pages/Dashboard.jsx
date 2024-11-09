@@ -13,6 +13,12 @@ import StopSellingProduct from '../Components/Dashboard/StopSellingProduct';
 import SellingProduct from '../Components/Dashboard/SellingProduct';
 import ProductTopSeller from '../Components/Dashboard/ProductTopSeller';
 import ProductTopRating from '../Components/Dashboard/ProductTopRating';
+import RateCustomerProvince from '../Components/Dashboard/RateCustomerProvince';
+import TopCustomerSpending from '../Components/Dashboard/TopCustomerSpending';
+import TotalOrder from '../Components/Dashboard/TotalOrder';
+import TotalCustomer from '../Components/Dashboard/TotalCustomer';
+import RateCustomerReturn from '../Components/Dashboard/RateCustomerReturn';
+import RatePaymentMethod from '../Components/Dashboard/RatePaymentMethod';
 
 function Dashboard() {
     return (
@@ -35,6 +41,20 @@ function Dashboard() {
                 </div>
                 <ProductTopSeller />
                 <ProductTopRating />
+            </div>
+            <div className="flex flex-row gap-4 w-full">
+                <RateCustomerProvince />
+                <TopCustomerSpending />
+                <div className="flex flex-col gap-4 w-4/12">
+                    <div className="flex flex-row gap-4 h-3/6">
+                        <TotalCustomer />
+                        <TotalOrder />
+                    </div>
+                    <div className="flex flex-row gap-4 h-3/6">
+                        <RateCustomerReturn />
+                        <RatePaymentMethod />
+                    </div>
+                </div>
             </div>
         </div>
     );

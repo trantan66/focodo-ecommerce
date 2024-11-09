@@ -23,15 +23,6 @@ function AnnualRevenue() {
     const [preYear, setPreYear] = useState(true);
 
     const currentYear = new Date().getFullYear();
-    // const data = [
-    //     { name: 'Jan', revenue2024: 1200000, revenue2023: -1000000 },
-    //     { name: 'Feb', revenue2024: 500000, revenue2023: -1500000 },
-    //     { name: 'Mar', revenue2024: 1000000, revenue2023: -500000 },
-    //     { name: 'Apr', revenue2024: 2500000, revenue2023: -1000000 },
-    //     { name: 'May', revenue2024: 1500000, revenue2023: -1200000 },
-    //     { name: 'Jun', revenue2024: 800000, revenue2023: -1400000 },
-    //     { name: 'Jul', revenue2024: 1000000, revenue2023: -1000000 },
-    // ];
 
     const handleLegendClick = (value) => {
         if (value === currentYear) {

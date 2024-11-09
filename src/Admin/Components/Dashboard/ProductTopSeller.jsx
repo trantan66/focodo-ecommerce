@@ -31,8 +31,8 @@ function ProductTopSeller() {
                         </tr>
                     </thead>
                     <tbody className="h-[50vh]">
-                        {products.map((items) => (
-                            <tr>
+                        {products.map((items, index) => (
+                            <tr key={index}>
                                 <td>
                                     <div className="flex flex-row gap-2 items-center">
                                         <img src={items.image} alt="product" className="w-10 h-10 rounded-md" />
