@@ -1,116 +1,207 @@
-import React, { useState } from 'react';
-import { UserData } from './UserData';
-import { Input, Upload, Button } from 'antd';
+import React, { useEffect, useState } from 'react';
+import { Input, Upload, Button, notification } from 'antd';
 import { UploadOutlined } from '@ant-design/icons';
+import homelander from '../image/avatar/homelander.jpg';
 import './Style.css';
-function UserIn4(props) {
-    const user = UserData[0]; // Lấy thông tin người dùng đầu tiên (có thể thay đổi)
+import axios from 'axios';
+import { updateAvatarToAPI, updateProfileToAPI } from '../../Services/UserService';
+import { useNavigate } from 'react-router-dom';
+function UserIn4({ data }) {
+    const navigate = useNavigate();
+    const [username, setUsername] = useState('');
+    const [name, setName] = useState('');
+    const [email, setEmail] = useState('');
+    const [phone, setPhone] = useState('');
+    const [birth, setBirth] = useState('');
+    const [avatar, setAvatar] = useState('');
+    const [address, setAddress] = useState('');
+    const [provinces, setProvinces] = useState([]); // State để lưu danh sách tỉnh/thành phố
+    const [selectedProvince, setSelectedProvince] = useState(''); // Theo dõi tỉnh/thành phố được chọn
+    const [districts, setDistricts] = useState([]); // State để lưu danh sách quận/huyện
+    const [selectedDistrict, setSelectedDistrict] = useState(''); // Theo dõi quận/huyện được chọn
+    const [communes, setCommunes] = useState([]); // State để lưu danh sách xã/phường
+    const [selectedCommune, setSelectedCommune] = useState(''); // Theo dõi xã/phường được chọn
+    useEffect(() => {
+        if (data) {
+            setUsername(data.username || '');
+            setName(data.full_name || '');
+            setEmail(data.email || '');
+            setPhone(data.phone || '');
+            setAvatar(data.avatar || homelander);
+            setAddress(data.address || '');
+            setSelectedProvince(data.province || '');
+            setSelectedDistrict(data.district || '');
+            setSelectedCommune(data.ward || '');
+        }
+    }, [data]);
+    // Fetch province data on component mount
+    useEffect(() => {
+        axios
+            .get('https://api.mysupership.vn/v1/partner/areas/province')
+            .then((response) => {
+                setProvinces(response.data.results);
+            })
+            .catch((error) => console.error('Error fetching provinces:', error));
+    }, []);
 
-    // State lưu trữ giới tính của người dùng hiện tại
-    const [selectedGenders, setSelectedGenders] = useState([user.gender]);
-    const [name, setName] = useState(user.name);
-    const [email, setEmail] = useState(user.email);
-    const [number, setNumber] = useState(user.phoneNumber);
-    const [birth, setBirth] = useState(user.birth);
-    const [image, setImage] = useState(user.avatar);
-    const handleInputNameChange = (event) => {
-        setName(event.target.value);
-    };
-    const handleInputEmailChange = (event) => {
-        setEmail(event.target.value);
-    };
-    const handleInputNumberChange = (event) => {
-        setNumber(event.target.value);
-    };
-    const handleInputBirthChange = (event) => {
-        setBirth(event.target.value);
-    };
-    const handleImageChange = (event) => {
-        const file = event.target.files[0];
+    // Fetch district data when a province is selected
+    useEffect(() => {
+        if (selectedProvince) {
+            axios
+                .get(`https://api.mysupership.vn/v1/partner/areas/district?province=${selectedProvince}`)
+                .then((response) => {
+                    setDistricts(response.data.results);
+                })
+                .catch((error) => console.error('Error fetching districts:', error));
+        }
+    }, [selectedProvince]);
+
+    // Fetch commune data when a district is selected
+    useEffect(() => {
+        if (selectedDistrict) {
+            axios
+                .get(`https://api.mysupership.vn/v1/partner/areas/commune?district=${selectedDistrict}`)
+                .then((response) => {
+                    setCommunes(response.data.results);
+                })
+                .catch((error) => console.error('Error fetching communes:', error));
+        }
+    }, [selectedDistrict]);
+
+
+    const handleAvatarChange = async (event) => {
+        const file = event.target.files[0]; // Lấy tệp từ input
         if (file) {
-            const reader = new FileReader();
-            reader.onloadend = () => {
-                setImage(reader.result);
-            };
-            reader.readAsDataURL(file);
+            setAvatar(file);
         }
     };
-    const handleSave = () => {
-        user.name = name;
-        user.birth = birth;
-        user.email = email;
-        user.phoneNumber = number;
-        user.avatar = image;
-        console.log(user);
-        alert('Update Complete!'); // Thông báo sau khi lưu
+    const handleProvinceChange = (e) => {
+        setSelectedProvince(e.target.value);
+        setSelectedDistrict('');
     };
-    // Hàm xử lý thay đổi checkbox
-    const handleCheckboxChange = (event) => {
-        const value = event.target.value;
-        if (event.target.checked) {
-            setSelectedGenders([...selectedGenders, value]); // Thêm vào danh sách giới tính đã chọn
-        } else {
-            setSelectedGenders(selectedGenders.filter((gender) => gender !== value)); // Loại bỏ nếu bỏ chọn
+    const handleDistrictChange = (e) => {
+        setSelectedDistrict(e.target.value);
+        setSelectedCommune('');
+    };
+
+    const handleCommuneChange = (e) => {
+        setSelectedCommune(e.target.value);
+    };
+
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        const selectedProvinceName = provinces.find((p) => p.code === selectedProvince)?.name || data.province;
+        const selectedDistrictName = districts.find((d) => d.code === selectedDistrict)?.name || data.district;
+        const selectedCommuneName = communes.find((c) => c.code === selectedCommune)?.name || data.ward;
+        const UserProfileRequest = {
+            full_name: name,
+            email: email,
+            phone: phone,
+            address: address,
+            province: selectedProvinceName,
+            district: selectedDistrictName,
+            ward: selectedCommuneName,
+        };
+        console.log(UserProfileRequest);
+        try {
+            await updateProfileToAPI(UserProfileRequest);
+            if (avatar && avatar !== data.avatar) {
+                await updateAvatarToAPI(avatar);
+            }
+        } catch (error) {
+            console.error('Error updating userprofile:', error);
+            notification.error({
+                message: 'Có lỗi xảy ra!',
+                description: 'Không thể cập nhật hồ sơ. Vui lòng thử lại.',
+            });
+        } finally {
+            notification.success({
+                message: 'Cập nhật hồ sơ thành công!',
+                description: 'Hồ sơ đã được cập nhật.',
+                duration: '1',
+            });
+
+            navigate('/userprofile');
         }
     };
+
     return (
         <div className="border p-3 bg-slate-100 rounded-lg">
             <div></div>
             <div className="flex justify-center">
                 <div className="grid grid-cols-2 grid-rows-7 gap-4">
                     <span>Tên đăng nhập</span>
-                    <Input value={props.username} disabled></Input>
+                    <Input value={username} disabled></Input>
                     <span>Tên</span>
-                    <Input value={name} onChange={handleInputNameChange}></Input>
+                    <Input value={name} onChange={(e) => setName(e.target.value)}></Input>
                     <span>Email</span>
-                    <Input value={email} onChange={handleInputEmailChange}></Input>
+                    <Input value={email} onChange={(e) => setEmail(e.target.value)}></Input>
                     <span>Số điện thoại</span>
-                    <Input value={number} onChange={handleInputNumberChange}></Input>
-                    <span>Giới tính</span>
-                    <div className="flex">
-                        <div className="flex mr-2">
-                            <input
-                                type="radio"
-                                className="size-4 mt-1 mr-1"
-                                name="gender"
-                                checked={selectedGenders.includes('male')} // Tự động tick nếu giới tính là "male"
-                                onChange={handleCheckboxChange}
-                            ></input>
-                            <label>Nam</label>
-                        </div>
-                        <div className="flex mr-2">
-                            <input
-                                type="radio"
-                                className="size-4 mt-1 mr-1"
-                                name="gender"
-                                checked={selectedGenders.includes('female')} // Tự động tick nếu giới tính là "female"
-                                onChange={handleCheckboxChange}
-                            ></input>
-                            <label>Nữ</label>
-                        </div>
-                        <div className="flex">
-                            <input
-                                type="radio"
-                                className="size-4 mt-1 mr-1"
-                                name="gender"
-                                checked={selectedGenders.includes('other')} // Tự động tick nếu giới tính là "female"
-                                onChange={handleCheckboxChange}
-                            ></input>
-                            <label>Khác</label>
-                        </div>
-                    </div>
-                    <span>Ngày sinh</span>
-                    <Input value={birth} onChange={handleInputBirthChange}></Input>
+                    <Input value={phone} onChange={(e) => setPhone(e.target.value)}></Input>
+                    <span className="">Tỉnh / Thành phố</span>
+                    <select
+                        value={selectedProvince}
+                        onChange={handleProvinceChange}
+                        className="block w-full p-[8px] border rounded-md px-4"
+                    >
+                        <option>{data.province || 'Chọn Tỉnh/Thành Phố'}</option>
+                        {provinces
+                            .filter((province) => province.name !== data.province)
+                            .map((province) => (
+                                <option key={province.code} value={province.code}>
+                                    {province.name}
+                                </option>
+                            ))}
+                    </select>
+                    <span className="">Quận / Huyện</span>
+                    <select
+                        value={selectedDistrict}
+                        onChange={handleDistrictChange}
+                        // disabled={!selectedProvince}
+                        className="block w-full p-[8px] border rounded-md  px-4"
+                    >
+                        <option disabled={data.district && selectedDistrict ? true : false}>
+                            {data.district && selectedDistrict ? data.district : 'Chọn Quận/Huyện'}
+                        </option>
+                        {districts
+                            .filter((district) => district.name !== data.district)
+                            .map((district) => (
+                                <option key={district.code} value={district.code}>
+                                    {district.name}
+                                </option>
+                            ))}
+                    </select>
+
+                    <span className="">Phường / Xã</span>
+                    <select
+                        value={selectedCommune}
+                        onChange={handleCommuneChange}
+                        // disabled={!selectedDistrict}
+                        className="block w-full p-[8px] border rounded-md  px-4"
+                    >
+                        <option disabled={data.ward && selectedCommune ? true : false}>
+                            {data.ward && selectedCommune ? data.ward : 'Chọn Xã/Phường'}
+                        </option>
+                        {communes
+                            .filter((commune) => commune.name !== data.ward)
+                            .map((commune) => (
+                                <option key={commune.code} value={commune.code}>
+                                    {commune.name}
+                                </option>
+                            ))}
+                    </select>
+                    <span>Địa chỉ</span>
+                    <Input value={address} onChange={(e) => setAddress(e.target.value)}></Input>
                     <button
-                        onClick={handleSave}
+                        onClick={handleSubmit}
                         className="bg-black text-white w-[200px] h-[48px] rounded-lg hover:bg-[#3C3D37] transition duration-300 ml-4"
                     >
                         Lưu
                     </button>
                 </div>
                 <div className=" flex mx-auto flex-col items-center ">
-                    <img src={image} alt="" className=" h-[200px] w-[200px] rounded-full " />
-                    <input className="mt-2" type="file" accept="image/*" onChange={handleImageChange}></input>
+                    <img src={avatar} alt="" className=" h-[200px] w-[200px] rounded-full " />
+                    <input className="mt-2" type="file" accept="image/*" onChange={handleAvatarChange}></input>
                 </div>
             </div>
         </div>

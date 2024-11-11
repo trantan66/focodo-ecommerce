@@ -40,13 +40,13 @@ function App() {
                 <Route path="/" element={<Layout />}>
                     <Route index element={<Home />} />
                     <Route path="product/:categoryId" element={<Product />} />
-                    <Route path="review" element={<Review />} />
+                    <Route path="review/:orderId" element={<Review />} />
                     <Route path="search" element={<Search />} />
                     <Route path="presentation" element={<Present />} />
                     <Route path="productdetail/:id" element={<ProductDetail />} />
                     <Route path="cart" element={<Cart />}></Route>
                     <Route path="order" element={<Order />}></Route>
-                    <Route path="orderdetail" element={<OrderDetail />}></Route>
+                    <Route path="orderdetail/:id" element={<OrderDetail />}></Route>
                     <Route element={<AuthRoutes />}>
                         <Route path="login" element={<Login />}></Route>
                     </Route>

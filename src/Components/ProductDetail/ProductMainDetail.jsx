@@ -6,6 +6,8 @@ import 'react-image-gallery/styles/css/image-gallery.css';
 import { useParams } from 'react-router-dom';
 import { fetchProductByIdFromAPI } from '../../Services/ProductService';
 import '../UserProfile/Style.css';
+import { addProductToCart } from '../../Services/CartService';
+import fetchCart from '../Carts/index';
 function ProductDetail(props) {
     const renderImage = (item) => (
         <div style={{ width: '500px', height: '300px' }}>
@@ -35,6 +37,25 @@ function ProductDetail(props) {
     const formatCurrency = (amount) => {
         return new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(amount);
     };
+    const idProductTest = props.id;
+    const quantityTest = value;
+
+    const handleAddToCart = async () => {
+        try {
+            const res = await addProductToCart({ id_product: idProductTest, quantity: quantityTest });
+            console.log(res);
+            alert('Sản phẩm đã được thêm vào giỏ hàng');
+            fetchCart();
+        } catch (error) {
+            console.error('Error addToCart product:', error);
+        }
+    };
+
+    const handleButtonClick = () => {
+        handleAddToCart();
+        window.location.reload();
+    };
+
     return (
         <div>
             <div className="flex justify-center">
@@ -84,7 +105,10 @@ function ProductDetail(props) {
                         </Button>
                     </div>
                     <div className="flex mt-4 ">
-                        <button className=" bg-[#FAF7F0] text-black border border-black w-[200px] h-[48px] rounded-lg hover:bg-[#D8D2C2] transition duration-300 ">
+                        <button
+                            onClick={handleButtonClick}
+                            className=" bg-[#FAF7F0] text-black border border-black w-[200px] h-[48px] rounded-lg hover:bg-[#D8D2C2] transition duration-300 "
+                        >
                             Thêm vào giỏ hàng
                         </button>
                         <button className="bg-black text-white w-[200px] h-[48px] rounded-lg hover:bg-[#3C3D37] transition duration-300 ml-4">
@@ -123,6 +147,7 @@ function ProductMainDetail() {
     return (
         <div>
             <ProductDetail
+                id={product.id}
                 name={product.name}
                 subcription={product.sub_description}
                 price={product.original_price}

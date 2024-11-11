@@ -22,6 +22,22 @@ function ProductList(props) {
         },
     };
     const [value, setValue] = useState(3);
+    const [images, setImages] = useState([]);
+    const [imagePreviews, setImagePreviews] = useState([]);
+    const handleImageUpload = (e) => {
+        const files = Array.from(e.target.files);
+        setImages(files);
+
+        const previewUrls = files.map((file) => URL.createObjectURL(file));
+        setImagePreviews(previewUrls);
+
+        e.target.value = null;
+    };
+
+    const handleRemoveImage = (indexToRemove) => {
+        setImages((prevImages) => prevImages.filter((_, index) => index !== indexToRemove));
+        setImagePreviews((prevPreviews) => prevPreviews.filter((_, index) => index !== indexToRemove));
+    };
     return (
         <div className="flex flex-col w-[60%] mx-auto p-3 my-3 border rounded-lg gap-3 bg-gray-100">
             <p className="text-[20px] font-semibold  ">Đánh giá sản phẩm</p>
@@ -32,7 +48,6 @@ function ProductList(props) {
                         <span className="text-[17px] font-semibold">{props.name}</span>
                         <span className="ml-auto mr-3 italic font-semibold text-red-500 ">{props.price}</span>
                     </div>
-                    <p className="text-[12px] opacity-75 italic w-[60%]">{props.subcription}</p>
                 </div>
             </div>
             <div className="flex gap-6 ">
@@ -42,12 +57,40 @@ function ProductList(props) {
                     {value ? <span className="mx-2 text-[13px]">{desc[value - 1]}</span> : null}
                 </div>
             </div>
-            <p className="my-2">Bình luận</p>
-            <div className="">
-                <Upload {...prop} listType="picture">
-                    <Button icon={<UploadOutlined />}>Nhấn để tải ảnh lên</Button>
-                </Upload>
+
+            <div className="mb-2">
+                <span className="block mb-2">Hình ảnh sản phẩm</span>
+                <input
+                    type="file"
+                    accept="image/*"
+                    multiple
+                    onChange={handleImageUpload}
+                    className="w-full p-3 border rounded-sm focus:outline-none"
+                    required={images.length === 0}
+                />
             </div>
+            {imagePreviews.length > 0 && (
+                <div className="mb-4 grid grid-cols-4 gap-4">
+                    {imagePreviews.map((preview, index) => (
+                        <div key={index} className="relative">
+                            <img
+                                src={preview}
+                                alt={`Xem trước hình ảnh ${index + 1}`}
+                                className="w-64 h-64 object-cover rounded-md"
+                            />
+
+                            <button
+                                type="button"
+                                className="absolute top-0 right-0 text-red-500 pr-1"
+                                onClick={() => handleRemoveImage(index)}
+                            >
+                                X
+                            </button>
+                        </div>
+                    ))}
+                </div>
+            )}
+            <p>Bình luận</p>
             <div className="mb-3">
                 <TextArea
                     className=""

@@ -1,61 +1,81 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import AdressDetail from './AdressDetail';
 import { UserData } from '../UserProfile/UserData';
 import { Product_Items } from '../Product/Product_Items';
 import OrderContent from './OrderContent';
 import { Button } from 'antd';
+import { useNavigate, useParams } from 'react-router-dom';
+import { fetchOrderByIdFromAPI } from '../../Services/OrderService';
 
 function Content() {
-    const product1 = Product_Items[0];
-    const product2 = Product_Items[1];
-    const product3 = Product_Items[2];
-    const ship = 20000;
-    const totalprice = parseInt(product1.price) + parseInt(product2.price) + parseInt(product3.price);
-    const total = ship + totalprice;
+    const navigate = useNavigate();
+    const handleGoBack = () => {
+        navigate(-1); // Điều hướng quay lại trang trước đó
+    };
+    const { id } = useParams();
+    const [orderDetail, setOrderDetail] = useState([]);
+    useEffect(() => {
+        const fetchOrderById = async () => {
+            try {
+                const { data } = await fetchOrderByIdFromAPI(id);
+                setOrderDetail(data);
+                console.log(orderDetail);
+            } catch (error) {
+                console.error('Error fetching order by id:', error);
+            }
+        };
+        fetchOrderById();
+    }, [id]);
+
     const formatCurrency = (amount) => {
         return new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(amount);
     };
     return (
         <div className="flex flex-col">
-            <AdressDetail
-                name={UserData[0].name}
-                address={UserData[0].address}
-                ward={UserData[0].ward}
-                district={UserData[0].district}
-                province={UserData[0].province}
-                number={UserData[0].phoneNumber}
-            ></AdressDetail>
+            {orderDetail.customer && (
+                <AdressDetail
+                    name={orderDetail.customer.full_name}
+                    address={orderDetail.customer.address}
+                    ward={orderDetail.customer.ward}
+                    district={orderDetail.customer.district}
+                    province={orderDetail.customer.province}
+                    number={orderDetail.customer.phone}
+                    id={orderDetail.id_order}
+                    status={orderDetail.order_status}
+                    date={
+                        orderDetail.order_date.split('T')[0].split('-').reverse().join('/') +
+                        ' ' +
+                        orderDetail.order_date.split('T')[1].split('.')[0]
+                    }
+                />
+            )}
             <div className="overflow-auto h-[250px] border-t border-b border-gray-300">
-                <OrderContent
-                    name={product1.name}
-                    img={product1.image}
-                    quantity={product1.quantity}
-                    price={product1.price}
-                ></OrderContent>
-                <OrderContent
-                    name={product2.name}
-                    img={product2.image}
-                    quantity={product2.quantity}
-                    price={product2.price}
-                ></OrderContent>
-                <OrderContent
-                    name={product3.name}
-                    img={product3.image}
-                    quantity={product3.quantity}
-                    price={product3.price}
-                ></OrderContent>
+                {orderDetail.order_details?.map((data, index) => (
+                    <OrderContent
+                        name={data.product.name}
+                        img={data.product.image}
+                        quantity={data.quantity}
+                        price={data.total_price}
+                    ></OrderContent>
+                ))}
             </div>
-            <div className="grid grid-cols-2 grid-rows-4 gap-2 px-5 my-4">
+            <div className="grid grid-cols-2 grid-rows-5 gap-2 px-5 my-4">
+                <p className="ml-auto text-[13px] italic">Phương thức thanh toán</p>
+                <p className="ml-auto text-[13px] italic">{orderDetail.payment_method}</p>
                 <p className="ml-auto text-[13px] italic">Tổng tiền hàng</p>
-                <p className="ml-auto text-[13px] italic">{formatCurrency(totalprice)}</p>
+                <p className="ml-auto text-[13px] italic">{formatCurrency(orderDetail.total_price)}</p>
                 <p className="ml-auto text-[13px] italic">Phí vận chuyển</p>
-                <p className="ml-auto text-[13px] italic">{formatCurrency(ship)}</p>
-                <p className="ml-auto text-[13px] italic">Giảm giá phí vận chuyển</p>
-                <p className="ml-auto text-[13px] italic">{formatCurrency(0)}</p>
+                <p className="ml-auto text-[13px] italic">{formatCurrency(orderDetail.shipping_price)}</p>
+                <p className="ml-auto text-[13px] italic">Giảm giá </p>
+                <p className="ml-auto text-[13px] italic">-{formatCurrency(orderDetail.discount_price)}</p>
                 <p className="ml-auto text-[18px] font-semibold">Thành tiền</p>
-                <p className="ml-auto text-[18px] font-semibold text-red-500 italic">{formatCurrency(total)}</p>
+                <p className="ml-auto text-[18px] font-semibold text-red-500 italic">
+                    {formatCurrency(orderDetail.final_price)}
+                </p>
             </div>
-            <Button className="ml-auto mr-5 my-2 w-[15%] ">Quay lại</Button>
+            <Button onClick={handleGoBack} className="ml-auto mr-5 my-2 w-[15%] ">
+                Quay lại
+            </Button>
         </div>
     );
 }

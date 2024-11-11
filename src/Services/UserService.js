@@ -74,3 +74,72 @@ export const updateProfileToAPI = async (UserProfileRequest) => {
         throw error;
     }
 };
+
+export const checkPassword = async (password) => {
+    try {
+        const params = new URLSearchParams();
+        params.append('password', password);
+
+        const response = await axiosInstance.post('users/checkPassword', params);
+        // if (response.status !== 200) {
+        //     //console.log(response.status);
+        //     //throw new Error('Error checking password');
+        // }
+        return response.result; // Trả về true/false từ API
+    } catch (error) {
+        if (error.response) {
+            // Nếu có phản hồi từ server (thường xảy ra khi mã lỗi HTTP không phải 2xx)
+            console.error('Error response status:', error.response.status);
+            console.error('Error response data:', error.response.data);
+        } else if (error.request) {
+            // Nếu không có phản hồi nào (lỗi kết nối, timeout)
+            console.error('Error request:', error.request);
+        } else {
+            // Nếu có lỗi khác (cấu trúc hoặc lỗi khác trong yêu cầu)
+            console.error('Error message:', error.message);
+        }
+        return false; // Trả về false khi gặp lỗi
+    }
+};
+
+export const updatePasswordToAPI = async (oldPassword, newPassword) => {
+    try{
+        const params = new URLSearchParams();
+        params.append('old_password', oldPassword);
+        params.append('new_password', newPassword);
+    await axiosInstance.put('users/updatePassword', params)
+}
+catch (error) {
+    if (error.response) {
+        console.error('Error response from server:', error.response.data);
+    } else if (error.request) {
+        console.error('No response received:', error.request);
+    } else {
+        console.error('Error setting up request:', error.message);
+    }
+    throw error;
+}
+    
+}
+
+export const updateAvatarToAPI = async (avatar) => {
+    try {
+        const formData = new FormData();
+        formData.append('avatar', avatar);
+
+        await axiosInstance.put('users/updateAvatar', formData, {
+            headers: {
+                'Content-Type': 'multipart/form-data',
+            },
+        });
+    } catch (error) {
+        if (error.response) {
+            console.error('Error response from server:', error.response.data);
+        } else if (error.request) {
+            console.error('No response received:', error.request);
+        } else {
+            console.error('Error setting up request:', error.message);
+        }
+        throw error;
+    }
+};

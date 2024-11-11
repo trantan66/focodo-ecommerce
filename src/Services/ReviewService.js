@@ -44,3 +44,31 @@ export const DeleteReview = async (reviewId) => {
         throw error;
     }
 };
+
+export const createReviewToAPI = async (id_order, images, review) => {
+    try {
+        const formData = new FormData();
+        images.forEach((element) => {
+            formData.append('images', element);
+        });
+        formData.append('id_order', id_order);
+        formData.append('review', review);
+        const response = await axiosInstance.post('reviews/create', formData, {
+            headers: {
+                ...getHeader(),
+                'Content-Type': 'multipart/form-data',
+            },
+        });
+
+        return response.data;
+    } catch (error) {
+        if (error.response) {
+            console.error('Error response from server:', error.response.data);
+        } else if (error.request) {
+            console.error('No response received:', error.request);
+        } else {
+            console.error('Error setting up request:', error.message);
+        }
+        throw error;
+    }
+};

@@ -1,10 +1,14 @@
-import { OrderData } from './OrderData';
-import React from 'react';
-
+import { Link, useNavigate } from 'react-router-dom';
+import React, { useEffect, useState } from 'react';
+import { fetchOrderByIdFromAPI, updateOrderStatus } from '../../Services/OrderService';
+import { Modal, notification } from 'antd';
+import fetchCart from '../Carts/index';
+import { addProductToCart } from '../../Services/CartService';
 export function ProductList(props) {
     const formatCurrency = (amount) => {
         return new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(amount);
     };
+
     return (
         <div className="flex gap-3 my-2 border-gray-300 border-t border-b py-4">
             <div className="">
@@ -24,19 +28,54 @@ export function ProductList(props) {
 }
 
 export function Orders(props) {
+    const navigate = useNavigate();
     const formatCurrency = (amount) => {
         return new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(amount);
     };
-
+    const submitOrderStatusChange = async (status) => {
+        try {
+            await updateOrderStatus(props.id, status);
+        } catch (error) {
+            console.error('Error updating the order status:', error);
+            notification.error({
+                message: 'Có lỗi xảy ra!',
+                description: 'Không thể cập nhật trạng thái. Vui lòng thử lại.',
+            });
+        } finally {
+            notification.success({
+                message: 'Cập nhật trạng thái thành công!',
+                description: 'Trạng thái đã được cập nhật.',
+                duration: '1',
+            });
+            window.location.reload();
+        }
+    };
+    const handleCanceledClick = () => {
+        Modal.confirm({
+            title: 'Bạn có chắc là muốn hủy đơn?',
+            content: 'Thao tác này không thể hoàn tác.',
+            okText: 'Hủy đơn',
+            cancelText: 'Quay lại',
+            onOk() {
+                submitOrderStatusChange('Đã hủy');
+            },
+        });
+    };
     const renderButtonByStatus = (status, review) => {
         switch (status) {
             case 'Chưa xác nhận':
                 return (
                     <div className="flex w-[100%]">
-                        <button className="ml-auto mr-2 bg-[#77CDFF] text-black w-[10%] h-[40px] rounded-lg hover:bg-[#3C3D37] transition duration-300 my-3">
-                            Xem chi tiết
+                        <button className="ml-auto mr-2 bg-[#77CDFF] text-black w-[10%] h-[40px] rounded-lg transition duration-300 my-3">
+                            <Link className="hover:no-underline" to={`/orderdetail/${props.id}`}>
+                                {' '}
+                                Xem chi tiết
+                            </Link>
                         </button>
-                        <button className=" mr-4 bg-red-600 text-white w-[10%] h-[40px] rounded-lg hover:bg-[#3C3D37] transition duration-300 my-3">
+                        <button
+                            onClick={handleCanceledClick}
+                            className=" mr-4 bg-red-600 text-white w-[10%] h-[40px] rounded-lg hover:bg-[#3C3D37] transition duration-300 my-3"
+                        >
                             Hủy đơn
                         </button>
                     </div>
@@ -44,16 +83,25 @@ export function Orders(props) {
             case 'Đã xác nhận':
                 return (
                     <button className="bg-[#77CDFF] text-black w-[10%] h-[40px] rounded-lg hover:bg-[#3C3D37] transition duration-300 ml-auto my-3">
-                        Xem chi tiết
+                        <Link className="hover:no-underline" to={`/orderdetail/${props.id}`}>
+                            {' '}
+                            Xem chi tiết
+                        </Link>
                     </button>
                 );
             case 'Đã hủy':
                 return (
                     <div className="flex w-[100%]">
                         <button className="ml-auto mr-2 bg-[#77CDFF] text-black w-[10%] h-[40px] rounded-lg hover:bg-[#3C3D37] transition duration-300 my-3">
-                            Xem chi tiết
+                            <Link className="hover:no-underline" to={`/orderdetail/${props.id}`}>
+                                {' '}
+                                Xem chi tiết
+                            </Link>
                         </button>
-                        <button className="mr-4 bg-black text-white w-[10%] h-[40px] rounded-lg hover:bg-[#3C3D37] transition duration-300 my-3">
+                        <button
+                            onClick={handleSubmitReBuy}
+                            className="mr-4 bg-black text-white w-[10%] h-[40px] rounded-lg hover:bg-[#3C3D37] transition duration-300 my-3"
+                        >
                             Mua lại
                         </button>
                     </div>
@@ -62,7 +110,10 @@ export function Orders(props) {
                 return (
                     <div className="flex w-[100%]">
                         <button className="ml-auto mr-2 bg-[#77CDFF] text-black w-[10%] h-[40px] rounded-lg hover:bg-[#3C3D37] transition duration-300 my-3">
-                            Xem chi tiết
+                            <Link className="hover:no-underline" to={`/orderdetail/${props.id}`}>
+                                {' '}
+                                Xem chi tiết
+                            </Link>
                         </button>
 
                         {review ? (
@@ -71,7 +122,10 @@ export function Orders(props) {
                             </button>
                         ) : (
                             <button className="mr-4 bg-black text-white w-[10%] h-[40px] rounded-lg hover:bg-[#3C3D37] transition duration-300 my-3">
-                                Đánh giá
+                                <Link className="hover:no-underline" to={`/review/${props.id}`}>
+                                    {' '}
+                                    Đánh giá
+                                </Link>
                             </button>
                         )}
                     </div>
@@ -84,7 +138,33 @@ export function Orders(props) {
                 );
         }
     };
-
+    const handleAddToCart = async (id_product, quantity) => {
+        try {
+            await addProductToCart({ id_product, quantity });
+            fetchCart();
+        } catch (error) {
+            console.error('Error addToCart product:', error);
+        }
+    };
+    const handleSubmitReBuy = async () => {
+        orderDetail.order_details.forEach((element) => {
+            handleAddToCart(element.product.id, element.quantity);
+        });
+        window.location.reload();
+        alert('Sản phẩm đã được thêm vào giỏ hàng');
+    };
+    const [orderDetail, setOrderDetail] = useState({});
+    useEffect(() => {
+        const fetchOrderById = async () => {
+            try {
+                const { data } = await fetchOrderByIdFromAPI(props.id);
+                setOrderDetail(data);
+            } catch (error) {
+                console.error('Error fetching order by id:', error);
+            }
+        };
+        fetchOrderById();
+    }, [props.id]);
     return (
         <div className="flex flex-col my-3">
             <p className="ml-auto mr-4 text-[16px] font-semibold">Trạng thái: {props.status}</p>
@@ -95,98 +175,6 @@ export function Orders(props) {
                 </span>
             </div>
             <div className="flex gap-3 ">{renderButtonByStatus(props.status, props.review)}</div>
-        </div>
-    );
-}
-
-export function CompletedOrders() {
-    const formatCurrency = (amount) => {
-        return new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(amount);
-    };
-    const completedOrders = OrderData.filter((order) => order.status === 'complete');
-    return (
-        <div className="">
-            {completedOrders.map((order) => (
-                <div className="border-t border-b border-gray-300  p-3 my-2">
-                    <div className="flex">
-                        <img src={order.image} alt="" className="w-[10%] h-[75px]" />
-                        <div className="ml-3">
-                            <p className="text-[16px] font-semibold italic">{order.name}</p>
-                            <p className="">x{order.quantity}</p>
-                        </div>
-                        <span className="ml-auto text-[16px] text-red-600 font-semibold">
-                            {formatCurrency(order.price)}
-                        </span>
-                    </div>
-                    <div className="flex">
-                        <button className="bg-black text-white w-[10%] h-[40px] rounded-lg hover:bg-[#3C3D37] transition duration-300 ml-auto my-3">
-                            Mua lại
-                        </button>
-                    </div>
-                </div>
-            ))}
-        </div>
-    );
-}
-
-export function ShippingOrders() {
-    const formatCurrency = (amount) => {
-        return new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(amount);
-    };
-    const shippingOrders = OrderData.filter((order) => order.status === 'shipping');
-    return (
-        <div className="">
-            {shippingOrders.map((order) => (
-                <div className="border-t border-b border-gray-300 p-3 my-2">
-                    <div className="flex">
-                        <img src={order.image} alt="" className="w-[10%] h-[75px]" />
-                        <div className="ml-3">
-                            <p className="text-[16px] font-semibold italic">{order.name}</p>
-                            <p className="">x{order.quantity}</p>
-                        </div>
-                        <span className="ml-auto text-[16px] text-red-600 font-semibold">
-                            {formatCurrency(order.price)}
-                        </span>
-                    </div>
-                    <div className="flex">
-                        <button className="bg-[#77CDFF] text-black w-[10%] h-[40px] rounded-lg hover:bg-[#3C3D37] transition duration-300 ml-auto my-3">
-                            Xem chi tiết
-                        </button>
-                    </div>
-                </div>
-            ))}
-        </div>
-    );
-}
-
-export function ProcessingOrders() {
-    const processingOrders = OrderData.filter((order) => order.status === 'processing');
-
-    const formatCurrency = (amount) => {
-        return new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(amount);
-    };
-
-    return (
-        <div className="">
-            {processingOrders.map((order) => (
-                <div className="border-t border-b border-gray-300  p-3 my-2">
-                    <div className="flex">
-                        <img src={order.image} alt="" className="w-[10%] h-[75px]" />
-                        <div className="ml-3">
-                            <p className="text-[16px] font-semibold italic">{order.name}</p>
-                            <p className="">x{order.quantity}</p>
-                        </div>
-                        <span className="ml-auto text-[16px] text-red-600 font-semibold">
-                            {formatCurrency(order.price)}
-                        </span>
-                    </div>
-                    <div className="flex">
-                        <button className="bg-red-600 text-white w-[10%] h-[40px] rounded-lg hover:bg-[#3C3D37] transition duration-300 ml-auto my-3">
-                            Hủy đơn
-                        </button>
-                    </div>
-                </div>
-            ))}
         </div>
     );
 }

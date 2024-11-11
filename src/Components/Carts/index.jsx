@@ -16,7 +16,11 @@ function Carts() {
     const navigate = useNavigate();
     // Điều hướng đến trang Order với mã giảm giá trong URL
     const handlePlaceOrder = () => {
-        navigate(`/Order?discountValue=${discount}&discountCode=${encodeURIComponent(voucherCode)}`);
+        if (calculateFinalTotal() > 0) {
+            navigate(`/Order?discountValue=${discount}&discountCode=${encodeURIComponent(voucherCode)}`);
+        } else {
+            alert('Bạn phải chọn hàng trước khi đặt!');
+        }
     };
 
     const [products, setProducts] = useState([]); // Danh sách sản phẩm trong giỏ hàng
@@ -47,6 +51,7 @@ function Carts() {
 
         try {
             await updateCheckInCart(products[index].id_cart); // Gọi API để cập nhật trạng thái check
+            setDiscount(0);
             fetchCart(); // Cập nhật giỏ hàng sau khi thay đổi trạng thái
         } catch (error) {
             console.error('Error updating checkbox status:', error);
@@ -57,6 +62,7 @@ function Carts() {
     const updateQuantity = async (cartId, quantity) => {
         try {
             await updateQuantityInCart(cartId, quantity);
+            setDiscount(0);
             fetchCart(); // Cập nhật giỏ hàng sau khi thay đổi số lượng
         } catch (error) {
             console.error('Error updating quantity:', error);
@@ -74,6 +80,7 @@ function Carts() {
                     newValues[index] -= 1;
                     return newValues;
                 });
+                setDiscount(0);
                 fetchCart(); // Cập nhật giỏ hàng
             } catch (error) {
                 console.error('Error decreasing quantity:', error);
@@ -91,6 +98,7 @@ function Carts() {
                 newValues[index] += 1;
                 return newValues;
             });
+            setDiscount(0);
             fetchCart(); // Cập nhật giỏ hàng
         } catch (error) {
             console.error('Error increasing quantity:', error);
