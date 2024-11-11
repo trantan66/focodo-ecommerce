@@ -18,6 +18,22 @@ export const fetchUsersFromAPI = async (page, size) => {
     }
 };
 
+export const callRegister = async (data) => {
+    return await axiosInstance.post('/auth/register', data);
+};
+
+export const callVerifyEmail = async (email) => {
+    return await axiosInstance.post(`/auth/verifyEmail?email=${email}`);
+};
+
+export const callVerifyOtp = async (email, otp) => {
+    return await axiosInstance.post(`/auth/verifyOtp?email=${email}&otp=${otp}`);
+};
+
+export const callResetPassword = async (email, password) => {
+    return await axiosInstance.post(`/auth/resetPassword?email=${email}&password=${password}`);
+};
+
 const getUserFromToken = async () => {
     return await axiosInstance.get('/users/getUser');
 };

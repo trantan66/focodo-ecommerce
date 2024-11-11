@@ -29,6 +29,7 @@ const Login = () => {
                     navigate('/admin', { replace: true });
                 } else {
                     navigate('/userprofile', { replace: true });
+                    window.location.reload();
                 }
             }
         } catch (e) {
@@ -83,7 +84,7 @@ const Login = () => {
                                 </div>
                                 <div className="flex items-center justify-between">
                                     <a
-                                        href="#"
+                                        href="forgotpassword1"
                                         className="text-sm font-medium text-primary-600 hover:no-underline dark:text-primary-500"
                                     >
                                         Quên mật khẩu?
@@ -99,7 +100,7 @@ const Login = () => {
                                 <p className="text-sm font-light text-gray-500 dark:text-gray-400">
                                     Bạn chưa có tài khoản?{' '}
                                     <a
-                                        href="#"
+                                        href="/register"
                                         className="font-medium text-primary-600 hover:no-underline dark:text-primary-500"
                                     >
                                         Đăng ký
