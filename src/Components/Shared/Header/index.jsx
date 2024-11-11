@@ -8,7 +8,6 @@ import { searchProducts } from '../../../Services/ProductService';
 import useAuth from '../../../Hooks/useAuth';
 
 import { fetchCartOfUser } from '../../../Services/CartService';
-import { fetchCartOfUser } from '../../../Services/ProductService';
 
 import { useNavigate } from 'react-router-dom';
 
