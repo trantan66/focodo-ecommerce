@@ -1,14 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import cod from '../image/cod.svg';
-import vnpay from '../image/vnpay_new.svg';
-import other from '../image/other.svg';
 import { useLocation } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
 
 import { fetchCartCheckedOfUser } from '../../../Services/CartService';
 import { checkVoucher, getVoucher } from '../../../Services/VoucherService';
 import { getAllPaymentMethod, callCreateOrder } from '../../../Services/OrderService';
+import { getUserFromToken } from '../../../Services/UserService';
 
 function Order() {
     const [selectedPaymentMethod, setSelectedPaymentMethod] = useState('1'); // Theo dõi phương thức thanh toán
@@ -187,6 +185,31 @@ function Order() {
         }
     };
 
+    const [fullName, setFullName] = useState('');
+    const [phone, setPhone] = useState('');
+    const [address, setAddress] = useState('');
+
+    // Gọi API lấy thông tin người dùng
+    const fetchInfoUser = async () => {
+        try {
+            const infoUser = await getUserFromToken(); // Gọi API để lấy thông tin người dùng
+            console.log(infoUser);
+
+            if (infoUser) {
+                // Cập nhật các giá trị vào từng state riêng biệt
+                setFullName(infoUser.full_name || '');
+                setPhone(infoUser.phone || '');
+                setAddress(infoUser.address || '');
+            }
+        } catch (error) {
+            console.error('Error fetching info user:', error);
+        }
+    };
+
+    useEffect(() => {
+        fetchInfoUser(); // Gọi API khi component mount
+    }, []); // Chỉ gọi 1 lần khi component mount
+
     // const navigate = useNavigate();
 
     // Hàm gọi khi nhấn đặt hàng
@@ -224,8 +247,6 @@ function Order() {
                 // Có thể thêm các thông tin khác nếu cần
             })), // Danh sách sản phẩm trong đơn hàng
         };
-        console.log(Customer);
-        console.log(Order);
 
         try {
             // Gọi API để tạo đơn hàng
@@ -263,12 +284,14 @@ function Order() {
                             name="full_name"
                             className="block w-full mt-[10px] p-[8px] border rounded-md"
                             placeholder="Họ và tên"
+                            defaultValue={fullName}
                         />
                         <input
                             type="text"
                             name="phone"
                             className="block w-full mt-[10px] p-[8px] border rounded-md"
                             placeholder="Số điện thoại"
+                            defaultValue={phone}
                         />
 
                         <div className="flex space-x-4">
@@ -328,6 +351,7 @@ function Order() {
                             name="address"
                             className="block w-full mt-[10px] p-[8px] border rounded-md"
                             placeholder="Địa chỉ chi tiết"
+                            defaultValue={address}
                         />
                     </div>
 

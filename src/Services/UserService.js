@@ -1,4 +1,5 @@
 import axiosInstance from './Customize-Axios';
+import { getHeader } from './GetHeader';
 
 export const fetchUsersFromAPI = async (page, size) => {
     try {
@@ -18,6 +19,20 @@ export const fetchUsersFromAPI = async (page, size) => {
     }
 };
 
+export const getUserFromToken = async () => {
+    try {
+        const response = await axiosInstance.get(`users/getUser`, {
+            headers: {
+                ...getHeader(),
+            },
+        });
+        return response.result; // Sử dụng response.data.result
+    } catch (error) {
+        console.error('Error fetching get user:', error);
+        throw error;
+    }
+};
+
 export const callRegister = async (data) => {
     return await axiosInstance.post('/auth/register', data);
 };
@@ -33,12 +48,6 @@ export const callVerifyOtp = async (email, otp) => {
 export const callResetPassword = async (email, password) => {
     return await axiosInstance.post(`/auth/resetPassword?email=${email}&password=${password}`);
 };
-
-const getUserFromToken = async () => {
-    return await axiosInstance.get('/users/getUser');
-};
-
-export { getUserFromToken };
 
 export const fetchOrdersOfUserByIdFromAPI = async (id, page, size) => {
     try {
@@ -119,24 +128,22 @@ export const checkPassword = async (password) => {
 };
 
 export const updatePasswordToAPI = async (oldPassword, newPassword) => {
-    try{
+    try {
         const params = new URLSearchParams();
         params.append('old_password', oldPassword);
         params.append('new_password', newPassword);
-    await axiosInstance.put('users/updatePassword', params)
-}
-catch (error) {
-    if (error.response) {
-        console.error('Error response from server:', error.response.data);
-    } else if (error.request) {
-        console.error('No response received:', error.request);
-    } else {
-        console.error('Error setting up request:', error.message);
+        await axiosInstance.put('users/updatePassword', params);
+    } catch (error) {
+        if (error.response) {
+            console.error('Error response from server:', error.response.data);
+        } else if (error.request) {
+            console.error('No response received:', error.request);
+        } else {
+            console.error('Error setting up request:', error.message);
+        }
+        throw error;
     }
-    throw error;
-}
-    
-}
+};
 
 export const updateAvatarToAPI = async (avatar) => {
     try {
