@@ -125,9 +125,9 @@ const ForgotPassword2 = () => {
 
                     <div className="mt-4 text-center">
                         {isTimerActive ? (
-                            <div className="">
+                            <div className="flex justify-center align-center">
                                 <div
-                                    className="text-sm font-medium text-primary-600 hover:no-underline dark:text-primary-500 cursor-pointer"
+                                    className="text-sm text-base text-blue-500 font-medium text-primary-600 hover:no-underline dark:text-primary-500 cursor-pointer"
                                     onClick={handleBackup}
                                 >
                                     Quay lại
