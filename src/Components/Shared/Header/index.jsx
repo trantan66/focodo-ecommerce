@@ -6,7 +6,7 @@ import './Header.css'; // Giữ lại import CSS của bạn
 import logo from '../image/logo.png';
 import { searchProducts } from '../../../Services/ProductService';
 
-import { fetchCartOfUser } from '../../../Services/CartService';
+import { fetchCartOfUser, getNumberOfCart } from '../../../Services/CartService';
 
 import { useNavigate } from 'react-router-dom';
 
@@ -56,9 +56,21 @@ function Header() {
         }
     };
 
+    //số lượng sản phẩm trong giỏ hàng
+    const [numberOfCart, setNumberOfCart] = useState(false);
+    const fetchNumberOfCart = async () => {
+        try {
+            const numberOfCart = await getNumberOfCart();
+            setNumberOfCart(numberOfCart);
+        } catch (error) {
+            console.error('Error fetching number of cart:', error);
+        }
+    };
+
     // Gọi API khi component được render lần đầu
     useEffect(() => {
         fetchCart();
+        fetchNumberOfCart();
     }, []);
 
     // đăng xuất
@@ -159,9 +171,9 @@ function Header() {
         fetchProducts();
     }, [valueInput]);
     return (
-        <div className="Header">
+        <div className="Header relative">
             <div className="w-full h-[90px]">
-                <div className="container">
+                <div className="container ">
                     <div className="inner-wrap">
                         <div className="inner-logo">
                             <img src={logo} alt="logo" />
@@ -233,8 +245,14 @@ function Header() {
                         <div className="hotline">
                             <p>Hotline:0123456789 | 0987654321</p>
                         </div>
-                        <div className="inner-icon">
+                        <div className="inner-icon relative">
                             <ShoppingCartOutlined className="text-xl" onClick={toggleCart} />
+                            {/* Hình tròn đỏ hiển thị số lượng sản phẩm */}
+                            {numberOfCart > 0 && (
+                                <div className="absolute top-0 right-6 bg-red-500 text-white rounded-full w-5 h-5 text-xs flex items-center justify-center transform -translate-y-3">
+                                    {numberOfCart}
+                                </div>
+                            )}
                             {isCartVisible && (
                                 <div
                                     className="cart-overlay fixed top-0 left-0 w-screen h-screen bg-black bg-opacity-50 z-10"
