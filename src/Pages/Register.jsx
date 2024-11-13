@@ -22,12 +22,28 @@ const Register = () => {
         setError('');
     }, []);
 
+    // Hàm kiểm tra email có hợp lệ không
+    function isValidEmail(email) {
+        const emailPattern = /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/;
+        return emailPattern.test(email);
+    }
+
     const handleRegister = async (e) => {
         e.preventDefault();
 
         // Kiểm tra các điều kiện đầu vào
         if (!fullName || !email || !phone || !username || !password) {
             setError('Vui lòng điền đầy đủ các trường.');
+            return;
+        }
+
+        if (!isValidEmail(email)) {
+            setError('Email không hợp lệ');
+            return;
+        }
+
+        if (phone.length !== 10) {
+            setError('Số điện thoại không hợp lệ');
             return;
         }
 
@@ -46,6 +62,7 @@ const Register = () => {
                 setPassword('');
                 setError('');
                 navigate('/login', { replace: true });
+                alert('đăng kí thành công');
             }
         } catch (e) {
             console.log(e);

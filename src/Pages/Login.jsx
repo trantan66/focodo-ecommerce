@@ -1,18 +1,25 @@
-import { Alert, Input } from 'antd';
-import React, { useEffect, useState } from 'react';
+import { Input } from 'antd';
+import React, { useState } from 'react';
 import { login } from '../Services/AuthService';
 import { getUserFromToken } from '../Services/UserService';
 import useAuth from '../Hooks/useAuth';
-import { Link, useNavigate, useLocation } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 const Login = () => {
-    const { auth, setAuth } = useAuth();
+    const { setAuth } = useAuth();
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
+    const [error, setError] = useState('');
+
     const navigate = useNavigate();
-    const location = useLocation();
-    const from = location.state?.from?.pathname || '/';
+    // const location = useLocation();
+    // const from = location.state?.from?.pathname || '/';
     const handleLogin = async (e) => {
         e.preventDefault();
+
+        if (username === '' || password === '') {
+            setError('Vui lòng nhập đủ các trường');
+            return;
+        }
         try {
             const response = await login(username, password);
             if (response && response.result) {
@@ -33,7 +40,7 @@ const Login = () => {
                 }
             }
         } catch (e) {
-            console.log(e);
+            setError('Sai tên đăng nhập hoặc mật khẩu');
         }
     };
     return (
@@ -82,6 +89,10 @@ const Login = () => {
                                         onChange={(e) => setPassword(e.target.value)}
                                     />
                                 </div>
+                                {error && (
+                                    <div className="mb-4 p-2 text-sm text-red-600 bg-red-100 rounded">{error}</div>
+                                )}
+
                                 <div className="flex items-center justify-between">
                                     <a
                                         href="forgotpassword1"

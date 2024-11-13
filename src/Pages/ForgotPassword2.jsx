@@ -45,6 +45,9 @@ const ForgotPassword2 = () => {
             setIsLoading(false); // Kết thúc trạng thái loading
         }
     };
+    const handleBackup = () => {
+        navigate('/forgotpassword1');
+    };
 
     const handleResendOtp = async () => {
         setTimer(60);
@@ -122,8 +125,14 @@ const ForgotPassword2 = () => {
 
                     <div className="mt-4 text-center">
                         {isTimerActive ? (
-                            <div>
-                                <span className="text-sm text-gray-700">Thời gian còn lại: {timer}s</span>
+                            <div className="">
+                                <div
+                                    className="text-sm font-medium text-primary-600 hover:no-underline dark:text-primary-500 cursor-pointer"
+                                    onClick={handleBackup}
+                                >
+                                    Quay lại
+                                </div>
+                                <span className="text-sm text-gray-700 ml-[30px]">Thời gian còn lại: {timer}s</span>
                             </div>
                         ) : (
                             <div>
