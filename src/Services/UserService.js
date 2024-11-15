@@ -1,4 +1,5 @@
 import axiosInstance from './Customize-Axios';
+import { getHeader } from './GetHeader';
 
 export const fetchUsersFromAPI = async (page, size) => {
     try {
@@ -34,11 +35,21 @@ export const callResetPassword = async (email, password) => {
     return await axiosInstance.post(`/auth/resetPassword?email=${email}&password=${password}`);
 };
 
-const getUserFromToken = async () => {
-    return await axiosInstance.get('/users/getUser');
+export const getUserFromToken = async () => {
+    try {
+        const response = await axiosInstance.get(`users/getUser`,{
+            headers: {
+                ...getHeader(),
+            },
+        });
+        return {
+            data: response.result,
+        };
+    } catch (error) {
+        console.error('Error fetching user by token:', error);
+        throw error;
+    }
 };
-
-export { getUserFromToken };
 
 export const fetchOrdersOfUserByIdFromAPI = async (id, page, size) => {
     try {

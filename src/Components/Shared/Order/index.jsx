@@ -7,6 +7,7 @@ import { useLocation } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
 
 import { fetchCartCheckedOfUser } from '../../../Services/CartService';
+import { getUserFromToken } from '../../../Services/UserService';
 import { checkVoucher, getVoucher } from '../../../Services/VoucherService';
 import { getAllPaymentMethod, callCreateOrder } from '../../../Services/OrderService';
 
@@ -142,9 +143,12 @@ function Order() {
     };
 
     const handleProvinceChange = (e) => {
+        setDataProvince(null);
+
         const selectedOption = e.target.options[e.target.selectedIndex];
         setSelectedProvince(selectedOption.value); // Lưu mã code để dùng cho API
         setSelectedProvinceName(selectedOption.getAttribute('data-name')); // Lưu tên để hiển thị
+
         setSelectedDistrict(''); // Reset quận/huyện khi tỉnh/thành phố thay đổi
         setSelectedDistrictName('');
         setDistricts([]); // Xóa danh sách quận/huyện cũ
@@ -152,6 +156,8 @@ function Order() {
     };
 
     const handleDistrictChange = (e) => {
+        setDataDistrict(null);
+
         const selectedOption = e.target.options[e.target.selectedIndex];
         setSelectedDistrict(selectedOption.value); // Lưu mã code để dùng cho API
         setSelectedDistrictName(selectedOption.getAttribute('data-name')); // Lưu tên để hiển thị
@@ -161,6 +167,8 @@ function Order() {
     };
 
     const handleCommuneChange = (e) => {
+        setDataCommune(null);
+
         const selectedOption = e.target.options[e.target.selectedIndex];
         setSelectedCommune(selectedOption.value); // Lưu mã code để dùng cho API
         setSelectedCommuneName(selectedOption.getAttribute('data-name')); // Lưu tên để hiển thị
@@ -186,6 +194,37 @@ function Order() {
             console.error('Error fetching payment methods:', error);
         }
     };
+
+    const [name, setName] = useState('');
+    const [phone, setPhone] = useState('');
+    const [address, setAddress] = useState('');
+    const [dataProvince, setDataProvince] = useState('');
+    const [dataDistrict, setDataDistrict] = useState('');
+    const [dataCommune, setDataCommune] = useState('');
+
+    const fetchUserFromToken = async () => {
+        try {
+            const { data } = await getUserFromToken(); // Gọi API để lấy phương thức thanh toán
+            if (data) {
+                setName(data.full_name || '');
+                setPhone(data.phone || '');
+                setAddress(data.address || '');
+                
+                setDataProvince(data.province || '');
+                setDataDistrict(data.district || '');
+                setDataCommune(data.ward || '');
+                
+                setSelectedProvince(data.province || '');
+                setSelectedDistrict(data.district || '');
+                setSelectedCommune(data.ward || '');
+            }
+        } catch (error) {
+            console.error('Error fetching payment methods:', error);
+        }
+    };
+    useEffect(() => {
+        fetchUserFromToken();
+    }, []);
 
     // const navigate = useNavigate();
 
@@ -261,12 +300,16 @@ function Order() {
                         <input
                             type="text"
                             name="full_name"
+                            value={name}
+                            onChange={(e) => setName(e.target.value)}
                             className="block w-full mt-[10px] p-[8px] border rounded-md"
                             placeholder="Họ và tên"
                         />
                         <input
                             type="text"
                             name="phone"
+                            value={phone}
+                            onChange={(e) => setPhone(e.target.value)}
                             className="block w-full mt-[10px] p-[8px] border rounded-md"
                             placeholder="Số điện thoại"
                         />
@@ -279,7 +322,7 @@ function Order() {
                                     onChange={handleProvinceChange}
                                     className="block w-full mt-[10px] p-[8px] border rounded-md"
                                 >
-                                    <option value="">Chọn Tỉnh/Thành Phố</option>
+                                    <option value="">{dataProvince ? dataProvince : 'Chọn Tỉnh/Thành Phố'}</option>
                                     {provinces.map((province) => (
                                         <option key={province.code} value={province.code} data-name={province.name}>
                                             {province.name}
@@ -296,7 +339,7 @@ function Order() {
                                     disabled={!selectedProvince}
                                     className="block w-full mt-[10px] p-[8px] border rounded-md"
                                 >
-                                    <option value="">Chọn Quận/Huyện</option>
+                                    <option value="">{dataDistrict ? dataDistrict : 'Chọn Quận/Huyện'}</option>
                                     {districts.map((district) => (
                                         <option key={district.code} value={district.code} data-name={district.name}>
                                             {district.name}
@@ -313,9 +356,9 @@ function Order() {
                                     disabled={!selectedDistrict}
                                     className="block w-full mt-[10px] p-[8px] border rounded-md"
                                 >
-                                    <option value="">Chọn Xã/Phường</option>
+                                    <option value="">{dataCommune ? dataCommune : 'Chọn Xã/Phường'}</option>
                                     {communes.map((commune) => (
-                                        <option key={commune.code} value={commune.code} data-name={commune.name}>
+                                        <option key={commune.code} value={commune.name} data-name={commune.name}>
                                             {commune.name}
                                         </option>
                                     ))}
@@ -326,6 +369,8 @@ function Order() {
                         <input
                             type="text"
                             name="address"
+                            value={address}
+                            onChange={(e) => setAddress(e.target.value)}
                             className="block w-full mt-[10px] p-[8px] border rounded-md"
                             placeholder="Địa chỉ chi tiết"
                         />
