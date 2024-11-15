@@ -45,30 +45,34 @@ export const DeleteReview = async (reviewId) => {
     }
 };
 
-export const createReviewToAPI = async (id_order, images, review) => {
-    try {
-        const formData = new FormData();
-        images.forEach((element) => {
-            formData.append('images', element);
-        });
+export const createReviewToAPI = (id_order, data) => {
+    const promises = data.map((item) => {
+        let formData = new FormData();
+
         formData.append('id_order', id_order);
-        formData.append('review', review);
-        const response = await axiosInstance.post('reviews/create', formData, {
+        formData.append(
+            'review',
+            JSON.stringify({
+                id_product: item.id_product,
+                rating: item.rating,
+                content: item.content,
+            }),
+        );
+        // formData.append('review', new Blob([JSON.stringify(item.review)], {
+        //     type: 'application/json'
+        // }));
+
+        const images = item.images || [];
+        images.forEach((image) => {
+            formData.append('images', image);
+        });
+
+        return axiosInstance.post('/reviews/create', formData, {
             headers: {
-                ...getHeader(),
                 'Content-Type': 'multipart/form-data',
             },
         });
+    });
 
-        return response.data;
-    } catch (error) {
-        if (error.response) {
-            console.error('Error response from server:', error.response.data);
-        } else if (error.request) {
-            console.error('No response received:', error.request);
-        } else {
-            console.error('Error setting up request:', error.message);
-        }
-        throw error;
-    }
+    return Promise.all(promises);
 };
