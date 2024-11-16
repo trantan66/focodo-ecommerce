@@ -12,6 +12,22 @@ export const fetchCartOfUser = async () => {
     }
 };
 
+// get number of cart
+export const getNumberOfCart = async () => {
+    try {
+        const response = await axiosInstance.get('/carts/getNumberOfCart', {
+            headers: {
+                ...getHeader(),
+            },
+        });
+        return response.result; // Trả về response.data.result nếu cần
+    } catch (error) {
+        console.error('Lỗi khi lấy số lượng sản phẩm trong giỏ hàng:', error);
+        throw error;
+    }
+};
+
+
 export const fetchCartCheckedOfUser = async () => {
     try {
         const response = await axiosInstance.get('carts/getCartCheckedOfUser');
