@@ -46,6 +46,10 @@ const ForgotPassword2 = () => {
         }
     };
 
+    const handleBack = () => {
+        navigate('/forgotpassword1');
+    };
+
     const handleResendOtp = async () => {
         setTimer(60);
         setIsTimerActive(true);
@@ -69,7 +73,6 @@ const ForgotPassword2 = () => {
             <section className="bg-gray-50 dark:bg-gray-900 h-[600px] flex items-center justify-center">
                 <div className="w-full bg-white rounded-lg shadow-md sm:max-w-md p-6">
                     <h1 className="text-xl font-bold text-gray-900 mb-4 text-center">Nhập mã OTP</h1>
-
                     <label htmlFor="otp" className="block text-sm font-medium text-gray-700 mb-2">
                         Nhập mã OTP đã gửi đến email của bạn
                     </label>
@@ -81,9 +84,7 @@ const ForgotPassword2 = () => {
                         className="w-full p-2 border border-gray-300 rounded-lg mb-4"
                         placeholder="Mã OTP"
                     />
-
                     {error && <div className="mb-4 p-2 text-sm text-red-600 bg-red-100 rounded">{error}</div>}
-
                     <button
                         onClick={handleConfirmClick}
                         disabled={isLoading} // Vô hiệu hóa khi đang tải
@@ -119,8 +120,7 @@ const ForgotPassword2 = () => {
                             'Xác nhận'
                         )}
                     </button>
-
-                    <div className="mt-4 text-center">
+                    <div className="flex justify-center  mt-4 text-center">
                         {isTimerActive ? (
                             <div>
                                 <span className="text-sm text-gray-700">Thời gian còn lại: {timer}s</span>
@@ -165,6 +165,12 @@ const ForgotPassword2 = () => {
                                 </button>
                             </div>
                         )}
+                    </div>{' '}
+                    <div
+                        className="flex justify-center items-center  mx-auto text-blue-500 mt-2 cursor-pointer"
+                        onClick={handleBack}
+                    >
+                        Quay lại
                     </div>
                 </div>
             </section>

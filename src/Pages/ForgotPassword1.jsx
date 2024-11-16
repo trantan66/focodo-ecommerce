@@ -29,6 +29,10 @@ const ForgotPassword1 = () => {
         }
     };
 
+    const handleBack = () => {
+        navigate('/login');
+    };
+
     return (
         <div className="max-w-[1200px] mx-auto">
             <section className="bg-gray-50 dark:bg-gray-900 h-[600px] flex items-center justify-center">
@@ -84,6 +88,9 @@ const ForgotPassword1 = () => {
                             'Xác nhận'
                         )}
                     </button>
+                    <div className="flex justify-center mx-auto text-blue-500 mt-2 cursor-pointer" onClick={handleBack}>
+                        Quay lại
+                    </div>
                 </div>
             </section>
         </div>
