@@ -140,6 +140,7 @@ function Order() {
     };
 
     const handleProvinceChange = (e) => {
+        setDataProvince(null);
         const selectedOption = e.target.options[e.target.selectedIndex];
         setSelectedProvince(selectedOption.value); // Lưu mã code để dùng cho API
         setSelectedProvinceName(selectedOption.getAttribute('data-name')); // Lưu tên để hiển thị
@@ -150,6 +151,7 @@ function Order() {
     };
 
     const handleDistrictChange = (e) => {
+        setDataDistrict(null);
         const selectedOption = e.target.options[e.target.selectedIndex];
         setSelectedDistrict(selectedOption.value); // Lưu mã code để dùng cho API
         setSelectedDistrictName(selectedOption.getAttribute('data-name')); // Lưu tên để hiển thị
@@ -159,6 +161,7 @@ function Order() {
     };
 
     const handleCommuneChange = (e) => {
+        setDataCommune(null);
         const selectedOption = e.target.options[e.target.selectedIndex];
         setSelectedCommune(selectedOption.value); // Lưu mã code để dùng cho API
         setSelectedCommuneName(selectedOption.getAttribute('data-name')); // Lưu tên để hiển thị
@@ -189,10 +192,16 @@ function Order() {
     const [phone, setPhone] = useState('');
     const [address, setAddress] = useState('');
 
+    const [dataProvince, setDataProvince] = useState('');
+    const [dataDistrict, setDataDistrict] = useState('');
+    const [dataCommune, setDataCommune] = useState('');
+
+    let infoUser;
+
     // Gọi API lấy thông tin người dùng
     const fetchInfoUser = async () => {
         try {
-            const infoUser = await getUser(); // Gọi API để lấy thông tin người dùng
+            infoUser = await getUser(); // Gọi API để lấy thông tin người dùng
             console.log(infoUser);
 
             if (infoUser) {
@@ -200,12 +209,17 @@ function Order() {
                 setFullName(infoUser.full_name || '');
                 setPhone(infoUser.phone || '');
                 setAddress(infoUser.address || '');
-                setSelectedProvince(infoUser.province || '');
-                console.log(infoUser.province);
-                // const selectedProvinceName = provinces.find((p) => p.code === selectedProvince)?.name || data.province;
 
-                setSelectedDistrict(infoUser.district || '');
-                setSelectedCommune(infoUser.ward || '');
+                setDataProvince(infoUser.province || '');
+                setDataDistrict(infoUser.district || '');
+                setDataCommune(infoUser.ward || '');
+
+                console.log(dataProvince);
+                console.log(dataDistrict);
+                console.log(dataCommune);
+
+                setDataDistrict(infoUser.district || '');
+                setDataCommune(infoUser.ward || '');
             }
         } catch (error) {
             console.error('Error fetching info user:', error);
@@ -308,7 +322,7 @@ function Order() {
                                     onChange={handleProvinceChange}
                                     className="block w-full mt-[10px] p-[8px] border rounded-md"
                                 >
-                                    <option value="">Chọn Tỉnh/Thành Phố</option>
+                                    <option value="">{dataProvince ? dataProvince : 'Chọn Tỉnh/Thành Phố'}</option>
                                     {provinces.map((province) => (
                                         <option key={province.code} value={province.code} data-name={province.name}>
                                             {province.name}
@@ -325,7 +339,7 @@ function Order() {
                                     disabled={!selectedProvince}
                                     className="block w-full mt-[10px] p-[8px] border rounded-md"
                                 >
-                                    <option value="">Chọn Quận/Huyện</option>
+                                    <option value="">{dataDistrict ? dataDistrict : 'Chọn Quận/Huyện'}</option>
                                     {districts.map((district) => (
                                         <option key={district.code} value={district.code} data-name={district.name}>
                                             {district.name}
@@ -342,7 +356,7 @@ function Order() {
                                     disabled={!selectedDistrict}
                                     className="block w-full mt-[10px] p-[8px] border rounded-md"
                                 >
-                                    <option value="">Chọn Xã/Phường</option>
+                                    <option value="">{dataCommune ? dataCommune : 'Chọn Xã/Phường'}</option>
                                     {communes.map((commune) => (
                                         <option key={commune.code} value={commune.code} data-name={commune.name}>
                                             {commune.name}
