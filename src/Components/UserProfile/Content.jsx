@@ -11,7 +11,7 @@ import useAuth from '../../Hooks/useAuth';
 import homelander from '../image/avatar/homelander.jpg';
 import { checkPassword, updatePasswordToAPI } from '../../Services/UserService';
 import { addProductToCart } from '../../Services/CartService';
-import fetchCart from '../Carts/index'
+import fetchCart from '../Carts/index';
 
 function Content() {
     //const user = UserData[0];
@@ -34,8 +34,8 @@ function Content() {
         try {
             const { data, total } = await fetchOrderByStatus(currentPage, ordersPerPage, selectedStatus);
             setOrders(data);
-            console.log(data);
-            console.log(total);
+            // console.log(data);
+            // console.log(total);
             setTotalOrders(total);
         } catch (error) {
             console.error('Error fetching orders:', error);
@@ -64,7 +64,7 @@ function Content() {
                                     name={items.product.name}
                                     img={items.product.image}
                                     quantity={items.quantity}
-                                    price={items.total_price}                    
+                                    price={items.total_price}
                                 ></ProductList>
                             ))}
                             <Orders
@@ -94,7 +94,7 @@ function Content() {
     }));
     const handleTabClick = (key) => {
         setSelectedStatus(status[key]);
-        console.log(status[key]);
+        // console.log(status[key]);
         setCurrentPage(1);
     };
 
@@ -104,7 +104,7 @@ function Content() {
     const handleChangePassword = async () => {
         try {
             const result = await checkPassword(password);
-            console.log(result);
+            // console.log(result);
             if (result == true && newPassword != password) {
                 if (newPassword == '') {
                     setMessage('Mật khẩu mới không được để trống!');

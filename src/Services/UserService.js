@@ -1,4 +1,20 @@
 import axiosInstance from './Customize-Axios';
+import { getHeader } from './GetHeader';
+
+// Hàm thêm sản phẩm vào giỏ hàng
+export const getUser = async () => {
+    try {
+        const response = await axiosInstance.get('users/getUser', {
+            headers: {
+                ...getHeader(),
+            },
+        });
+        return response.result;
+    } catch (error) {
+        console.error('Lỗi khi get user:', error);
+        throw error;
+    }
+};
 
 export const fetchUsersFromAPI = async (page, size) => {
     try {
@@ -119,24 +135,22 @@ export const checkPassword = async (password) => {
 };
 
 export const updatePasswordToAPI = async (oldPassword, newPassword) => {
-    try{
+    try {
         const params = new URLSearchParams();
         params.append('old_password', oldPassword);
         params.append('new_password', newPassword);
-    await axiosInstance.put('users/updatePassword', params)
-}
-catch (error) {
-    if (error.response) {
-        console.error('Error response from server:', error.response.data);
-    } else if (error.request) {
-        console.error('No response received:', error.request);
-    } else {
-        console.error('Error setting up request:', error.message);
+        await axiosInstance.put('users/updatePassword', params);
+    } catch (error) {
+        if (error.response) {
+            console.error('Error response from server:', error.response.data);
+        } else if (error.request) {
+            console.error('No response received:', error.request);
+        } else {
+            console.error('Error setting up request:', error.message);
+        }
+        throw error;
     }
-    throw error;
-}
-    
-}
+};
 
 export const updateAvatarToAPI = async (avatar) => {
     try {

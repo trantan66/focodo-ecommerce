@@ -7,6 +7,10 @@ import axios from 'axios';
 import { updateAvatarToAPI, updateProfileToAPI } from '../../Services/UserService';
 import { useNavigate } from 'react-router-dom';
 function UserIn4({ data }) {
+    useEffect(() => {
+        console.log(data);
+    }, [data]);
+
     const navigate = useNavigate();
     const [username, setUsername] = useState('');
     const [name, setName] = useState('');
@@ -34,6 +38,7 @@ function UserIn4({ data }) {
             setSelectedCommune(data.ward || '');
         }
     }, [data]);
+
     // Fetch province data on component mount
     useEffect(() => {
         axios
@@ -68,7 +73,6 @@ function UserIn4({ data }) {
         }
     }, [selectedDistrict]);
 
-
     const handleAvatarChange = async (event) => {
         const file = event.target.files[0]; // Lấy tệp từ input
         if (file) {
@@ -102,7 +106,7 @@ function UserIn4({ data }) {
             district: selectedDistrictName,
             ward: selectedCommuneName,
         };
-        console.log(UserProfileRequest);
+        // console.log(UserProfileRequest);
         try {
             await updateProfileToAPI(UserProfileRequest);
             if (avatar && avatar !== data.avatar) {

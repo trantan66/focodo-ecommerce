@@ -6,8 +6,24 @@ import { useNavigate } from 'react-router-dom';
 import { fetchCartCheckedOfUser } from '../../../Services/CartService';
 import { checkVoucher, getVoucher } from '../../../Services/VoucherService';
 import { getAllPaymentMethod, callCreateOrder } from '../../../Services/OrderService';
+import { getUserFromToken, getUser } from '../../../Services/UserService';
 
 function Order() {
+    const [data, setData] = useState(null);
+    useEffect(() => {
+        const fetchData = async () => {
+            try {
+                const response = await getUser();
+                setData(response);
+            } catch (error) {
+                console.error('Error fetching user data:', error);
+            }
+        };
+
+        fetchData();
+    }, []);
+    console.log(data);
+
     const [selectedPaymentMethod, setSelectedPaymentMethod] = useState('1'); // Theo dõi phương thức thanh toán
     const [paymentMethods, setPaymentMethods] = useState([]); // State để lưu các phương thức thanh toán
 
@@ -221,8 +237,6 @@ function Order() {
                 // Có thể thêm các thông tin khác nếu cần
             })), // Danh sách sản phẩm trong đơn hàng
         };
-        console.log(Customer);
-        console.log(Order);
 
         try {
             // Gọi API để tạo đơn hàng
