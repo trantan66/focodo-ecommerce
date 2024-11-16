@@ -1,8 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import cod from '../image/cod.svg';
-import vnpay from '../image/vnpay_new.svg';
-import other from '../image/other.svg';
 import { useLocation } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
 

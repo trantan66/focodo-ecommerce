@@ -1,13 +1,15 @@
-import { Alert, Input } from 'antd';
+import { Input } from 'antd';
 import React, { useEffect, useState } from 'react';
 import { login } from '../Services/AuthService';
 import { getUserFromToken } from '../Services/UserService';
 import useAuth from '../Hooks/useAuth';
-import { Link, useNavigate, useLocation } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 const Login = () => {
     const { auth, setAuth } = useAuth();
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
+    const [error, setError] = useState('');
+
     const navigate = useNavigate();
     const location = useLocation();
     const from = location.state?.from?.pathname || '/';
@@ -33,6 +35,7 @@ const Login = () => {
                 }
             }
         } catch (e) {
+            setError('Sai tên đăng nhập hoặc mật khẩu');
             console.log(e);
         }
     };
@@ -82,6 +85,8 @@ const Login = () => {
                                         onChange={(e) => setPassword(e.target.value)}
                                     />
                                 </div>
+                                {error && <div className="p-2 text-sm text-red-600 bg-red-100 rounded">{error}</div>}
+
                                 <div className="flex items-center justify-between">
                                     <a
                                         href="forgotpassword1"

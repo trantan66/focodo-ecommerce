@@ -36,6 +36,11 @@ const Register = () => {
             return;
         }
 
+        if (phone.length != 10) {
+            setError('Số điện thoại phải có 10 số.');
+            return;
+        }
+
         try {
             const response = await register({ fullName, email, phone, username, password });
             if (response && response.result) {

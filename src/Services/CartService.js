@@ -37,6 +37,21 @@ export const addProductToCart = async (cartRequest) => {
     }
 };
 
+// get number of cart
+export const getNumberOfCart = async () => {
+    try {
+        const response = await axiosInstance.get('carts/getNumberOfCart', {
+            headers: {
+                ...getHeader(),
+            },
+        });
+        return response.result; // Trả về response.data.result nếu cần
+    } catch (error) {
+        console.error('Error get number of cart:', error);
+        throw error;
+    }
+};
+
 // Hàm cập nhật trạng thái sản phẩm trong giỏ hàng
 export const updateCheckInCart = async (IdCart) => {
     try {

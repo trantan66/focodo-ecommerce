@@ -1,13 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import { SearchOutlined, ShoppingCartOutlined, UserOutlined, ProfileOutlined, LogoutOutlined } from '@ant-design/icons';
-import { AiOutlineUser, AiOutlineLogout, AiOutlineLogin, AiOutlineUserAdd } from 'react-icons/ai';
+import { AiOutlineLogin, AiOutlineUserAdd } from 'react-icons/ai';
 import { Input } from 'antd';
-import './Header.css';
+import './Header.css'; 
 import logo from '../image/logo.png';
 import { searchProducts } from '../../../Services/ProductService';
-import useAuth from '../../../Hooks/useAuth';
 
-import { fetchCartOfUser } from '../../../Services/CartService';
+import { fetchCartOfUser, getNumberOfCart } from '../../../Services/CartService';
 
 import { useNavigate } from 'react-router-dom';
 
@@ -35,11 +34,9 @@ function Header() {
     };
 
     // check xem đã đăng nhập hay chưa
-    const { auth } = useAuth();
     const checkLogin = localStorage.getItem('access_token');
 
     const [isSearchActive, setIsSearchActive] = useState(false);
-    const [showAll, setShowAll] = useState(false);
     const [valueInput, setValueInput] = useState('');
     const [isCartVisible, setIsCartVisible] = useState(false);
     const [isUserVisible, setIsUserVisible] = useState(false);
@@ -59,9 +56,21 @@ function Header() {
         }
     };
 
+    //số lượng sản phẩm trong giỏ hàng
+    const [numberOfCart, setNumberOfCart] = useState(false);
+    const fetchNumberOfCart = async () => {
+        try {
+            const numberOfCart = await getNumberOfCart();
+            setNumberOfCart(numberOfCart);
+        } catch (error) {
+            console.error('Error fetching number of cart:', error);
+        }
+    };
+
     // Gọi API khi component được render lần đầu
     useEffect(() => {
         fetchCart();
+        fetchNumberOfCart();
     }, []);
 
     // đăng xuất
@@ -162,9 +171,9 @@ function Header() {
         fetchProducts();
     }, [valueInput]);
     return (
-        <div className="Header">
-            <div className="header-top">
-                <div className="container">
+        <div className="Header relative">
+            <div className="w-full h-[90px]">
+                <div className="container ">
                     <div className="inner-wrap">
                         <div className="inner-logo">
                             <img src={logo} alt="logo" />
@@ -179,7 +188,7 @@ function Header() {
                                 onBlur={handleBlur}
                                 onChange={(e) => {
                                     setValueInput(e.target.value);
-                                    if (e.target.value == '') {
+                                    if (e.target.value === '') {
                                         setIsSearchActive(false);
                                     } else {
                                         setIsSearchActive(true);
@@ -196,7 +205,7 @@ function Header() {
                                 <div className="search-dropdown">
                                     <div className="mb-[10px] flex items-center justify-between bg-[#f5f5f5] p-[2px_15px]">
                                         <span className="text-[15px] font-semibold uppercase">Sản phẩm</span>
-                                        {products.length != 0 && (
+                                        {products.length !== 0 && (
                                             <a
                                                 href={`/search?query=${encodeURIComponent(valueInput)}`}
                                                 className="text-[14px] font-[400] hover:no-underline"
@@ -236,38 +245,49 @@ function Header() {
                         <div className="hotline">
                             <p>Hotline:0123456789 | 0987654321</p>
                         </div>
-                        <div className="inner-icon">
-                            <ShoppingCartOutlined onClick={toggleCart} />
+                        <div className="inner-icon relative">
+                            <ShoppingCartOutlined className="text-xl" onClick={toggleCart} />
+                            {/* Hình tròn đỏ hiển thị số lượng sản phẩm */}
+                            {numberOfCart > 0 && (
+                                <div className="absolute top-0 right-6 bg-red-500 text-white rounded-full w-5 h-5 text-xs flex items-center justify-center transform -translate-y-3">
+                                    {numberOfCart}
+                                </div>
+                            )}
                             {isCartVisible && (
                                 <div
                                     className="cart-overlay fixed top-0 left-0 w-screen h-screen bg-black bg-opacity-50 z-10"
                                     onClick={handleOverlayClick}
                                 >
                                     {checkLogin ? (
-                                        
-                                        <div className="w-[450px] max-h-[550px] bg-white mt-[60px] ml-[1000px] p-[20px] rounded-xl shadow-md">
+                                        <div className="relative w-[450px] max-h-[550px] bg-white mt-[90px] ml-[985px] p-[20px] rounded-xl shadow-md">
+                                            {/* Tam giác nhô lên */}
+                                            <div className="absolute -top-3 left-[70%] transform -translate-x-1/2 w-0 h-0 border-l-[10px] border-l-transparent border-r-[10px] border-r-transparent border-b-[15px] border-b-white"></div>
                                             <p className="font-medium text-center text-xl mb-[10px]">GIỎ HÀNG</p>
                                             <div className="max-h-[300px] overflow-y-auto scrollbar">
-                                                {products.map((product, index) => (
-                                                    <div key={product.id_cart} className="flex items-center mb-2">
-                                                        <img
-                                                            src={product.image}
-                                                            alt={product.product_name}
-                                                            className="w-[75px] h-[75px] object-cover"
-                                                        />
-                                                        <div className="ml-[10px] flex justify-between w-full">
-                                                            <div>
-                                                                <p className="font-medium text-lg">
-                                                                    {product.product_name}
-                                                                </p>
-                                                                <p>x{product.quantity}</p>
-                                                            </div>
-                                                            <div className="mr-[10px] text-red-500">
-                                                                {formatCurrency(values[index] * product.unit_price)}
+                                                {products && products.length > 0 ? (
+                                                    products.map((product, index) => (
+                                                        <div key={product.id_cart} className="flex items-center mb-2">
+                                                            <img
+                                                                src={product.image}
+                                                                alt={product.product_name}
+                                                                className="w-[75px] h-[75px] object-cover"
+                                                            />
+                                                            <div className="ml-[10px] flex justify-between w-full">
+                                                                <div>
+                                                                    <p className="font-medium text-lg">
+                                                                        {product.product_name}
+                                                                    </p>
+                                                                    <p>x{product.quantity}</p>
+                                                                </div>
+                                                                <div className="mr-[10px] text-red-500">
+                                                                    {formatCurrency(values[index] * product.unit_price)}
+                                                                </div>
                                                             </div>
                                                         </div>
-                                                    </div>
-                                                ))}
+                                                    ))
+                                                ) : (
+                                                    <p>No products available</p> // Nếu không có sản phẩm
+                                                )}
                                             </div>
 
                                             <div className="mt-[15px] mb-[15px] space-y-1">
@@ -302,7 +322,9 @@ function Header() {
                                             </div>
                                         </div>
                                     ) : (
-                                        <div className="w-[450px] max-h-[550px] bg-white mt-[60px] ml-[1000px] p-[20px] rounded-xl shadow-md">
+                                        <div className=" relative w-[450px] max-h-[550px] bg-white mt-[90px] ml-[985px] p-[20px] rounded-xl shadow-md">
+                                            <div className="absolute -top-3 left-[70%] transform -translate-x-1/2 w-0 h-0 border-l-[10px] border-l-transparent border-r-[10px] border-r-transparent border-b-[15px] border-b-white"></div>
+
                                             <p className="font-medium text-center text-xl mb-[10px]">GIỎ HÀNG</p>
 
                                             <div className="mt-[15px] mb-[15px] space-y-1">
@@ -339,16 +361,18 @@ function Header() {
                                     )}
                                 </div>
                             )}
-                            <UserOutlined onClick={toggleUser} />
+                            <UserOutlined className="text-xl ml-[15px]" onClick={toggleUser} />
                             {isUserVisible && (
                                 <div
                                     className="cart-overlay fixed top-0 left-0 w-screen h-screen bg-black bg-opacity-50 z-10"
                                     onClick={handleOverlayClick}
                                 >
                                     {checkLogin ? (
-                                        <div className="w-[250px] h-[150px] bg-white mt-[60px] ml-[1225px] p-[20px] rounded-xl shadow-md">
+                                        <div className="relative w-[225px] h-[125px] bg-white mt-[90px] ml-[1175px] p-[20px] rounded-xl shadow-md space-y-3">
+                                            {/* Tam giác nhô lên */}
+                                            <div className="absolute -top-3 left-[70%] transform -translate-x-1/2 w-0 h-0 border-l-[10px] border-l-transparent border-r-[10px] border-r-transparent border-b-[15px] border-b-white"></div>
                                             <div className="cursor-pointer" onClick={handleToUserProfile}>
-                                                <ProfileOutlined className="w-[30px] text-xl mt-[20px] mb-[20px]" />{' '}
+                                                <ProfileOutlined className="w-[30px] text-xl" />{' '}
                                                 <span className="text-lg">Hồ sơ cá nhân</span>
                                             </div>
                                             <div className="cursor-pointer" onClick={logout}>
@@ -357,7 +381,10 @@ function Header() {
                                             </div>
                                         </div>
                                     ) : (
-                                        <div className="w-[250px] h-[150px] bg-white mt-[60px] ml-[1225px] p-[20px] rounded-xl shadow-md space-y-5">
+                                        <div className="relative  w-[225px] h-[125px] bg-white mt-[90px] ml-[1175px] p-[20px] rounded-xl shadow-md space-y-3">
+                                            {/* Tam giác nhô lên */}
+                                            <div className="absolute -top-3 left-[70%] transform -translate-x-1/2 w-0 h-0 border-l-[10px] border-l-transparent border-r-[10px] border-r-transparent border-b-[15px] border-b-white"></div>
+
                                             <div className="cursor-pointer flex align-center" onClick={handleLogin}>
                                                 <AiOutlineLogin className="w-[30px] text-xl mr-[20px] mt-[5px]" />{' '}
                                                 <span className="text-lg">Đăng nhập</span>
