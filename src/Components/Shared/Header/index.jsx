@@ -244,6 +244,7 @@ function Header() {
                                     onClick={handleOverlayClick}
                                 >
                                     {checkLogin ? (
+                                        
                                         <div className="w-[450px] max-h-[550px] bg-white mt-[60px] ml-[1000px] p-[20px] rounded-xl shadow-md">
                                             <p className="font-medium text-center text-xl mb-[10px]">GIỎ HÀNG</p>
                                             <div className="max-h-[300px] overflow-y-auto scrollbar">
