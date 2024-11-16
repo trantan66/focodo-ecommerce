@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { SearchOutlined, ShoppingCartOutlined, UserOutlined, ProfileOutlined, LogoutOutlined } from '@ant-design/icons';
 import { AiOutlineUser, AiOutlineLogout, AiOutlineLogin, AiOutlineUserAdd } from 'react-icons/ai';
 import { Input } from 'antd';
-import './Header.css'; // Giữ lại import CSS của bạn
+import './Header.css';
 import logo from '../image/logo.png';
 import { searchProducts } from '../../../Services/ProductService';
 import useAuth from '../../../Hooks/useAuth';
