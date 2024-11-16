@@ -17,7 +17,7 @@ function PaymentChart() {
         const totalResponse = await fetchNumberOfOrdersFromAPI("Tổng hóa đơn");
         setTotalOrders(totalResponse.data);
 
-        const successfulResponse = await fetchNumberOfOrdersFromAPI("Thành công");
+        const successfulResponse = await fetchNumberOfOrdersFromAPI("Đã thanh toán");
         setSuccessfulPayments(successfulResponse.data);
 
         const unpaidResponse = await fetchNumberOfOrdersFromAPI("Chưa thanh toán");

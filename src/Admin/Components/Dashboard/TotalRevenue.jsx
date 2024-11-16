@@ -17,13 +17,12 @@ function TotalRevenue() {
         fetchTotal();
     }, []);
     return (
-        <div className="bg-[#282941] p-4 rounded-sm flex flex-col gap-4 flex-1">
+        <div className="bg-[#282941] p-5 rounded-sm flex flex-col gap-4 w-6/12">
             <div className="bg-[#24435B] p-2 rounded-md w-10 h-10">
                 <FaWallet className="text-2xl text-[#9AE7F7]" />
             </div>
             <span className="text-gray-400">Tổng doanh thu</span>
             <span className="text-white text-2xl">{formatCurrency(totalRevenue)}</span>
-            <span className="text text-sm text-green-500">+{formatCurrency(268000)}</span>
         </div>
     );
 }

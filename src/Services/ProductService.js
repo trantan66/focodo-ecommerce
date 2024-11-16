@@ -187,6 +187,25 @@ export const DeleteProduct = async (productId) => {
         throw error;
     }
 };
+export const ActiveProduct = async (productId) => {
+    try {
+        const response = await axiosInstance.delete(`products/activeProduct/${productId}`, {
+            headers: {
+                ...getHeader(),
+            },
+        });
+        return response.data;
+    } catch (error) {
+        if (error.response) {
+            console.error('Error response from server:', error.response.data);
+        } else if (error.request) {
+            console.error('No response received:', error.request);
+        } else {
+            console.error('Error setting up request:', error.message);
+        }
+        throw error;
+    }
+};
 export const fetchProductsBestSellerFromAPI = async () => {
     try {
         const response = await axiosInstance.get(`products/getProductsBestSeller`);

@@ -58,7 +58,6 @@ function ProfileUpdate({ data }) {
             district: selectedDistrictName,
             ward: selectedCommuneName,
         };
-        console.log(UserProfileRequest);
         try {
             await updateProfileToAPI(UserProfileRequest);
         } catch (error) {

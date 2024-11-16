@@ -31,7 +31,6 @@ function AnnualRevenue() {
             setPreYear(!preYear);
         }
     };
-
     const COLORS = ['#696CFF', '#282941'];
 
     const [currentYearRevenue, setCurrentYearRevenue] = useState([]);
@@ -83,6 +82,7 @@ function AnnualRevenue() {
         { name: 'Progress', value: Math.round(percentIncrease) },
         { name: 'Remaining', value: Math.round(percentIncrease) < 100 ? 100 - Math.round(percentIncrease) : 0 },
     ];
+    
 
     return (
         <div className="w-7/12 bg-[#282941] py-4 pl-4 rounded-sm flex flex-row">

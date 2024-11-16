@@ -7,6 +7,8 @@ import '../CustomCss/CustomPagination.css';
 import { fetchProductsByCategoryFromAPI, fetchProductsFromAPI } from '../../../Services/ProductService';
 import { fetchAllCategoriesFromAPI } from '../../../Services/CategoryService';
 import { formatCurrency } from '../../../utils/FormatCurrency';
+import { FaCheckSquare } from 'react-icons/fa';
+import { CiCircleRemove } from 'react-icons/ci';
 
 function ProductList() {
     const [products, setProducts] = useState([]);
@@ -61,7 +63,6 @@ function ProductList() {
       const result = (Array.isArray(products) ? products : []).filter((product) =>
         product.name.toLowerCase().includes(searchTerm.toLowerCase())
       );
-      console.log("Filtered Data:", result);
       return result;
     }, [products, searchTerm]);
     
@@ -129,6 +130,7 @@ function ProductList() {
                         <thead>
                             <tr className="bg-[#2E3044] h-10">
                                 <td className="pl-2">Sản phẩm</td>
+                                <td>Trạng thái</td>
                                 <td>Đã bán</td>
                                 <td>Giá gốc</td>
                                 <td>Giảm giá</td>
@@ -161,6 +163,7 @@ function ProductList() {
                                             </div>
                                         </div>
                                     </td>
+                                    <td>{!dataproduct._delete ? <FaCheckSquare /> : <CiCircleRemove />}</td>
                                     <td>{dataproduct.sold_quantity}</td>
                                     <td>{formatCurrency(dataproduct.original_price)}</td>
                                     <td>{(dataproduct.discount * 100).toFixed(0)}%</td>

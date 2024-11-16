@@ -271,7 +271,7 @@ function CategoryList() {
                                         <td>
                                             <div className="bg-[#282941] rounded-sm flex-1 flex items-center">
                                                 <img
-                                                    src={items.image}
+                                                    src={items.image ? items.image : "https://ingianguyen.com/wp-content/uploads/in-giay-goi-qua-tai-da-nang-5.jpg"}
                                                     alt="Category"
                                                     className="w-10 h-10 rounded-sm object-cover"
                                                 />
@@ -282,11 +282,6 @@ function CategoryList() {
                                                     >
                                                         {items.name}
                                                     </button>
-                                                    {/* <div classN ame="flex items-center">
-                            <strong className="text-xs text-white font-light">
-                              {items.description}
-                            </strong>
-                          </div> */}
                                                 </div>
                                             </div>
                                         </td>
@@ -516,7 +511,7 @@ function CategoryList() {
                                                     <img
                                                         src={preview}
                                                         alt={`Xem trước hình ảnh ${index + 1}`}
-                                                        className="w-64 h-60 object-cover rounded-md"
+                                                        className="w-64 h-60 rounded-md border-none"
                                                     />
 
                                                     <button
@@ -530,13 +525,13 @@ function CategoryList() {
                                             ))}
                                         </div>
                                     )}
-                                    {imageUpdate !== '' && imagePreviews.length === 0 ? (
+                                    {imageUpdate && imagePreviews.length === 0 ? (
                                         <div className="mb-4 grid grid-cols-2 gap-4">
                                             <div className="relative">
                                                 <img
                                                     src={imageUpdate}
                                                     alt=""
-                                                    className="w-64 h-60 object-cover rounded-md"
+                                                    className="w-64 h-60 rounded-md border-none"
                                                 />
                                                 <button
                                                     className="absolute top-0 right-1 text-black p-2 rounded-md"
