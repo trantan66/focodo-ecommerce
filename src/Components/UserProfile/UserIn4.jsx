@@ -7,10 +7,6 @@ import axios from 'axios';
 import { updateAvatarToAPI, updateProfileToAPI } from '../../Services/UserService';
 import { useNavigate } from 'react-router-dom';
 function UserIn4({ data }) {
-    useEffect(() => {
-        console.log(data);
-    }, [data]);
-
     const navigate = useNavigate();
     const [username, setUsername] = useState('');
     const [name, setName] = useState('');
