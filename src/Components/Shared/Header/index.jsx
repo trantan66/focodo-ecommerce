@@ -57,7 +57,7 @@ function Header() {
     };
 
     //số lượng sản phẩm trong giỏ hàng
-    const [numberOfCart, setNumberOfCart] = useState(false);
+    const [numberOfCart, setNumberOfCart] = useState();
     const fetchNumberOfCart = async () => {
         try {
             const numberOfCart = await getNumberOfCart();

@@ -38,11 +38,11 @@ function ProductDetail(props) {
         return new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(amount);
     };
     const idProductTest = props.id;
-    const quantityTest = value;
+    // const quantityTest = value;
 
     const handleAddToCart = async () => {
         try {
-            const res = await addProductToCart({ id_product: idProductTest, quantity: quantityTest });
+            const res = await addProductToCart({ id_product: idProductTest, quantity: value });
             console.log(res);
             alert('Sản phẩm đã được thêm vào giỏ hàng');
             fetchCart();
