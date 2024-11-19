@@ -31,7 +31,11 @@ function Navigation() {
             icon: <UnorderedListOutlined />,
         },
         {
-            label: 'Hướng dẫn',
+            label: (
+                <Link to="guidepage" className="no-underline hover:no-underline">
+                    Hướng dẫn
+                </Link>
+            ),
             key: 'guide',
             icon: <BookOutlined />,
         },
@@ -45,7 +49,11 @@ function Navigation() {
             icon: <UsergroupAddOutlined />,
         },
         {
-            label: 'Liên hệ',
+            label: (
+                <Link to="contact" className="no-underline hover:no-underline">
+                    Liên hệ
+                </Link>
+            ),
             key: 'contact',
             icon: <ContactsOutlined />,
         },

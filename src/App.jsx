@@ -3,6 +3,9 @@ import Layout from './Components/Shared/Layout';
 import Product from './Pages/Product';
 import Home from './Pages/Home';
 import Present from './Pages/Presentation';
+import GuidePage from './Pages/GuidePage';
+import ContactPage from './Pages/ContactPage';
+
 import ProductDetail from './Pages/ProductDetail';
 import Cart from './Pages/Cart';
 import UserProfile from './Pages/UserProfile';
@@ -48,6 +51,9 @@ function App() {
                     <Route path="review/:orderId" element={<Review />} />
                     <Route path="search" element={<Search />} />
                     <Route path="presentation" element={<Present />} />
+                    <Route path="guidePage" element={<GuidePage />} />
+                    <Route path="contact" element={<ContactPage />} />
+
                     <Route path="productdetail/:id" element={<ProductDetail />} />
                     <Route path="cart" element={<Cart />}></Route>
                     <Route path="order" element={<Order />}></Route>

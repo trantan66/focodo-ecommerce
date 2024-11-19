@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { SearchOutlined, ShoppingCartOutlined, UserOutlined, ProfileOutlined, LogoutOutlined } from '@ant-design/icons';
 import { AiOutlineLogin, AiOutlineUserAdd } from 'react-icons/ai';
 import { Input } from 'antd';
-import './Header.css'; 
+import './Header.css';
 import logo from '../image/logo.png';
 import { searchProducts } from '../../../Services/ProductService';
 
@@ -243,7 +243,7 @@ function Header() {
                             )}
                         </div>
                         <div className="hotline">
-                            <p>Hotline:0123456789 | 0987654321</p>
+                            <p>Hotline: 0911.85.8888 | 0977.33.7979</p>
                         </div>
                         <div className="inner-icon relative">
                             <ShoppingCartOutlined className="text-xl" onClick={toggleCart} />
