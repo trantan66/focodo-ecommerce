@@ -34,6 +34,7 @@ import AdminProfile from './Admin/Pages/Profile';
 import CompleteOrder from './Components/Shared/CompleteOrder';
 import ErrorOrder from './Components/Shared/ErrorOrder';
 import Notification from './Admin/Pages/Notification';
+import Voucher from './Admin/Pages/Voucher';
 
 const roles = {
     user: 'USER',
@@ -79,6 +80,7 @@ function App() {
                         <Route path="review" element={<AdminReview />} />
                         <Route path="profile" element={<AdminProfile />} />
                         <Route path="notification" element={<Notification />} />
+                        <Route path="voucher" element={<Voucher />} />
                     </Route>
                 </Route>
 

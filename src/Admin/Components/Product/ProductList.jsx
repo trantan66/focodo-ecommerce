@@ -7,8 +7,6 @@ import '../CustomCss/CustomPagination.css';
 import { fetchProductsByCategoryFromAPI, fetchProductsFromAPI } from '../../../Services/ProductService';
 import { fetchAllCategoriesFromAPI } from '../../../Services/CategoryService';
 import { formatCurrency } from '../../../utils/FormatCurrency';
-import { FaCheckSquare } from 'react-icons/fa';
-import { CiCircleRemove } from 'react-icons/ci';
 
 function ProductList() {
     const [products, setProducts] = useState([]);
@@ -25,8 +23,8 @@ function ProductList() {
         const fetchCategories = async () => {
             try {
                 const { data } = await fetchAllCategoriesFromAPI();
-                const filteredCategories = data.filter((category) => category.id !== 1 && category.id !== 2);
-                setCategories(filteredCategories);
+                // const filteredCategories = data.filter((category) => category.id !== 1 && category.id !== 2);
+                setCategories(data);
             } catch (error) {
                 console.error('Lỗi khi lấy danh mục:', error);
             }
@@ -60,12 +58,12 @@ function ProductList() {
     }, [fetchProducts]);
 
     const filteredData = useMemo(() => {
-      const result = (Array.isArray(products) ? products : []).filter((product) =>
-        product.name.toLowerCase().includes(searchTerm.toLowerCase())
-      );
-      return result;
+        const result = (Array.isArray(products) ? products : []).filter((product) =>
+            product.name.toLowerCase().includes(searchTerm.toLowerCase()),
+        );
+        return result;
     }, [products, searchTerm]);
-    
+
     const handlePageChange = useCallback((page) => {
         setCurrentPage(page);
     }, []);
@@ -103,13 +101,12 @@ function ProductList() {
     );
 
     useEffect(() => {
-      if (selectedCategory) {
-        fetchProductsByCategory(selectedCategory);
-      } else {
-        fetchProducts();
-      }
+        if (selectedCategory) {
+            fetchProductsByCategory(selectedCategory);
+        } else {
+            fetchProducts();
+        }
     }, [fetchProductsByCategory, fetchProducts, selectedCategory]);
-    
 
     return (
         <div className="mx-4 bg-[#282941] p-4 rounded-md flex flex-col flex-1">
@@ -163,7 +160,17 @@ function ProductList() {
                                             </div>
                                         </div>
                                     </td>
-                                    <td>{!dataproduct._delete ? <FaCheckSquare /> : <CiCircleRemove />}</td>
+                                    <td>
+                                        <span
+                                            className={classNames(
+                                                !dataproduct._delete
+                                                    ? 'capitalize py-1 px-2 rounded-md text-xs bg-green-200 text-green-800 font-medium'
+                                                    : 'capitalize py-1 px-2 rounded-md text-xs bg-red-300 text-red-500 font-medium',
+                                            )}
+                                        >
+                                            {!dataproduct._delete ? 'Đang bán' : 'Dừng bán'}
+                                        </span>
+                                    </td>
                                     <td>{dataproduct.sold_quantity}</td>
                                     <td>{formatCurrency(dataproduct.original_price)}</td>
                                     <td>{(dataproduct.discount * 100).toFixed(0)}%</td>

@@ -40,43 +40,43 @@ function ProductDetail() {
 
     const [isDelete, setIsDelete] = useState('');
 
+    const fetchCategories = async () => {
+        try {
+            const { data } = await fetchAllCategoriesFromAPI();
+            const filteredCategories = data.filter((category) => category.id !== 1 && category.id !== 2);
+            setCategories(filteredCategories);
+        } catch (error) {
+            console.error('Lỗi khi lấy danh mục:', error);
+        }
+    };
     useEffect(() => {
-        const fetchCategories = async () => {
-            try {
-                const { data } = await fetchAllCategoriesFromAPI();
-                const filteredCategories = data.filter((category) => category.id !== 1 && category.id !== 2);
-                setCategories(filteredCategories);
-            } catch (error) {
-                console.error('Lỗi khi lấy danh mục:', error);
-            }
-        };
         fetchCategories();
     }, []);
 
+    const fetchProductById = async (productId) => {
+        try {
+            const { data } = await fetchProductByIdFromAPI(productId);
+            const filteredCategories = data.categories.filter((category) => category.id !== 1 && category.id !== 2);
+            setSelectedCategories(filteredCategories);
+
+            setCurrentImages(data.images);
+
+            setProductName(data.name);
+            setProductQuantity(data.quantity);
+            setProductPackageQuantity(data.package_quantity);
+            setOriginalPrice(data.original_price);
+            setSalePrice(data.sell_price);
+
+            setSubDescription(data.sub_description);
+            setMainDescription(data.main_description);
+
+            setIsDelete(data._delete);
+        } catch (error) {
+            console.error('Error fetching product by id:', error);
+        }
+    };
     useEffect(() => {
-        const fetchProductById = async () => {
-            try {
-                const { data } = await fetchProductByIdFromAPI(productId);
-                const filteredCategories = data.categories.filter((category) => category.id !== 1 && category.id !== 2);
-                setSelectedCategories(filteredCategories);
-
-                setCurrentImages(data.images);
-
-                setProductName(data.name);
-                setProductQuantity(data.quantity);
-                setProductPackageQuantity(data.package_quantity);
-                setOriginalPrice(data.original_price);
-                setSalePrice(data.sell_price);
-
-                setSubDescription(data.sub_description);
-                setMainDescription(data.main_description);
-                
-                setIsDelete(data._delete);
-            } catch (error) {
-                console.error('Error fetching product by id:', error);
-            }
-        };
-        fetchProductById();
+        fetchProductById(productId);
     }, [productId]);
 
     const handleSubmit = async (e) => {
@@ -114,10 +114,14 @@ function ProductDetail() {
                 message: 'Cập nhật sản phẩm thành công!',
                 description: 'Sản phẩm đã được cập nhật.',
             });
-
-            setTimeout(() => {
-                window.location.reload();
-            }, 500);
+            setLoadingIcon(false);
+            setLoadingScreen(false);
+            setImagePreviews([]);
+            await fetchProductById(productId);
+            await fetchCategories();
+            // setTimeout(() => {
+            //     window.location.reload();
+            // }, 500);
         }
     };
 

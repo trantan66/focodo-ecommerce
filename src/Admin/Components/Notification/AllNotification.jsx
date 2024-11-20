@@ -45,7 +45,6 @@ function AllNotification() {
     const handleUpdateNotification = async (id) => {
         try {
             await updateNotification(id);
-            window.location.reload();
         } catch (error) {
             console.error('Error:', error);
         }

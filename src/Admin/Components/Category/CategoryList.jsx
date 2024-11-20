@@ -19,7 +19,6 @@ function CategoryList() {
     const [searchTerm, setSearchTerm] = useState('');
     const [categoriesPerPage, setCategoriesPerPage] = useState(6);
     const [totalCategories, setTotalCategories] = useState(0);
-    const [cachedCategories, setCachedCategories] = useState({});
 
     const [isDialogOpen, setIsDialogOpen] = useState(false);
     const [isUpdateDialogOpen, setIsUpdateDialogOpen] = useState(false);
@@ -63,43 +62,32 @@ function CategoryList() {
         fetchCategoryById(CategoryId);
     };
 
-    const fetchCategories = useCallback(async () => {
-        const cacheKey = `${currentPage}-${categoriesPerPage}`;
+    const fetchCategories = async (currentPage, categoriesPerPage) => {
+        try {
+            const { data, total } = await fetchCategoriesFromAPI(currentPage, categoriesPerPage);
 
-        if (cachedCategories[cacheKey]) {
-            setCategories(cachedCategories[cacheKey]);
-        } else {
-            try {
-                const { data, total } = await fetchCategoriesFromAPI(currentPage, categoriesPerPage);
-
-                setCategories(data);
-                setTotalCategories(total);
-
-                setCachedCategories((prev) => ({
-                    ...prev,
-                    [cacheKey]: data,
-                }));
-            } catch (error) {
-                console.error('Lỗi khi lấy danh mục:', error);
-            }
+            setCategories(data);
+            setTotalCategories(total);
+        } catch (error) {
+            console.error('Lỗi khi lấy danh mục:', error);
         }
-    }, [currentPage, categoriesPerPage, cachedCategories]);
+    };
 
     useEffect(() => {
-        fetchCategories();
-    }, [fetchCategories]);
+        fetchCategories(currentPage, categoriesPerPage);
+    }, [currentPage, categoriesPerPage]);
 
+    const fetchAllCategories = async () => {
+        try {
+            const { data } = await fetchAllCategoriesFromAPI();
+            const filteredCategories = data.filter((category) => category.id !== 1 && category.id !== 2);
+            setAllCategories(filteredCategories);
+        } catch (error) {
+            console.error('Lỗi khi lấy danh mục:', error);
+        }
+    };
     useEffect(() => {
-        const fetchCategories = async () => {
-            try {
-                const { data } = await fetchAllCategoriesFromAPI();
-                const filteredCategories = data.filter((category) => category.id !== 1 && category.id !== 2);
-                setAllCategories(filteredCategories);
-            } catch (error) {
-                console.error('Lỗi khi lấy danh mục:', error);
-            }
-        };
-        fetchCategories();
+        fetchAllCategories();
     }, []);
 
     const filteredData = useMemo(
@@ -127,9 +115,7 @@ function CategoryList() {
         };
 
         try {
-            const newCategory = await addCategoryToAPI(categoryData, image);
-
-            setCategories((prevCategories) => [...prevCategories, newCategory]);
+            await addCategoryToAPI(categoryData, image);
             resetForm();
         } catch (error) {
             console.error('Error adding the category:', error);
@@ -142,9 +128,9 @@ function CategoryList() {
                 message: 'Thêm danh mục thành công!',
                 description: 'Danh mục đã được thêm.',
             });
+            await fetchCategories(currentPage, categoriesPerPage);
             setLoadingIcon(false);
             setLoadingScreen(false);
-
         }
         setCheckImageQuantity(false);
     };
@@ -170,12 +156,15 @@ function CategoryList() {
                 message: 'Cập nhật danh mục thành công!',
                 description: 'Danh mục đã được cập nhật.',
             });
-
-            setTimeout(() => {
-                window.location.reload();
-            }, 500);
+            setLoadingIcon(false);
+            setLoadingScreen(false);
+            closeUpdateDialog();
+            setImagePreviews("");
+            await fetchCategories(currentPage, categoriesPerPage);
+            // setTimeout(() => {
+            //     window.location.reload();
+            // }, 500);
         }
-        console.log(categoryData, image);
     };
     const handleImageUpload = (e) => {
         const files = Array.from(e.target.files);
@@ -208,20 +197,18 @@ function CategoryList() {
         if (confirmed) {
             try {
                 await DeleteCategory(categoryId);
-
             } catch (error) {
                 console.error('Error deleting the category:', error);
                 notification.error({
                     message: 'Có lỗi xảy ra!',
                     description: 'Không thể xóa danh mục. Vui lòng thử lại.',
                 });
-            }finally{
-                setCategories((prevCategories) => prevCategories.filter((category) => category.id !== categoryId));
-                setTotalCategories((prevTotal) => prevTotal - 1);
+            } finally {
                 notification.success({
                     message: 'Xóa danh mục thành công!',
                     description: 'Danh mục đã được xóa khỏi danh sách.',
                 });
+                await fetchCategories(currentPage, categoriesPerPage);
             }
         }
     };
@@ -271,7 +258,11 @@ function CategoryList() {
                                         <td>
                                             <div className="bg-[#282941] rounded-sm flex-1 flex items-center">
                                                 <img
-                                                    src={items.image ? items.image : "https://ingianguyen.com/wp-content/uploads/in-giay-goi-qua-tai-da-nang-5.jpg"}
+                                                    src={
+                                                        items.image
+                                                            ? items.image
+                                                            : 'https://ingianguyen.com/wp-content/uploads/in-giay-goi-qua-tai-da-nang-5.jpg'
+                                                    }
                                                     alt="Category"
                                                     className="w-10 h-10 rounded-sm object-cover"
                                                 />

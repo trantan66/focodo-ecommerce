@@ -53,7 +53,6 @@ function Header() {
     const handleUpdateNotification = async (id) => {
         try {
             await updateNotification(id);
-            window.location.reload();
         } catch (error) {
             console.error('Error:', error);
         }
@@ -116,7 +115,7 @@ function Header() {
                     <PopoverPanel className="absolute right-0 mt-2 w-72 rounded-md shadow-lg bg-[#494850] ring-1 ring-black ring-opacity-5 z-50">
                         <div className="flex flex-row items-center">
                             <strong className="text-white text-xl pl-4">Thông báo</strong>
-                            <Link className="bg-[#223A53] text-[#74B4FD] text-sm text-center w-24 hover:bg-[#384E64] hover:no-underline mx-4 mt-2 p-2 rounded-2xl">
+                            <Link to={"/admin/notification"} className="bg-[#223A53] text-[#74B4FD] text-sm text-center w-24 hover:bg-[#384E64] hover:no-underline mx-4 mt-2 p-2 rounded-2xl">
                                 <span className="hover:no-underline">Tất cả</span>
                             </Link>
                         </div>
