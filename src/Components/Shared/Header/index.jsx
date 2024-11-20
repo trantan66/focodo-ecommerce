@@ -71,7 +71,7 @@ function Header() {
     useEffect(() => {
         fetchCart();
         // fetchNumberOfCart();
-    }, []);
+    }, [numberOfCart, values]);
 
     // đăng xuất
     const logout = async () => {

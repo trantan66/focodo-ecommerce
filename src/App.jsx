@@ -49,18 +49,17 @@ function App() {
     const [numberOfCart, setNumberOfCart] = useState(0);
     const fetchNumberOfCart = async () => {
         try {
-            const result = await getNumberOfCart(); // Lấy dữ liệu từ API
+            const result = await getNumberOfCart();
             setNumberOfCart(result);
         } catch (error) {
             console.error('Error fetching number of cart:', error);
         }
     };
-    // Hàm để cập nhật số lượng trong giỏ hàng (sử dụng trong các component khác)
     const updateNumberOfCart = (newCount) => {
         setNumberOfCart(newCount);
     };
     useEffect(() => {
-        fetchNumberOfCart(); // Gọi API khi ứng dụng khởi chạy
+        fetchNumberOfCart();
     }, []);
     return (
         <CartContext.Provider value={{ numberOfCart, updateNumberOfCart, fetchNumberOfCart }}>

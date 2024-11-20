@@ -1,4 +1,5 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useContext } from 'react';
+import { CartContext } from '../../App';
 import delivery from '../image/delivery.png';
 import { Button, InputNumber } from 'antd';
 import ImageGallery from 'react-image-gallery';
@@ -9,6 +10,8 @@ import '../UserProfile/Style.css';
 import { addProductToCart } from '../../Services/CartService';
 import fetchCart from '../Carts/index';
 function ProductDetail(props) {
+    const { fetchNumberOfCart, numberOfCart, updateNumberOfCart } = useContext(CartContext);
+
     const renderImage = (item) => (
         <div style={{ width: '500px', height: '300px' }}>
             <img src={item.original} alt="" style={{ width: '100%', height: '100%', objectFit: 'fill ' }} />
@@ -43,9 +46,9 @@ function ProductDetail(props) {
     const handleAddToCart = async () => {
         try {
             const res = await addProductToCart({ id_product: idProductTest, quantity: value });
-            console.log(res);
+            fetchNumberOfCart();
+            // fetchCart();
             alert('Sản phẩm đã được thêm vào giỏ hàng');
-            fetchCart();
         } catch (error) {
             console.error('Error addToCart product:', error);
         }
@@ -53,7 +56,6 @@ function ProductDetail(props) {
 
     const handleButtonClick = () => {
         handleAddToCart();
-        window.location.reload();
     };
 
     return (
