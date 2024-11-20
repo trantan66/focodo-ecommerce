@@ -1,14 +1,13 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useContext } from 'react';
 import { SearchOutlined, ShoppingCartOutlined, UserOutlined, ProfileOutlined, LogoutOutlined } from '@ant-design/icons';
 import { AiOutlineLogin, AiOutlineUserAdd } from 'react-icons/ai';
 import { Input } from 'antd';
 import './Header.css';
 import logo from '../image/logo.png';
 import { searchProducts } from '../../../Services/ProductService';
-
 import { fetchCartOfUser, getNumberOfCart } from '../../../Services/CartService';
-
 import { useNavigate } from 'react-router-dom';
+import { CartContext } from '../../../App';
 
 function Header() {
     const navigate = useNavigate();
@@ -57,20 +56,21 @@ function Header() {
     };
 
     //số lượng sản phẩm trong giỏ hàng
-    const [numberOfCart, setNumberOfCart] = useState();
-    const fetchNumberOfCart = async () => {
-        try {
-            const numberOfCart = await getNumberOfCart();
-            setNumberOfCart(numberOfCart);
-        } catch (error) {
-            console.error('Error fetching number of cart:', error);
-        }
-    };
+    // const [numberOfCart, setNumberOfCart] = useState();
+    const { numberOfCart } = useContext(CartContext);
+    // const fetchNumberOfCart = async () => {
+    //     try {
+    //         const numberOfCart = await getNumberOfCart();
+    //         setNumberOfCart(numberOfCart);
+    //     } catch (error) {
+    //         console.error('Error fetching number of cart:', error);
+    //     }
+    // };
 
     // Gọi API khi component được render lần đầu
     useEffect(() => {
         fetchCart();
-        fetchNumberOfCart();
+        // fetchNumberOfCart();
     }, []);
 
     // đăng xuất

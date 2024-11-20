@@ -1,4 +1,5 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useContext } from 'react';
+import { CartContext } from '../../App';
 import { Button, InputNumber, Space, Checkbox } from 'antd';
 import { CloseOutlined } from '@ant-design/icons';
 import {
@@ -13,6 +14,7 @@ import { checkVoucher, getVoucher } from '../../Services/VoucherService';
 import { useNavigate } from 'react-router-dom';
 
 function Carts() {
+    const { numberOfCart, updateNumberOfCart } = useContext(CartContext);
     const navigate = useNavigate();
     // Điều hướng đến trang Order với mã giảm giá trong URL
     const handlePlaceOrder = () => {
@@ -110,6 +112,7 @@ function Carts() {
         try {
             await deleteProductFromCart(cartId); // Gọi API xóa sản phẩm
             fetchCart(); // Cập nhật giỏ hàng sau khi xóa
+            updateNumberOfCart(numberOfCart - 1);
         } catch (error) {
             console.error('Error deleting product:', error);
         }

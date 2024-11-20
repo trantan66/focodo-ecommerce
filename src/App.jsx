@@ -1,4 +1,7 @@
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import { getNumberOfCart } from './Services/CartService';
+import React, { useState, useEffect, createContext } from 'react';
+
 import Layout from './Components/Shared/Layout';
 import Product from './Pages/Product';
 import Home from './Pages/Home';
@@ -41,55 +44,74 @@ const roles = {
     user: 'USER',
     admin: 'ADMIN',
 };
+export const CartContext = createContext();
 function App() {
+    const [numberOfCart, setNumberOfCart] = useState(0);
+    const fetchNumberOfCart = async () => {
+        try {
+            const result = await getNumberOfCart(); // Lấy dữ liệu từ API
+            setNumberOfCart(result);
+        } catch (error) {
+            console.error('Error fetching number of cart:', error);
+        }
+    };
+    // Hàm để cập nhật số lượng trong giỏ hàng (sử dụng trong các component khác)
+    const updateNumberOfCart = (newCount) => {
+        setNumberOfCart(newCount);
+    };
+    useEffect(() => {
+        fetchNumberOfCart(); // Gọi API khi ứng dụng khởi chạy
+    }, []);
     return (
-        <Router>
-            <Routes>
-                <Route path="/" element={<Layout />}>
-                    <Route index element={<Home />} />
-                    <Route path="product/:categoryId" element={<Product />} />
-                    <Route path="review/:orderId" element={<Review />} />
-                    <Route path="search" element={<Search />} />
-                    <Route path="presentation" element={<Present />} />
-                    <Route path="guidePage" element={<GuidePage />} />
-                    <Route path="contact" element={<ContactPage />} />
+        <CartContext.Provider value={{ numberOfCart, updateNumberOfCart, fetchNumberOfCart }}>
+            <Router>
+                <Routes>
+                    <Route path="/" element={<Layout />}>
+                        <Route index element={<Home />} />
+                        <Route path="product/:categoryId" element={<Product />} />
+                        <Route path="review/:orderId" element={<Review />} />
+                        <Route path="search" element={<Search />} />
+                        <Route path="presentation" element={<Present />} />
+                        <Route path="guidePage" element={<GuidePage />} />
+                        <Route path="contact" element={<ContactPage />} />
 
-                    <Route path="productdetail/:id" element={<ProductDetail />} />
-                    <Route path="cart" element={<Cart />}></Route>
-                    <Route path="order" element={<Order />}></Route>
-                    <Route path="orderdetail/:id" element={<OrderDetail />}></Route>
-                    <Route element={<AuthRoutes />}>
-                        <Route path="login" element={<Login />}></Route>
-                        <Route path="register" element={<Register />}></Route>
-                        <Route path="forgotpassword1" element={<ForgotPassword1 />}></Route>
-                        <Route path="forgotpassword2" element={<ForgotPassword2 />}></Route>
-                        <Route path="forgotpassword3" element={<ForgotPassword3 />}></Route>
+                        <Route path="productdetail/:id" element={<ProductDetail />} />
+                        <Route path="cart" element={<Cart />}></Route>
+                        <Route path="order" element={<Order />}></Route>
+                        <Route path="orderdetail/:id" element={<OrderDetail />}></Route>
+                        <Route element={<AuthRoutes />}>
+                            <Route path="login" element={<Login />}></Route>
+                            <Route path="register" element={<Register />}></Route>
+                            <Route path="forgotpassword1" element={<ForgotPassword1 />}></Route>
+                            <Route path="forgotpassword2" element={<ForgotPassword2 />}></Route>
+                            <Route path="forgotpassword3" element={<ForgotPassword3 />}></Route>
+                        </Route>
+                        <Route element={<PrivateRoutes allowedRoles={[roles.user, roles.admin]} />}>
+                            <Route path="userprofile" element={<UserProfile />} />
+                        </Route>
                     </Route>
-                    <Route element={<PrivateRoutes allowedRoles={[roles.user, roles.admin]} />}>
-                        <Route path="userprofile" element={<UserProfile />} />
+                    <Route element={<PrivateRoutes allowedRoles={[roles.admin]} />}>
+                        <Route path="admin" element={<AdminLayout />}>
+                            <Route index element={<AdminDashboard />} />
+                            <Route path="product" element={<AdminProduct />} />
+                            <Route path="order" element={<AdminOrder />} />
+                            <Route path="customer" element={<AdminCustomer />} />
+                            <Route path="customer/customerdetail/:customerId" element={<AdminCustomerDetail />} />
+                            <Route path="product" element={<AdminProduct />} />
+                            <Route path="product/addproduct" element={<AdminAddProduct />} />
+                            <Route path="product/productdetail/:productId" element={<AdminProductDetail />} />
+                            <Route path="order/orderdetail/:orderId" element={<AdminOrderDetail />} />
+                            <Route path="category" element={<AdminCategory />} />
+                            <Route path="review" element={<AdminReview />} />
+                            <Route path="profile" element={<AdminProfile />} />
+                        </Route>
                     </Route>
-                </Route>
-                <Route element={<PrivateRoutes allowedRoles={[roles.admin]} />}>
-                    <Route path="admin" element={<AdminLayout />}>
-                        <Route index element={<AdminDashboard />} />
-                        <Route path="product" element={<AdminProduct />} />
-                        <Route path="order" element={<AdminOrder />} />
-                        <Route path="customer" element={<AdminCustomer />} />
-                        <Route path="customer/customerdetail/:customerId" element={<AdminCustomerDetail />} />
-                        <Route path="product" element={<AdminProduct />} />
-                        <Route path="product/addproduct" element={<AdminAddProduct />} />
-                        <Route path="product/productdetail/:productId" element={<AdminProductDetail />} />
-                        <Route path="order/orderdetail/:orderId" element={<AdminOrderDetail />} />
-                        <Route path="category" element={<AdminCategory />} />
-                        <Route path="review" element={<AdminReview />} />
-                        <Route path="profile" element={<AdminProfile />} />
-                    </Route>
-                </Route>
 
-                <Route path="CompleteOrder" element={<CompleteOrder />}></Route>
-                <Route path="ErrorOrder" element={<ErrorOrder />}></Route>
-            </Routes>
-        </Router>
+                    <Route path="CompleteOrder" element={<CompleteOrder />}></Route>
+                    <Route path="ErrorOrder" element={<ErrorOrder />}></Route>
+                </Routes>
+            </Router>
+        </CartContext.Provider>
     );
 }
 
