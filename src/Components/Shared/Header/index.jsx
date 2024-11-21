@@ -7,7 +7,7 @@ import logo from '../image/logo.png';
 import { searchProducts } from '../../../Services/ProductService';
 import { fetchCartOfUser, getNumberOfCart } from '../../../Services/CartService';
 import { useNavigate } from 'react-router-dom';
-import { CartContext } from '../../../App';
+import useCart from '../../../Hooks/useCart';
 
 function Header() {
     const navigate = useNavigate();
@@ -41,6 +41,7 @@ function Header() {
     const [isUserVisible, setIsUserVisible] = useState(false);
 
     const [products, setProducts] = useState([]); // Danh sách sản phẩm trong giỏ hàng
+    const [productsOfSearch, setProductsOfSearch] = useState([]);
     const [values, setValues] = useState([]); // Số lượng của từng sản phẩm
     const [discount, setDiscount] = useState(0);
 
@@ -57,7 +58,7 @@ function Header() {
 
     //số lượng sản phẩm trong giỏ hàng
     // const [numberOfCart, setNumberOfCart] = useState();
-    const { numberOfCart } = useContext(CartContext);
+    const { numberOfCart } = useCart();
     // const fetchNumberOfCart = async () => {
     //     try {
     //         const numberOfCart = await getNumberOfCart();
@@ -149,10 +150,9 @@ function Header() {
     const formatCurrency = (amount) => {
         return new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(amount);
     };
-    const fetchProducts = async () => {
+    const fetchProductsSearch = async () => {
         const response = await searchProducts(valueInput);
-        console.log(response);
-        setProducts(response.result.data);
+        setProductsOfSearch(response.result.data);
     };
     const toggleCart = () => {
         setIsCartVisible(!isCartVisible);
@@ -168,7 +168,7 @@ function Header() {
         }
     };
     useEffect(() => {
-        fetchProducts();
+        fetchProductsSearch();
     }, [valueInput]);
     return (
         <div className="Header relative">
@@ -187,6 +187,7 @@ function Header() {
                                 onFocus={handleFocus}
                                 onBlur={handleBlur}
                                 onChange={(e) => {
+                                    console.log(e.target.value);
                                     setValueInput(e.target.value);
                                     if (e.target.value === '') {
                                         setIsSearchActive(false);
@@ -201,11 +202,11 @@ function Header() {
                                     }
                                 }}
                             />
-                            {isSearchActive && products != null && products.length !== 0 && (
+                            {isSearchActive && productsOfSearch != null && productsOfSearch.length !== 0 && (
                                 <div className="search-dropdown">
                                     <div className="mb-[10px] flex items-center justify-between bg-[#f5f5f5] p-[2px_15px]">
                                         <span className="text-[15px] font-semibold uppercase">Sản phẩm</span>
-                                        {products.length !== 0 && (
+                                        {productsOfSearch.length !== 0 && (
                                             <a
                                                 href={`/search?query=${encodeURIComponent(valueInput)}`}
                                                 className="text-[14px] font-[400] hover:no-underline"
@@ -214,7 +215,7 @@ function Header() {
                                             </a>
                                         )}
                                     </div>
-                                    {products.map((product) => (
+                                    {productsOfSearch.map((product) => (
                                         <div key={product.id} className="search-item">
                                             <a
                                                 href={`/productdetail/${product.id}`}

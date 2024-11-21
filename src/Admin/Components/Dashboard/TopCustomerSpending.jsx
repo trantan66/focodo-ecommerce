@@ -21,7 +21,7 @@ function TopCustomerSpending() {
             <strong className="text-white font-medium mb-6">Khách hàng tiêu dùng cao</strong>
             <div className="flex flex-col gap-4">
                 {data.map((items, index) => (
-                    <div className="flex flex-col">
+                    <div key={index} className="flex flex-col">
                         <div className="flex flex-row gap-4 items-center">
                             <img
                                 src={

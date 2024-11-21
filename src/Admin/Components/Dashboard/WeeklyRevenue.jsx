@@ -27,7 +27,7 @@ function WeeklyRevenue() {
     }, []);
 
     return (
-        <div className="bg-[#282941] p-4 rounded-sm flex flex-col" style={{ height: 300 }}>
+        <div className="bg-[#282941] p-4 rounded-sm flex flex-col" style={{ height: 310 }}>
             <strong className="text-gray-400 font-medium">Doanh thu 7 ngày gần nhất</strong>
             <div className="mt-3 w-full flex-1 text-xs">
                 <ResponsiveContainer width="100%" height="100%">

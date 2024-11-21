@@ -1,5 +1,4 @@
 import React, { useEffect, useState, useContext } from 'react';
-import { CartContext } from '../../App';
 import delivery from '../image/delivery.png';
 import { Button, InputNumber } from 'antd';
 import ImageGallery from 'react-image-gallery';
@@ -9,8 +8,9 @@ import { fetchProductByIdFromAPI } from '../../Services/ProductService';
 import '../UserProfile/Style.css';
 import { addProductToCart } from '../../Services/CartService';
 import fetchCart from '../Carts/index';
+import useCart from '../../Hooks/useCart';
 function ProductDetail(props) {
-    const { fetchNumberOfCart, numberOfCart, updateNumberOfCart } = useContext(CartContext);
+    const { fetchNumberOfCart, numberOfCart, updateNumberOfCart } = useCart();
 
     const renderImage = (item) => (
         <div style={{ width: '500px', height: '300px' }}>

@@ -1,5 +1,4 @@
 import React, { useEffect, useState, useContext } from 'react';
-import { CartContext } from '../../App';
 import { Button, InputNumber, Space, Checkbox } from 'antd';
 import { CloseOutlined } from '@ant-design/icons';
 import {
@@ -12,9 +11,10 @@ import {
 } from '../../Services/CartService';
 import { checkVoucher, getVoucher } from '../../Services/VoucherService';
 import { useNavigate } from 'react-router-dom';
+import useCart from '../../Hooks/useCart';
 
 function Carts() {
-    const { numberOfCart, updateNumberOfCart } = useContext(CartContext);
+    const { numberOfCart, updateNumberOfCart } = useCart();
     const navigate = useNavigate();
     // Điều hướng đến trang Order với mã giảm giá trong URL
     const handlePlaceOrder = () => {
