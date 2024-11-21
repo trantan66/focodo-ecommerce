@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
 import '../CustomCss/Slider.css';
@@ -17,7 +17,6 @@ import { fetchAllCategoriesFromAPI } from '../../../Services/CategoryService';
 
 function ProductDetail() {
     const { productId } = useParams();
-    const navigate = useNavigate();
 
     const [name, setProductName] = useState('');
     const [quantity, setProductQuantity] = useState('');
@@ -119,9 +118,6 @@ function ProductDetail() {
             setImagePreviews([]);
             await fetchProductById(productId);
             await fetchCategories();
-            // setTimeout(() => {
-            //     window.location.reload();
-            // }, 500);
         }
     };
 
@@ -171,15 +167,15 @@ function ProductDetail() {
                     message: 'Cập nhập thành công!',
                     description: 'Sản phẩm đã được xóa khỏi danh sách.',
                 });
-                setTimeout(() => {
-                    navigate('/admin/product');
-                }, 2000);
             } catch (error) {
                 console.error('Error deleting the product:', error);
                 notification.error({
                     message: 'Có lỗi xảy ra!',
                     description: 'Không thể xóa sản phẩm. Vui lòng thử lại.',
                 });
+            } finally {
+                await fetchProductById(productId);
+                setIsDelete(!isDelete);
             }
         }
     };
@@ -192,15 +188,15 @@ function ProductDetail() {
                     message: 'Cập nhập thành công!',
                     description: 'Sản phẩm đã được xóa khỏi danh sách.',
                 });
-                setTimeout(() => {
-                    navigate('/admin/product');
-                }, 2000);
             } catch (error) {
                 console.error('Error deleting the product:', error);
                 notification.error({
                     message: 'Có lỗi xảy ra!',
                     description: 'Không thể xóa sản phẩm. Vui lòng thử lại.',
                 });
+            } finally {
+                await fetchProductById(productId);
+                setIsDelete(!isDelete);
             }
         }
     };
@@ -431,7 +427,7 @@ function ProductDetail() {
                                 type="submit"
                                 className={`w-full p-3 rounded-md text-white flex items-center justify-center space-x-2
                ${loadingIcon ? 'bg-gray-400' : 'bg-blue-600 hover:bg-blue-500'}`}
-                                disabled={loadingIcon ? 'true' : ''}
+                                disabled={loadingIcon ? true : ''}
                             >
                                 {loadingIcon ? <FiLoader /> : ''}
                                 <span>Cập nhật</span>

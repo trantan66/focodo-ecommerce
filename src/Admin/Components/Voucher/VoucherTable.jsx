@@ -38,7 +38,6 @@ function VoucherTable() {
             console.error('Lỗi khi lấy:', error);
         }
     };
-    fetchVoucher();
 
     useEffect(() => {
         fetchVoucher();
@@ -89,13 +88,20 @@ function VoucherTable() {
                 message: 'Thêm voucher thành công!',
                 description: 'Voucher đã được thêm.',
             });
-
+            setIsDialogOpen(false);
             setLoadingIcon(false);
             setLoadingScreen(false);
         }
     };
 
-    const resetForm = () => {};
+    const resetForm = () => {
+        setVoucherId('')
+        setStartDate('')
+        setEndDate('')
+        setQuantity('')
+        setMinTotal('')
+        setDiscountPrice('')
+    };
 
     const handleUpdateSubmit = async (e) => {
         e.preventDefault();
@@ -388,7 +394,7 @@ function VoucherTable() {
                                         type="submit"
                                         className={`rounded-md text-white px-4 py-2 flex items-center justify-center space-x-2
                ${loadingIcon ? 'bg-gray-400' : 'bg-[#2563EB] hover:bg-blue-500'}`}
-                                        disabled={loadingIcon ? 'true' : ''}
+                                        disabled={loadingIcon ? true : ''}
                                     >
                                         {loadingIcon ? <FiLoader /> : ''}
                                         <span>Xác nhận</span>

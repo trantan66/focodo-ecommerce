@@ -189,7 +189,7 @@ export const DeleteProduct = async (productId) => {
 };
 export const ActiveProduct = async (productId) => {
     try {
-        const response = await axiosInstance.delete(`products/activeProduct/${productId}`, {
+        const response = await axiosInstance.put(`products/activeProduct/${productId}`, {
             headers: {
                 ...getHeader(),
             },
