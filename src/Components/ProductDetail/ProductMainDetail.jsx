@@ -7,10 +7,9 @@ import { useParams } from 'react-router-dom';
 import { fetchProductByIdFromAPI } from '../../Services/ProductService';
 import '../UserProfile/Style.css';
 import { addProductToCart } from '../../Services/CartService';
-import fetchCart from '../Carts/index';
 import useCart from '../../Hooks/useCart';
 function ProductDetail(props) {
-    const { fetchNumberOfCart, numberOfCart, updateNumberOfCart } = useCart();
+    const { fetchNumberOfCart, fetchCart } = useCart();
 
     const renderImage = (item) => (
         <div style={{ width: '500px', height: '300px' }}>
@@ -47,7 +46,7 @@ function ProductDetail(props) {
         try {
             const res = await addProductToCart({ id_product: idProductTest, quantity: value });
             fetchNumberOfCart();
-            // fetchCart();
+            fetchCart();
             alert('Sản phẩm đã được thêm vào giỏ hàng');
         } catch (error) {
             console.error('Error addToCart product:', error);

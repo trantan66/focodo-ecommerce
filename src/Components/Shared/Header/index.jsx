@@ -5,7 +5,6 @@ import { Input } from 'antd';
 import './Header.css';
 import logo from '../image/logo.png';
 import { searchProducts } from '../../../Services/ProductService';
-import { fetchCartOfUser, getNumberOfCart } from '../../../Services/CartService';
 import { useNavigate } from 'react-router-dom';
 import useCart from '../../../Hooks/useCart';
 
@@ -40,39 +39,15 @@ function Header() {
     const [isCartVisible, setIsCartVisible] = useState(false);
     const [isUserVisible, setIsUserVisible] = useState(false);
 
+    const { numberOfCart, carts } = useCart();
+
     const [products, setProducts] = useState([]); // Danh sách sản phẩm trong giỏ hàng
     const [productsOfSearch, setProductsOfSearch] = useState([]);
-    const [values, setValues] = useState([]); // Số lượng của từng sản phẩm
     const [discount, setDiscount] = useState(0);
 
-    // Hàm để lấy giỏ hàng của người dùng
-    const fetchCart = async () => {
-        try {
-            const cartItems = await fetchCartOfUser();
-            setProducts(cartItems);
-            setValues(cartItems.map((item) => item.quantity));
-        } catch (error) {
-            console.error('Error fetching cart:', error);
-        }
-    };
-
-    //số lượng sản phẩm trong giỏ hàng
-    // const [numberOfCart, setNumberOfCart] = useState();
-    const { numberOfCart } = useCart();
-    // const fetchNumberOfCart = async () => {
-    //     try {
-    //         const numberOfCart = await getNumberOfCart();
-    //         setNumberOfCart(numberOfCart);
-    //     } catch (error) {
-    //         console.error('Error fetching number of cart:', error);
-    //     }
-    // };
-
-    // Gọi API khi component được render lần đầu
     useEffect(() => {
-        fetchCart();
-        // fetchNumberOfCart();
-    }, [numberOfCart, values]);
+        setProducts(carts);
+    }, [carts]);
 
     // đăng xuất
     const logout = async () => {
@@ -281,7 +256,9 @@ function Header() {
                                                                     <p>x{product.quantity}</p>
                                                                 </div>
                                                                 <div className="mr-[10px] text-red-500">
-                                                                    {formatCurrency(values[index] * product.unit_price)}
+                                                                    {formatCurrency(
+                                                                        product.quantity * product.unit_price,
+                                                                    )}
                                                                 </div>
                                                             </div>
                                                         </div>
