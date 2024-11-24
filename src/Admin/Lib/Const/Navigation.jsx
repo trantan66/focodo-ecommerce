@@ -7,6 +7,7 @@ import {
   HiOutlineAnnotation,
   HiOutlineCog,
 } from "react-icons/hi";
+import { IoNotificationsCircleOutline, IoTicketOutline } from "react-icons/io5";
 
 export const DASHBOARD_SIDEBAR_LINKS = [
   {
@@ -44,6 +45,18 @@ export const DASHBOARD_SIDEBAR_LINKS = [
     label: "Đánh giá",
     path: "review",
     icon: <HiOutlineAnnotation />,
+  },
+  {
+    key: "vouchers",
+    label: "Vouchers",
+    path: "voucher",
+    icon: <IoTicketOutline />,
+  },
+  {
+    key: "notifications",
+    label: "Thông báo",
+    path: "notification",
+    icon: <IoNotificationsCircleOutline />,
   },
 ];
 

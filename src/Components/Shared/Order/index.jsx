@@ -1,14 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import cod from '../image/cod.svg';
-import vnpay from '../image/vnpay_new.svg';
-import other from '../image/other.svg';
 import { useLocation } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
 
 import { fetchCartCheckedOfUser } from '../../../Services/CartService';
 import { checkVoucher, getVoucher } from '../../../Services/VoucherService';
 import { getAllPaymentMethod, callCreateOrder } from '../../../Services/OrderService';
+import { getUser } from '../../../Services/UserService';
+import useCart from '../../../Hooks/useCart';
 
 function Order() {
     const [selectedPaymentMethod, setSelectedPaymentMethod] = useState('1'); // Theo dõi phương thức thanh toán
@@ -42,7 +41,7 @@ function Order() {
     const navigate = useNavigate();
 
     // Hàm để lấy giỏ hàng của người dùng
-    const fetchCart = async () => {
+    const fetchCartChecked = async () => {
         try {
             // gọi API get các sản phẩm từ giỏ hàng
             const cartItems = await fetchCartCheckedOfUser();
@@ -83,7 +82,7 @@ function Order() {
 
     // Gọi API khi component được render lần đầu
     useEffect(() => {
-        fetchCart();
+        fetchCartChecked();
         fetchPaymentMethods();
     }, []);
 
@@ -142,6 +141,7 @@ function Order() {
     };
 
     const handleProvinceChange = (e) => {
+        setDataProvince(null);
         const selectedOption = e.target.options[e.target.selectedIndex];
         setSelectedProvince(selectedOption.value); // Lưu mã code để dùng cho API
         setSelectedProvinceName(selectedOption.getAttribute('data-name')); // Lưu tên để hiển thị
@@ -152,6 +152,7 @@ function Order() {
     };
 
     const handleDistrictChange = (e) => {
+        setDataDistrict(null);
         const selectedOption = e.target.options[e.target.selectedIndex];
         setSelectedDistrict(selectedOption.value); // Lưu mã code để dùng cho API
         setSelectedDistrictName(selectedOption.getAttribute('data-name')); // Lưu tên để hiển thị
@@ -161,6 +162,7 @@ function Order() {
     };
 
     const handleCommuneChange = (e) => {
+        setDataCommune(null);
         const selectedOption = e.target.options[e.target.selectedIndex];
         setSelectedCommune(selectedOption.value); // Lưu mã code để dùng cho API
         setSelectedCommuneName(selectedOption.getAttribute('data-name')); // Lưu tên để hiển thị
@@ -187,7 +189,49 @@ function Order() {
         }
     };
 
-    // const navigate = useNavigate();
+    const [fullName, setFullName] = useState('');
+    const [phone, setPhone] = useState('');
+    const [address, setAddress] = useState('');
+
+    const [dataProvince, setDataProvince] = useState('');
+    const [dataDistrict, setDataDistrict] = useState('');
+    const [dataCommune, setDataCommune] = useState('');
+
+    let infoUser;
+
+    // Gọi API lấy thông tin người dùng
+    const fetchInfoUser = async () => {
+        try {
+            infoUser = await getUser(); // Gọi API để lấy thông tin người dùng
+            console.log(infoUser);
+
+            if (infoUser) {
+                // Cập nhật các giá trị vào từng state riêng biệt
+                setFullName(infoUser.full_name || '');
+                setPhone(infoUser.phone || '');
+                setAddress(infoUser.address || '');
+
+                setDataProvince(infoUser.province || '');
+                setDataDistrict(infoUser.district || '');
+                setDataCommune(infoUser.ward || '');
+
+                console.log(dataProvince);
+                console.log(dataDistrict);
+                console.log(dataCommune);
+
+                setDataDistrict(infoUser.district || '');
+                setDataCommune(infoUser.ward || '');
+            }
+        } catch (error) {
+            console.error('Error fetching info user:', error);
+        }
+    };
+
+    useEffect(() => {
+        fetchInfoUser(); // Gọi API khi component mount
+    }, []); // Chỉ gọi 1 lần khi component mount
+
+    const { fetchCart, fetchNumberOfCart } = useCart();
 
     // Hàm gọi khi nhấn đặt hàng
     const handleSubmit = async () => {
@@ -224,8 +268,6 @@ function Order() {
                 // Có thể thêm các thông tin khác nếu cần
             })), // Danh sách sản phẩm trong đơn hàng
         };
-        console.log(Customer);
-        console.log(Order);
 
         try {
             // Gọi API để tạo đơn hàng
@@ -234,6 +276,8 @@ function Order() {
                 order: Order, // Truyền thông tin order đã cập nhật
             });
 
+            fetchCart();
+            fetchNumberOfCart();
             if (res.payment_url === '') {
                 // thanh toán COD => Chuyển đến trang thanh toán thành công
                 const id_order = res.id_order;
@@ -263,12 +307,14 @@ function Order() {
                             name="full_name"
                             className="block w-full mt-[10px] p-[8px] border rounded-md"
                             placeholder="Họ và tên"
+                            defaultValue={fullName}
                         />
                         <input
                             type="text"
                             name="phone"
                             className="block w-full mt-[10px] p-[8px] border rounded-md"
                             placeholder="Số điện thoại"
+                            defaultValue={phone}
                         />
 
                         <div className="flex space-x-4">
@@ -279,7 +325,7 @@ function Order() {
                                     onChange={handleProvinceChange}
                                     className="block w-full mt-[10px] p-[8px] border rounded-md"
                                 >
-                                    <option value="">Chọn Tỉnh/Thành Phố</option>
+                                    <option value="">{dataProvince ? dataProvince : 'Chọn Tỉnh/Thành Phố'}</option>
                                     {provinces.map((province) => (
                                         <option key={province.code} value={province.code} data-name={province.name}>
                                             {province.name}
@@ -296,7 +342,7 @@ function Order() {
                                     disabled={!selectedProvince}
                                     className="block w-full mt-[10px] p-[8px] border rounded-md"
                                 >
-                                    <option value="">Chọn Quận/Huyện</option>
+                                    <option value="">{dataDistrict ? dataDistrict : 'Chọn Quận/Huyện'}</option>
                                     {districts.map((district) => (
                                         <option key={district.code} value={district.code} data-name={district.name}>
                                             {district.name}
@@ -313,7 +359,7 @@ function Order() {
                                     disabled={!selectedDistrict}
                                     className="block w-full mt-[10px] p-[8px] border rounded-md"
                                 >
-                                    <option value="">Chọn Xã/Phường</option>
+                                    <option value="">{dataCommune ? dataCommune : 'Chọn Xã/Phường'}</option>
                                     {communes.map((commune) => (
                                         <option key={commune.code} value={commune.code} data-name={commune.name}>
                                             {commune.name}
@@ -328,6 +374,7 @@ function Order() {
                             name="address"
                             className="block w-full mt-[10px] p-[8px] border rounded-md"
                             placeholder="Địa chỉ chi tiết"
+                            defaultValue={address}
                         />
                     </div>
 

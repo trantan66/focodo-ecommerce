@@ -2,8 +2,8 @@ import { Link, useNavigate } from 'react-router-dom';
 import React, { useEffect, useState } from 'react';
 import { fetchOrderByIdFromAPI, updateOrderStatus } from '../../Services/OrderService';
 import { Modal, notification } from 'antd';
-import fetchCart from '../Carts/index';
 import { addProductToCart } from '../../Services/CartService';
+import useCart from '../../Hooks/useCart';
 export function ProductList(props) {
     const formatCurrency = (amount) => {
         return new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(amount);
@@ -141,19 +141,21 @@ export function Orders(props) {
                 );
         }
     };
+
+    const { fetchCart, fetchNumberOfCart } = useCart();
     const handleAddToCart = async (id_product, quantity) => {
         try {
-            await addProductToCart({ id_product, quantity });
+            const res = await addProductToCart({ id_product, quantity });
             fetchCart();
+            fetchNumberOfCart();
         } catch (error) {
             console.error('Error addToCart product:', error);
         }
     };
-    const handleSubmitReBuy = async () => {
+    const handleSubmitReBuy = () => {
         orderDetail.order_details.forEach((element) => {
             handleAddToCart(element.product.id, element.quantity);
         });
-        window.location.reload();
         alert('Sản phẩm đã được thêm vào giỏ hàng');
     };
     const [orderDetail, setOrderDetail] = useState({});

@@ -1,13 +1,17 @@
-import { Alert, Input } from 'antd';
+import { Input } from 'antd';
 import React, { useEffect, useState } from 'react';
 import { login } from '../Services/AuthService';
 import { getUserFromToken } from '../Services/UserService';
 import useAuth from '../Hooks/useAuth';
-import { Link, useNavigate, useLocation } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
+import useCart from '../Hooks/useCart';
 const Login = () => {
     const { auth, setAuth } = useAuth();
+    const { fetchCart, fetchNumberOfCart } = useCart();
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
+    const [error, setError] = useState('');
+
     const navigate = useNavigate();
     const location = useLocation();
     const from = location.state?.from?.pathname || '/';
@@ -26,12 +30,15 @@ const Login = () => {
                 setUsername('');
                 setPassword('');
                 if (res.result.role === 'ADMIN') {
-                    navigate('/admin', { replace: true });
+                    navigate('/admin');
                 } else {
-                    navigate('/userprofile', { replace: true });
+                    navigate('/userprofile');
+                    fetchCart();
+                    fetchNumberOfCart();
                 }
             }
         } catch (e) {
+            setError('Sai tên đăng nhập hoặc mật khẩu');
             console.log(e);
         }
     };
@@ -81,9 +88,11 @@ const Login = () => {
                                         onChange={(e) => setPassword(e.target.value)}
                                     />
                                 </div>
+                                {error && <div className="p-2 text-sm text-red-600 bg-red-100 rounded">{error}</div>}
+
                                 <div className="flex items-center justify-between">
                                     <a
-                                        href="#"
+                                        href="forgotpassword1"
                                         className="text-sm font-medium text-primary-600 hover:no-underline dark:text-primary-500"
                                     >
                                         Quên mật khẩu?
@@ -99,7 +108,7 @@ const Login = () => {
                                 <p className="text-sm font-light text-gray-500 dark:text-gray-400">
                                     Bạn chưa có tài khoản?{' '}
                                     <a
-                                        href="#"
+                                        href="/register"
                                         className="font-medium text-primary-600 hover:no-underline dark:text-primary-500"
                                     >
                                         Đăng ký

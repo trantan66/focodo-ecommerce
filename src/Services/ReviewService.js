@@ -46,37 +46,36 @@ export const DeleteReview = async (reviewId) => {
     }
 };
 
-export const createReviewToAPI = async (data) => {
-    try {
-        const promise = await Promise.all(
-            data.map(async (item) => {
-                const formData = new FormData();
-                item.images.forEach((element) => {
-                    formData.append('images', element);
-                });
-                formData.append('id_order', item.id_order);
-                formData.append('review', JSON.stringify(item.review));
-                const response = await axiosInstance.post('reviews/create', formData, {
-                    headers: {
-                        ...getHeader(),
-                        'Content-Type': 'multipart/form-data',
-                    },
-                });
+export const createReviewToAPI = (id_order, data) => {
+    const promises = data.map((item) => {
+        let formData = new FormData();
 
-                return response.data;
+        formData.append('id_order', id_order);
+        formData.append(
+            'review',
+            JSON.stringify({
+                id_product: item.id_product,
+                rating: item.rating,
+                content: item.content,
             }),
         );
-        return promise;
-    } catch (error) {
-        if (error.response) {
-            console.error('Error response from server:', error.response.data);
-        } else if (error.request) {
-            console.error('No response received:', error.request);
-        } else {
-            console.error('Error setting up request:', error.message);
-        }
-        throw error;
-    }
+        // formData.append('review', new Blob([JSON.stringify(item.review)], {
+        //     type: 'application/json'
+        // }));
+
+        const images = item.images || [];
+        images.forEach((image) => {
+            formData.append('images', image);
+        });
+
+        return axiosInstance.post('/reviews/create', formData, {
+            headers: {
+                'Content-Type': 'multipart/form-data',
+            },
+        });
+    });
+
+    return Promise.all(promises);
 };
 
 export const fetchReviewsOfUserFromAPI = async (page, size) => {
@@ -105,7 +104,6 @@ export const fetchReviewsOfOrderFromAPI = async (id_order) => {
 
 export const updateReview = async (id, review, files, images) => {
     try {
-
         const formData = new FormData();
 
         files.forEach((element) => {
@@ -118,7 +116,6 @@ export const updateReview = async (id, review, files, images) => {
 
         await axiosInstance.put(`reviews/update/${id}`, formData, {
             headers: {
-                ...getHeader(),
                 'Content-Type': 'multipart/form-data',
             },
         });

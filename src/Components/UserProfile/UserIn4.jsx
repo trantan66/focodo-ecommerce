@@ -36,6 +36,7 @@ function UserIn4({ data }) {
             setSelectedCommune(data.ward || '');
         }
     }, [data]);
+
     // Fetch province data on component mount
     useEffect(() => {
         axios
@@ -112,7 +113,7 @@ function UserIn4({ data }) {
             district: selectedDistrictName,
             ward: selectedCommuneName,
         };
-        console.log(UserProfileRequest);
+        // console.log(UserProfileRequest);
         try {
             await updateProfileToAPI(UserProfileRequest);
             if (avatar && avatar !== data.avatar) {

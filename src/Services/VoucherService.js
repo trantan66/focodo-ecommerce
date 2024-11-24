@@ -30,3 +30,44 @@ export const getVoucher = async (voucher) => {
         throw error;
     }
 };
+export const getAllVoucher = async () => {
+    try {
+        const response = await axiosInstance.get(`vouchers/all`, {
+            headers: {
+                ...getHeader(),
+            },
+        });
+        return {
+            data: response.result,
+        };
+    } catch (error) {
+        console.error('Lỗi khi get voucher:', error);
+        throw error;
+    }
+};
+export const saveVoucher = async (voucher) => {
+    try {
+        const response = await axiosInstance.post(`vouchers/save`, voucher);
+        return {
+            data: response.result,
+        };
+    } catch (error) {
+        console.error('Lỗi khi get voucher:', error);
+        throw error;
+    }
+};
+export const getVoucherById = async (voucher) => {
+    try {
+        const response = await axiosInstance.get(`vouchers/${voucher}`, {
+            headers: {
+                ...getHeader(),
+            },
+        });
+        return {
+            data: response.result,
+        };
+    } catch (error) {
+        console.error('Lỗi khi get voucher:', error);
+        throw error;
+    }
+};

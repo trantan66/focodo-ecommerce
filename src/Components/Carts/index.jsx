@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react';
 import { Button, InputNumber, Space, Checkbox } from 'antd';
 import { CloseOutlined } from '@ant-design/icons';
 import {
-    fetchCartOfUser,
     updateQuantityInCart,
     increaseQuantityInCart,
     decreaseQuantityInCart,
@@ -11,8 +10,10 @@ import {
 } from '../../Services/CartService';
 import { checkVoucher, getVoucher } from '../../Services/VoucherService';
 import { useNavigate } from 'react-router-dom';
+import useCart from '../../Hooks/useCart';
 
 function Carts() {
+    const { numberOfCart, updateNumberOfCart, carts, fetchCart } = useCart();
     const navigate = useNavigate();
     // Điều hướng đến trang Order với mã giảm giá trong URL
     const handlePlaceOrder = () => {
@@ -29,17 +30,11 @@ function Carts() {
     const [discount, setDiscount] = useState(0);
     const [voucherCode, setVoucherCode] = useState('');
 
-    // Hàm để lấy giỏ hàng của người dùng
-    const fetchCart = async () => {
-        try {
-            const cartItems = await fetchCartOfUser();
-            setProducts(cartItems);
-            setValues(cartItems.map((item) => item.quantity));
-            setCheckedItems(cartItems.map((item) => item.check)); // Khởi tạo trạng thái checkbox từ API
-        } catch (error) {
-            console.error('Error fetching cart:', error);
-        }
-    };
+    useEffect(() => {
+        setProducts(carts);
+        setValues(carts.map((item) => item.quantity));
+        setCheckedItems(carts.map((item) => item.check)); // Khởi tạo trạng thái checkbox từ API
+    }, [carts]);
 
     // Hàm để cập nhật trạng thái checkbox
     const handleCheckboxChange = async (index) => {
@@ -110,6 +105,7 @@ function Carts() {
         try {
             await deleteProductFromCart(cartId); // Gọi API xóa sản phẩm
             fetchCart(); // Cập nhật giỏ hàng sau khi xóa
+            updateNumberOfCart(numberOfCart - 1);
         } catch (error) {
             console.error('Error deleting product:', error);
         }

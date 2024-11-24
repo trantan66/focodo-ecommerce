@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useContext } from 'react';
 import delivery from '../image/delivery.png';
 import { Button, InputNumber } from 'antd';
 import ImageGallery from 'react-image-gallery';
@@ -7,8 +7,10 @@ import { useParams } from 'react-router-dom';
 import { fetchProductByIdFromAPI } from '../../Services/ProductService';
 import '../UserProfile/Style.css';
 import { addProductToCart } from '../../Services/CartService';
-import fetchCart from '../Carts/index';
+import useCart from '../../Hooks/useCart';
 function ProductDetail(props) {
+    const { fetchNumberOfCart, fetchCart } = useCart();
+
     const renderImage = (item) => (
         <div style={{ width: '500px', height: '300px' }}>
             <img src={item.original} alt="" style={{ width: '100%', height: '100%', objectFit: 'fill ' }} />
@@ -38,14 +40,14 @@ function ProductDetail(props) {
         return new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(amount);
     };
     const idProductTest = props.id;
-    const quantityTest = value;
+    // const quantityTest = value;
 
     const handleAddToCart = async () => {
         try {
-            const res = await addProductToCart({ id_product: idProductTest, quantity: quantityTest });
-            console.log(res);
-            alert('Sản phẩm đã được thêm vào giỏ hàng');
+            const res = await addProductToCart({ id_product: idProductTest, quantity: value });
+            fetchNumberOfCart();
             fetchCart();
+            alert('Sản phẩm đã được thêm vào giỏ hàng');
         } catch (error) {
             console.error('Error addToCart product:', error);
         }
@@ -53,7 +55,6 @@ function ProductDetail(props) {
 
     const handleButtonClick = () => {
         handleAddToCart();
-        window.location.reload();
     };
 
     return (

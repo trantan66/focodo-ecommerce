@@ -1,8 +1,13 @@
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import React from 'react';
+
 import Layout from './Components/Shared/Layout';
 import Product from './Pages/Product';
 import Home from './Pages/Home';
 import Present from './Pages/Presentation';
+import GuidePage from './Pages/GuidePage';
+import ContactPage from './Pages/ContactPage';
+
 import ProductDetail from './Pages/ProductDetail';
 import Cart from './Pages/Cart';
 import UserProfile from './Pages/UserProfile';
@@ -12,6 +17,11 @@ import OrderDetail from './Pages/OrderDetail';
 import OrderReviews from './Pages/OrderReviews';
 import Search from './Pages/Search';
 import Login from './Pages/Login';
+import Register from './Pages/Register';
+import ForgotPassword1 from './Pages/ForgotPassword1';
+import ForgotPassword2 from './Pages/ForgotPassword2';
+import ForgotPassword3 from './Pages/ForgotPassword3';
+
 import PrivateRoutes from './Roots/PrivateRoutes';
 import AuthRoutes from './Roots/AuthRoutes';
 import AdminLayout from './Admin/Components/Shared/Layout';
@@ -29,6 +39,8 @@ import AdminProfile from './Admin/Pages/Profile';
 
 import CompleteOrder from './Components/Shared/CompleteOrder';
 import ErrorOrder from './Components/Shared/ErrorOrder';
+import Notification from './Admin/Pages/Notification';
+import Voucher from './Admin/Pages/Voucher';
 
 const roles = {
     user: 'USER',
@@ -44,6 +56,9 @@ function App() {
                     <Route path="review/:orderId" element={<Review />} />
                     <Route path="search" element={<Search />} />
                     <Route path="presentation" element={<Present />} />
+                    <Route path="guidePage" element={<GuidePage />} />
+                    <Route path="contact" element={<ContactPage />} />
+
                     <Route path="productdetail/:id" element={<ProductDetail />} />
                     <Route path="cart" element={<Cart />}></Route>
                     <Route path="order" element={<Order />}></Route>
@@ -51,6 +66,10 @@ function App() {
                     <Route path="orderreviews/:id_order" element={<OrderReviews />}></Route>
                     <Route element={<AuthRoutes />}>
                         <Route path="login" element={<Login />}></Route>
+                        <Route path="register" element={<Register />}></Route>
+                        <Route path="forgotpassword1" element={<ForgotPassword1 />}></Route>
+                        <Route path="forgotpassword2" element={<ForgotPassword2 />}></Route>
+                        <Route path="forgotpassword3" element={<ForgotPassword3 />}></Route>
                     </Route>
                     <Route element={<PrivateRoutes allowedRoles={[roles.user, roles.admin]} />}>
                         <Route path="userprofile" element={<UserProfile />} />
@@ -70,6 +89,8 @@ function App() {
                         <Route path="category" element={<AdminCategory />} />
                         <Route path="review" element={<AdminReview />} />
                         <Route path="profile" element={<AdminProfile />} />
+                        <Route path="notification" element={<Notification />} />
+                        <Route path="voucher" element={<Voucher />} />
                     </Route>
                 </Route>
 

@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useState } from 'react';
-import {  Input, Modal, Pagination, Rate, Spin, Tabs, notification } from 'antd';
+import { Input, Modal, Pagination, Rate, Spin, Tabs, notification } from 'antd';
 import UserIn4 from './UserIn4';
 import { Orders, ProductList } from './OrderList';
 import './Style.css';
@@ -11,7 +11,8 @@ import order from '../Shared/image/shipping_3900732.png';
 import { fetchReviewsOfUserFromAPI, updateReview } from '../../Services/ReviewService';
 import TextArea from 'antd/es/input/TextArea';
 import 'reactjs-popup/dist/index.css';
-
+import { addProductToCart } from '../../Services/CartService';
+import fetchCart from '../Carts/index';
 function Content() {
     const [password, setPassword] = useState('');
     const [newPassword, setNewPassword] = useState('');
@@ -33,8 +34,8 @@ function Content() {
         try {
             const { data, total } = await fetchOrderByStatus(currentPage, ordersPerPage, selectedStatus);
             setOrders(data);
-            console.log(data);
-            console.log(total);
+            // console.log(data);
+            // console.log(total);
             setTotalOrders(total);
         } catch (error) {
             console.error('Error fetching orders:', error);
@@ -66,7 +67,6 @@ function Content() {
     useEffect(() => {
         fetchUserReviews();
     }, [fetchUserReviews]);
-    
 
     const [images, setImages] = useState([]);
     const [imagePreviews, setImagePreviews] = useState([]);
@@ -160,7 +160,7 @@ function Content() {
     }));
     const handleTabClick = (key) => {
         setSelectedStatus(status[key]);
-        console.log(status[key]);
+        // console.log(status[key]);
         setCurrentPage(1);
     };
 
@@ -170,7 +170,7 @@ function Content() {
     const handleChangePassword = async () => {
         try {
             const result = await checkPassword(password);
-            console.log(result);
+            // console.log(result);
             if (result == true && newPassword != password) {
                 if (newPassword == '') {
                     setMessage('Mật khẩu mới không được để trống!');
