@@ -16,6 +16,21 @@ export const checkVoucher = async (voucher, total) => {
     }
 };
 
+// get all voucher
+export const getAllVoucherUser = async () => {
+    try {
+        const response = await axiosInstance.get(`vouchers/getAllVouchers`, {
+            headers: {
+                ...getHeader(),
+            },
+        });
+        return response.result; // Trả về response.data.result nếu cần
+    } catch (error) {
+        console.error('Lỗi khi get all voucher:', error);
+        throw error;
+    }
+};
+
 // get Voucher
 export const getVoucher = async (voucher) => {
     try {

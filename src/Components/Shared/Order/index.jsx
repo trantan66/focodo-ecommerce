@@ -1,14 +1,50 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
+import { Button, Modal, Radio } from 'antd';
+import imgvoucher from '../image/voucher.png';
 import axios from 'axios';
-import { useLocation } from 'react-router-dom';
-import { useNavigate } from 'react-router-dom';
-
+import { useLocation, useNavigate } from 'react-router-dom';
 import { fetchCartCheckedOfUser } from '../../../Services/CartService';
-import { checkVoucher, getVoucher } from '../../../Services/VoucherService';
+import { checkVoucher, getVoucher, getAllVoucherUser } from '../../../Services/VoucherService';
 import { getAllPaymentMethod, callCreateOrder } from '../../../Services/OrderService';
 import { getUser } from '../../../Services/UserService';
 
 function Order() {
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    const [selectedVoucher, setSelectedVoucher] = useState(null);
+    const applyButtonRef = useRef(null);
+
+    const showModal = () => {
+        setIsModalOpen(true);
+    };
+
+    const handleOk = () => {
+        const totalPriceProduct = calculateTotal();
+        const selectedVoucherDetail = vouchers.find((voucher) => voucher.id_voucher === selectedVoucher);
+        if (totalPriceProduct < selectedVoucherDetail.min_total) {
+            alert(`Đơn hàng phải có giá trị tối thiểu ${selectedVoucherDetail.min_total}`);
+        } else {
+            setVoucherCode(selectedVoucher);
+            console.log(selectedVoucher);
+            // applyButtonRef.current?.click();
+            setDiscount(selectedVoucherDetail.discount_price);
+            setIsModalOpen(false);
+        }
+    };
+
+    const handleCancel = () => {
+        setIsModalOpen(false);
+    };
+
+    const handleVoucherChange = (e) => {
+        setSelectedVoucher(e.target.value);
+    };
+    const [vouchers, setVouchers] = useState([]);
+    const fetAllVoucher = async () => {
+        const allVoucher = await getAllVoucherUser();
+        setVouchers(allVoucher);
+    };
+    // console.log(vouchers);
+
     const [selectedPaymentMethod, setSelectedPaymentMethod] = useState('1'); // Theo dõi phương thức thanh toán
     const [paymentMethods, setPaymentMethods] = useState([]); // State để lưu các phương thức thanh toán
 
@@ -60,6 +96,9 @@ function Order() {
         try {
             const total = calculateTotal(); // Tính tổng tiền
             // Gọi API checkVoucher để kiểm tra mã giảm giá
+            console.log(voucherCode);
+            console.log(total);
+
             const checkResponse = await checkVoucher(voucherCode, total);
             if (checkResponse === true) {
                 // Nếu mã giảm giá hợp lệ, lấy thông tin voucher từ API getVoucher
@@ -69,13 +108,13 @@ function Order() {
                     const discountPrice = voucherResponse.discount_price;
                     setDiscount(discountPrice);
                 } else {
-                    alert('Mã giảm giá không hợp lệ hoặc đã hết hạn.');
+                    console.log('Mã giảm giá không hợp lệ hoặc đã hết hạn.');
                 }
             } else {
-                alert('Mã giảm giá không hợp lệ.');
+                console.log('Mã giảm giá không hợp lệ.');
             }
         } catch (error) {
-            alert('Mã giảm giá không hợp lệ hoặc đã hết hạn.');
+            console.log('Mã giảm giá không hợp lệ hoặc đã hết hạn.');
         }
     };
 
@@ -83,6 +122,7 @@ function Order() {
     useEffect(() => {
         fetchCart();
         fetchPaymentMethods();
+        fetAllVoucher();
     }, []);
 
     // Hàm tính tổng tiền cho sản phẩm được chọn
@@ -202,7 +242,6 @@ function Order() {
     const fetchInfoUser = async () => {
         try {
             infoUser = await getUser(); // Gọi API để lấy thông tin người dùng
-            console.log(infoUser);
 
             if (infoUser) {
                 // Cập nhật các giá trị vào từng state riêng biệt
@@ -213,10 +252,6 @@ function Order() {
                 setDataProvince(infoUser.province || '');
                 setDataDistrict(infoUser.district || '');
                 setDataCommune(infoUser.ward || '');
-
-                console.log(dataProvince);
-                console.log(dataDistrict);
-                console.log(dataCommune);
 
                 setDataDistrict(infoUser.district || '');
                 setDataCommune(infoUser.ward || '');
@@ -469,20 +504,68 @@ function Order() {
                             className="border border-gray-300 rounded w-[60%] h-[40px]"
                             placeholder="Nhập mã giảm giá"
                             defaultValue={discountCodeFromCart}
+                            value={voucherCode}
                             onChange={(e) => setVoucherCode(e.target.value)}
                         />
                         <button
-                            className="bg-black text-white rounded w-[100px] h-[40px] ml-[20px]"
+                            ref={applyButtonRef}
+                            className="bg-black text-white rounded w-[100px] h-[40px] ml-[20px] hover:bg-gray-700"
                             onClick={applyVoucher}
                         >
                             Áp dụng
                         </button>
                     </div>
 
+                    {/* Get Voucher */}
+                    <div className="py-3">
+                        <Button
+                            type="primary"
+                            onClick={showModal}
+                            className="!bg-black !text-white !rounded !w-[150px] !h-[40px] hover:!bg-gray-700"
+                        >
+                            Săn mã ngay nào!
+                        </Button>
+
+                        <Modal
+                            title="Chọn FOCODO Voucher"
+                            open={isModalOpen}
+                            onOk={handleOk}
+                            onCancel={handleCancel}
+                            okText="Áp dụng"
+                            cancelText="Hủy"
+                        >
+                            <Radio.Group onChange={handleVoucherChange} value={selectedVoucher} className="w-full">
+                                {vouchers.map((voucher) => (
+                                    <div
+                                        key={voucher.id_voucher}
+                                        className="border border-gray-300 rounded-lg mb-3 p-4 hover:shadow-lg hover:bg-gray-100 transition-all"
+                                    >
+                                        <Radio value={voucher.id_voucher} className="flex items-center space-x-3">
+                                            <div>
+                                                <strong className="text-black">{voucher.id_voucher}</strong>
+                                                <p className="text-gray-600">
+                                                    Giảm{' '}
+                                                    <span className="text-green-600 font-bold">
+                                                        {voucher.discount_price.toLocaleString()}₫
+                                                    </span>{' '}
+                                                    (Đơn tối thiểu:{' '}
+                                                    <span className="font-semibold">
+                                                        {voucher.min_total.toLocaleString()}₫
+                                                    </span>
+                                                    )
+                                                </p>
+                                            </div>
+                                        </Radio>
+                                    </div>
+                                ))}
+                            </Radio.Group>
+                        </Modal>
+                    </div>
+
                     {/* Hiển thị giảm giá */}
                     <div className="w-[450px] flex justify-between py-3">
                         <span>Giảm giá:</span>
-                        <span>-{formatCurrency(discount)}</span>
+                        <span name="span-discount">-{formatCurrency(discount)}</span>
                     </div>
 
                     <div className="w-[450px] flex justify-between py-3">
