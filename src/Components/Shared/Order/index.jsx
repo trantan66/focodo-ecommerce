@@ -1,6 +1,5 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Button, Modal, Radio } from 'antd';
-import imgvoucher from '../image/voucher.png';
 import axios from 'axios';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { fetchCartCheckedOfUser } from '../../../Services/CartService';
@@ -11,7 +10,6 @@ import { getUser } from '../../../Services/UserService';
 function Order() {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [selectedVoucher, setSelectedVoucher] = useState(null);
-    const applyButtonRef = useRef(null);
 
     const showModal = () => {
         setIsModalOpen(true);
@@ -24,8 +22,6 @@ function Order() {
             alert(`Đơn hàng phải có giá trị tối thiểu ${selectedVoucherDetail.min_total}`);
         } else {
             setVoucherCode(selectedVoucher);
-            console.log(selectedVoucher);
-            // applyButtonRef.current?.click();
             setDiscount(selectedVoucherDetail.discount_price);
             setIsModalOpen(false);
         }
@@ -43,7 +39,6 @@ function Order() {
         const allVoucher = await getAllVoucherUser();
         setVouchers(allVoucher);
     };
-    // console.log(vouchers);
 
     const [selectedPaymentMethod, setSelectedPaymentMethod] = useState('1'); // Theo dõi phương thức thanh toán
     const [paymentMethods, setPaymentMethods] = useState([]); // State để lưu các phương thức thanh toán
