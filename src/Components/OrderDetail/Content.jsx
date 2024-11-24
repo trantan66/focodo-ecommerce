@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react';
 import AdressDetail from './AdressDetail';
-import { UserData } from '../UserProfile/UserData';
 import { Product_Items } from '../Product/Product_Items';
 import OrderContent from './OrderContent';
 import { Button } from 'antd';

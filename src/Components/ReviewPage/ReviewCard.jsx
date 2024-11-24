@@ -1,29 +1,14 @@
-import { UploadOutlined } from '@ant-design/icons';
 import { Button, Input, Rate, Upload } from 'antd';
 import TextArea from 'antd/es/input/TextArea';
-import React, { useState } from 'react';
+import React, { useImperativeHandle, useState } from 'react';
 const desc = ['Rất tệ', 'Tệ', 'Bình thường', 'Tốt', 'Tuyệt vời'];
 function ProductList(props) {
-    const prop = {
-        name: 'file',
-        multiple: true,
-        accept: 'image/*',
-        action: '/upload', // API endpoint cho xử lý ảnh
-        onChange(info) {
-            const { status } = info.file;
-            if (status !== 'uploading') {
-                console.log(info.file, info.fileList);
-            }
-            if (status === 'done') {
-                console.log(`${info.file.name} file uploaded successfully.`);
-            } else if (status === 'error') {
-                console.log(`${info.file.name} file upload failed.`);
-            }
-        },
-    };
-    const [value, setValue] = useState(3);
+    const [value, setValue] = useState('');
     const [images, setImages] = useState([]);
     const [imagePreviews, setImagePreviews] = useState([]);
+    const [comment, setComment] = useState('');
+
+
     const handleImageUpload = (e) => {
         const files = Array.from(e.target.files);
         setImages(files);
@@ -38,6 +23,7 @@ function ProductList(props) {
         setImages((prevImages) => prevImages.filter((_, index) => index !== indexToRemove));
         setImagePreviews((prevPreviews) => prevPreviews.filter((_, index) => index !== indexToRemove));
     };
+
     return (
         <div className="flex flex-col w-[60%] mx-auto p-3 my-3 border rounded-lg gap-3 bg-gray-100">
             <p className="text-[20px] font-semibold  ">Đánh giá sản phẩm</p>
@@ -59,7 +45,7 @@ function ProductList(props) {
             </div>
 
             <div className="mb-2">
-                <span className="block mb-2">Hình ảnh sản phẩm</span>
+                <span className="block mb-2">Đăng hình ảnh</span>
                 <input
                     type="file"
                     accept="image/*"
@@ -95,6 +81,8 @@ function ProductList(props) {
                 <TextArea
                     className=""
                     showCount
+                    value={comment}
+                    onChange={(e) => setComment(e.target.value)}
                     maxLength={100}
                     placeholder="Để lại bình luận ở đây"
                     style={{

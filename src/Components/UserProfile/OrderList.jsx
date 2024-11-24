@@ -117,8 +117,11 @@ export function Orders(props) {
                         </button>
 
                         {review ? (
-                            <button className="mr-4 bg-black text-white w-[10%] h-[40px] rounded-lg hover:bg-[#3C3D37] transition duration-300 my-3">
-                                Xem đánh giá
+                            <button  className="mr-4 bg-black text-white w-[10%] h-[40px] rounded-lg hover:bg-[#3C3D37] transition duration-300 my-3">
+                            <Link className="hover:no-underline" to={`/orderreviews/${props.id}`}>
+                                    {' '}
+                                    Xem Đánh giá
+                                </Link>
                             </button>
                         ) : (
                             <button className="mr-4 bg-black text-white w-[10%] h-[40px] rounded-lg hover:bg-[#3C3D37] transition duration-300 my-3">
