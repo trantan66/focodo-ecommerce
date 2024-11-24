@@ -18,7 +18,6 @@ function Content() {
         fetchOrderById(orderId);
     }, []);
 
-    const [loadingIcon, setLoadingIcon] = useState(false);
     const [loadingScreen, setLoadingScreen] = useState(false);
     const fetchOrderById = async () => {
         try {
@@ -36,7 +35,6 @@ function Content() {
     };
 
     const handleSubmit = async () => {
-        setLoadingIcon(true);
         setLoadingScreen(true);
 
         const res = await createReviewToAPI(orderId, values);
@@ -46,7 +44,6 @@ function Content() {
         // Check if all responses have status 200 and a valid result
         const allSuccess = res.every((res) => res.code === 0 && res.result);
 
-        setLoadingIcon(false);
         setLoadingScreen(false);
         if (allSuccess) {
             navigate(-1);
