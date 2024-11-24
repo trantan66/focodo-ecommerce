@@ -145,30 +145,35 @@ function Order() {
             })
             .catch((error) => console.error('Error fetching provinces:', error));
     }, []);
-
-    // Fetch district data when a province is selected
     useEffect(() => {
-        if (selectedProvince) {
-            axios
-                .get(`https://api.mysupership.vn/v1/partner/areas/district?province=${selectedProvince}`)
-                .then((response) => {
-                    setDistricts(response.data.results);
-                })
-                .catch((error) => console.error('Error fetching districts:', error));
-        }
-    }, [selectedProvince]);
+        if (!provinces.length || !selectedProvince) return;
 
-    // Fetch commune data when a district is selected
+        const selected = provinces.find((province) => province.name === selectedProvince);
+
+        if (!selected) return;
+
+        axios
+            .get(`https://api.mysupership.vn/v1/partner/areas/district?province=${selected.code}`)
+            .then((response) => {
+                setDistricts(response.data.results);
+            })
+            .catch((error) => console.error('Error fetching districts:', error));
+    }, [selectedProvince, provinces]);
+
     useEffect(() => {
-        if (selectedDistrict) {
-            axios
-                .get(`https://api.mysupership.vn/v1/partner/areas/commune?district=${selectedDistrict}`)
-                .then((response) => {
-                    setCommunes(response.data.results);
-                })
-                .catch((error) => console.error('Error fetching communes:', error));
-        }
-    }, [selectedDistrict]);
+        if (!districts.length || !selectedDistrict) return;
+
+        const selected = districts.find((district) => district.name === selectedDistrict);
+
+        if (!selected) return;
+
+        axios
+            .get(`https://api.mysupership.vn/v1/partner/areas/commune?district=${selected.code}`)
+            .then((response) => {
+                setCommunes(response.data.results);
+            })
+            .catch((error) => console.error('Error fetching communes:', error));
+    }, [selectedDistrict, districts]);
 
     const handleMethodChange = (e) => {
         setSelectedMethod(e.target.value);
@@ -180,31 +185,17 @@ function Order() {
     };
 
     const handleProvinceChange = (e) => {
-        setDataProvince(null);
-        const selectedOption = e.target.options[e.target.selectedIndex];
-        setSelectedProvince(selectedOption.value); // Lưu mã code để dùng cho API
-        setSelectedProvinceName(selectedOption.getAttribute('data-name')); // Lưu tên để hiển thị
-        setSelectedDistrict(''); // Reset quận/huyện khi tỉnh/thành phố thay đổi
-        setSelectedDistrictName('');
-        setDistricts([]); // Xóa danh sách quận/huyện cũ
-        setCommunes([]); // Xóa danh sách xã/phường cũ
+        setSelectedProvince(e.target.value);
+        setSelectedDistrict('');
     };
 
     const handleDistrictChange = (e) => {
-        setDataDistrict(null);
-        const selectedOption = e.target.options[e.target.selectedIndex];
-        setSelectedDistrict(selectedOption.value); // Lưu mã code để dùng cho API
-        setSelectedDistrictName(selectedOption.getAttribute('data-name')); // Lưu tên để hiển thị
-        setSelectedCommune(''); // Reset xã/phường khi quận/huyện thay đổi
-        setSelectedCommuneName('');
-        setCommunes([]); // Xóa danh sách xã/phường cũ
+        setSelectedDistrict(e.target.value);
+        setSelectedCommune('');
     };
 
     const handleCommuneChange = (e) => {
-        setDataCommune(null);
-        const selectedOption = e.target.options[e.target.selectedIndex];
-        setSelectedCommune(selectedOption.value); // Lưu mã code để dùng cho API
-        setSelectedCommuneName(selectedOption.getAttribute('data-name')); // Lưu tên để hiển thị
+        setSelectedCommune(e.target.value);
     };
 
     // Phí vận chuyển
@@ -232,29 +223,30 @@ function Order() {
     const [phone, setPhone] = useState('');
     const [address, setAddress] = useState('');
 
-    const [dataProvince, setDataProvince] = useState('');
-    const [dataDistrict, setDataDistrict] = useState('');
-    const [dataCommune, setDataCommune] = useState('');
+    // const [dataProvince, setDataProvince] = useState('');
+    // const [dataDistrict, setDataDistrict] = useState('');
+    // const [dataCommune, setDataCommune] = useState('');
 
-    let infoUser;
+    const [infoUser, setInfoUser] = useState([]);
 
     // Gọi API lấy thông tin người dùng
     const fetchInfoUser = async () => {
         try {
-            infoUser = await getUser(); // Gọi API để lấy thông tin người dùng
-
-            if (infoUser) {
+            const data = await getUser(); // Gọi API để lấy thông tin người dùng
+            setInfoUser(data);
+            console.log(data);
+            if (data) {
                 // Cập nhật các giá trị vào từng state riêng biệt
-                setFullName(infoUser.full_name || '');
-                setPhone(infoUser.phone || '');
-                setAddress(infoUser.address || '');
+                setFullName(data.full_name || '');
+                setPhone(data.phone || '');
+                setAddress(data.address || '');
 
-                setDataProvince(infoUser.province || '');
-                setDataDistrict(infoUser.district || '');
-                setDataCommune(infoUser.ward || '');
+                setSelectedProvince(data.province || '');
+                setSelectedDistrict(data.district || '');
+                setSelectedCommune(data.ward || '');
 
-                setDataDistrict(infoUser.district || '');
-                setDataCommune(infoUser.ward || '');
+                // setDataDistrict(data.district || '');
+                // setDataCommune(data.ward || '');
             }
         } catch (error) {
             console.error('Error fetching info user:', error);
@@ -262,9 +254,8 @@ function Order() {
     };
 
     useEffect(() => {
-        fetchInfoUser(); // Gọi API khi component mount
-    }, []); // Chỉ gọi 1 lần khi component mount
-
+        fetchInfoUser();
+    }, []);
     // const navigate = useNavigate();
 
     // Hàm gọi khi nhấn đặt hàng
@@ -355,11 +346,13 @@ function Order() {
                                 <select
                                     value={selectedProvince}
                                     onChange={handleProvinceChange}
-                                    className="block w-full mt-[10px] p-[8px] border rounded-md"
+                                    className="block w-full p-[8px] border rounded-md bg-[#fff] px-4"
+                                    required
                                 >
-                                    <option value="">{dataProvince ? dataProvince : 'Chọn Tỉnh/Thành Phố'}</option>
+                                    <option>{infoUser.province || 'Chọn Tỉnh/Thành Phố'}</option>
+
                                     {provinces.map((province) => (
-                                        <option key={province.code} value={province.code} data-name={province.name}>
+                                        <option key={province.code} value={province.name}>
                                             {province.name}
                                         </option>
                                     ))}
@@ -372,11 +365,12 @@ function Order() {
                                     value={selectedDistrict}
                                     onChange={handleDistrictChange}
                                     disabled={!selectedProvince}
-                                    className="block w-full mt-[10px] p-[8px] border rounded-md"
+                                    className="block w-full p-[8px] border rounded-md bg-[#fff] px-4"
+                                    required
                                 >
-                                    <option value="">{dataDistrict ? dataDistrict : 'Chọn Quận/Huyện'}</option>
+                                    <option>{selectedDistrict || 'Chọn Quận/Huyện'}</option>
                                     {districts.map((district) => (
-                                        <option key={district.code} value={district.code} data-name={district.name}>
+                                        <option key={district.code} value={district.name}>
                                             {district.name}
                                         </option>
                                     ))}
@@ -389,11 +383,12 @@ function Order() {
                                     value={selectedCommune}
                                     onChange={handleCommuneChange}
                                     disabled={!selectedDistrict}
-                                    className="block w-full mt-[10px] p-[8px] border rounded-md"
+                                    className="block w-full p-[8px] border rounded-md bg-[#fff] px-4"
+                                    required
                                 >
-                                    <option value="">{dataCommune ? dataCommune : 'Chọn Xã/Phường'}</option>
+                                    <option>{selectedCommune || 'Chọn Xã/Phường'}</option>
                                     {communes.map((commune) => (
-                                        <option key={commune.code} value={commune.code} data-name={commune.name}>
+                                        <option key={commune.code} value={commune.name}>
                                             {commune.name}
                                         </option>
                                     ))}
