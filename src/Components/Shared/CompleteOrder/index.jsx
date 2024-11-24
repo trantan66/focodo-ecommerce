@@ -17,7 +17,7 @@ function CompleteOrder() {
     const queryParams = new URLSearchParams(location.search);
     const id_order = queryParams.get('id_order') || 0;
 
-    const [customer, setCustomer] = useState();
+    // const [customer, setCustomer] = useState();
     const [orderDetails, setOrderDetails] = useState([]);
     const [order, setOrder] = useState();
 
@@ -26,7 +26,7 @@ function CompleteOrder() {
             const orderInfo = await fetchOrderByIdFromAPI(id_order);
             console.log(orderInfo.data); // Kiểm tra cấu trúc của orderInfo
             setOrder(orderInfo.data);
-            setCustomer(orderInfo.data.customer);
+            // setCustomer(orderInfo.data.customer);
             setOrderDetails(orderInfo.data.order_details);
         } catch (error) {
             console.error('Error fetching order:', error);
@@ -69,12 +69,12 @@ function CompleteOrder() {
                         <h1 className="text-xl font-medium">Thông tin đơn hàng</h1>
                         <div>
                             <p className="text-xl">Thông tin giao hàng</p>
-                            <p>Người nhận: {customer?.full_name}</p>
-                            <p>Số điện thoại: {customer?.phone}</p>
-                            <p>Địa chỉ: {customer?.address}</p>
-                            <p>Phường/xã: {customer?.ward}</p>
-                            <p>Quận/huyện: {customer?.district}</p>
-                            <p>Tỉnh/thành phố: {customer?.province}</p> {/* Sửa lại nếu đúng */}
+                            <p>Người nhận: {order?.full_name}</p>
+                            <p>Số điện thoại: {order?.phone}</p>
+                            <p>Địa chỉ: {order?.address}</p>
+                            <p>Phường/xã: {order?.ward}</p>
+                            <p>Quận/huyện: {order?.district}</p>
+                            <p>Tỉnh/thành phố: {order?.province}</p> {/* Sửa lại nếu đúng */}
                         </div>
 
                         <div>

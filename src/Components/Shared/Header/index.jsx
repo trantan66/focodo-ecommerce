@@ -7,6 +7,7 @@ import logo from '../image/logo.png';
 import { searchProducts } from '../../../Services/ProductService';
 import { useNavigate } from 'react-router-dom';
 import useCart from '../../../Hooks/useCart';
+import useAuth from '../../../Hooks/useAuth';
 
 function Header() {
     const navigate = useNavigate();
@@ -39,7 +40,7 @@ function Header() {
     const [isCartVisible, setIsCartVisible] = useState(false);
     const [isUserVisible, setIsUserVisible] = useState(false);
 
-    const { numberOfCart, carts } = useCart();
+    const { numberOfCart, carts, updateNumberOfCart, setCarts } = useCart();
 
     const [products, setProducts] = useState([]); // Danh sách sản phẩm trong giỏ hàng
     const [productsOfSearch, setProductsOfSearch] = useState([]);
@@ -50,13 +51,14 @@ function Header() {
     }, [carts]);
 
     // đăng xuất
-    const logout = async () => {
-        localStorage.removeItem('access_token');
-        localStorage.removeItem('refresh_token');
-        navigate('/');
+    const { logout } = useAuth();
+    const handleLogout = () => {
+        logout();
+        updateNumberOfCart(0);
+        setCarts([]);
         setIsCartVisible(false);
         setIsUserVisible(false);
-        window.location.reload();
+        navigate('/');
     };
 
     // đăng nhập
@@ -162,7 +164,6 @@ function Header() {
                                 onFocus={handleFocus}
                                 onBlur={handleBlur}
                                 onChange={(e) => {
-                                    console.log(e.target.value);
                                     setValueInput(e.target.value);
                                     if (e.target.value === '') {
                                         setIsSearchActive(false);
@@ -353,7 +354,7 @@ function Header() {
                                                 <ProfileOutlined className="w-[30px] text-xl" />{' '}
                                                 <span className="text-lg">Hồ sơ cá nhân</span>
                                             </div>
-                                            <div className="cursor-pointer" onClick={logout}>
+                                            <div className="cursor-pointer" onClick={handleLogout}>
                                                 <LogoutOutlined className="w-[30px] text-xl" />{' '}
                                                 <span className="text-lg">Đăng xuất</span>
                                             </div>

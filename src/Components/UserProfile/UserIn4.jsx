@@ -1,26 +1,28 @@
 import React, { useEffect, useState } from 'react';
-import { Input, Upload, Button, notification } from 'antd';
+import { Input, Upload, Button, notification, Spin } from 'antd';
 import { UploadOutlined } from '@ant-design/icons';
 import homelander from '../image/avatar/homelander.jpg';
 import './Style.css';
 import axios from 'axios';
 import { updateAvatarToAPI, updateProfileToAPI } from '../../Services/UserService';
 import { useNavigate } from 'react-router-dom';
+import useAuth from '../../Hooks/useAuth';
 function UserIn4({ data }) {
     const navigate = useNavigate();
     const [username, setUsername] = useState('');
     const [name, setName] = useState('');
     const [email, setEmail] = useState('');
     const [phone, setPhone] = useState('');
-    const [birth, setBirth] = useState('');
     const [avatar, setAvatar] = useState('');
     const [address, setAddress] = useState('');
+    const [loading, setLoading] = useState(false);
     const [provinces, setProvinces] = useState([]); // State để lưu danh sách tỉnh/thành phố
     const [selectedProvince, setSelectedProvince] = useState(''); // Theo dõi tỉnh/thành phố được chọn
     const [districts, setDistricts] = useState([]); // State để lưu danh sách quận/huyện
     const [selectedDistrict, setSelectedDistrict] = useState(''); // Theo dõi quận/huyện được chọn
     const [communes, setCommunes] = useState([]); // State để lưu danh sách xã/phường
     const [selectedCommune, setSelectedCommune] = useState(''); // Theo dõi xã/phường được chọn
+    const { fetchUser } = useAuth();
     useEffect(() => {
         if (data) {
             setUsername(data.username || '');
@@ -72,7 +74,15 @@ function UserIn4({ data }) {
     const handleAvatarChange = async (event) => {
         const file = event.target.files[0]; // Lấy tệp từ input
         if (file) {
-            setAvatar(file);
+            setAvatar(file); // Cập nhật trạng thái avatar
+
+            // Đọc và hiển thị ảnh bằng FileReader
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                const imageSrc = e.target.result; // Dữ liệu URL của ảnh
+                document.getElementById('avatarPreview').src = imageSrc; // Đặt URL vào thẻ <img> để hiển thị ảnh
+            };
+            reader.readAsDataURL(file); // Đọc file dưới dạng Data URL
         }
     };
     const handleProvinceChange = (e) => {
@@ -90,6 +100,7 @@ function UserIn4({ data }) {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        setLoading(true);
         const selectedProvinceName = provinces.find((p) => p.code === selectedProvince)?.name || data.province;
         const selectedDistrictName = districts.find((d) => d.code === selectedDistrict)?.name || data.district;
         const selectedCommuneName = communes.find((c) => c.code === selectedCommune)?.name || data.ward;
@@ -115,12 +126,13 @@ function UserIn4({ data }) {
                 description: 'Không thể cập nhật hồ sơ. Vui lòng thử lại.',
             });
         } finally {
+            setLoading(false);
             notification.success({
                 message: 'Cập nhật hồ sơ thành công!',
                 description: 'Hồ sơ đã được cập nhật.',
                 duration: '1',
             });
-
+            fetchUser();
             navigate('/userprofile');
         }
     };
@@ -192,15 +204,19 @@ function UserIn4({ data }) {
                     </select>
                     <span>Địa chỉ</span>
                     <Input value={address} onChange={(e) => setAddress(e.target.value)}></Input>
-                    <button
-                        onClick={handleSubmit}
-                        className="bg-black text-white w-[200px] h-[48px] rounded-lg hover:bg-[#3C3D37] transition duration-300 ml-4"
-                    >
-                        Lưu
-                    </button>
+                    <div className="">
+                        {loading && <Spin className="mr-2"></Spin>}
+                        <button
+                            onClick={handleSubmit}
+                            className="bg-black text-white w-[200px] h-[48px] rounded-lg hover:bg-[#3C3D37] transition duration-300 ml-4"
+                        >
+                            Lưu
+                        </button>
+                    </div>
                 </div>
+
                 <div className=" flex mx-auto flex-col items-center ">
-                    <img src={avatar} alt="" className=" h-[200px] w-[200px] rounded-full " />
+                    <img id="avatarPreview" src={avatar} alt="" className=" h-[200px] w-[200px] rounded-full " />
                     <input className="mt-2" type="file" accept="image/*" onChange={handleAvatarChange}></input>
                 </div>
             </div>

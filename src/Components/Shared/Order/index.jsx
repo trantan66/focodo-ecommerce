@@ -1,12 +1,12 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Button, Modal, Radio } from 'antd';
-import imgvoucher from '../image/voucher.png';
 import axios from 'axios';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { fetchCartCheckedOfUser } from '../../../Services/CartService';
 import { checkVoucher, getVoucher, getAllVoucherUser } from '../../../Services/VoucherService';
 import { getAllPaymentMethod, callCreateOrder } from '../../../Services/OrderService';
 import { getUser } from '../../../Services/UserService';
+import useCart from '../../../Hooks/useCart';
 
 function Order() {
     const [isModalOpen, setIsModalOpen] = useState(false);
@@ -76,7 +76,7 @@ function Order() {
     const navigate = useNavigate();
 
     // Hàm để lấy giỏ hàng của người dùng
-    const fetchCart = async () => {
+    const fetchCartChecked = async () => {
         try {
             // gọi API get các sản phẩm từ giỏ hàng
             const cartItems = await fetchCartCheckedOfUser();
@@ -120,7 +120,7 @@ function Order() {
 
     // Gọi API khi component được render lần đầu
     useEffect(() => {
-        fetchCart();
+        fetchCartChecked();
         fetchPaymentMethods();
         fetAllVoucher();
     }, []);
@@ -247,9 +247,10 @@ function Order() {
     };
 
     useEffect(() => {
-        fetchInfoUser();
-    }, []);
-    // const navigate = useNavigate();
+        fetchInfoUser(); // Gọi API khi component mount
+    }, []); // Chỉ gọi 1 lần khi component mount
+
+    const { fetchCart, fetchNumberOfCart } = useCart();
 
     // Hàm gọi khi nhấn đặt hàng
     const handleSubmit = async () => {
@@ -291,6 +292,8 @@ function Order() {
                 order: Order, // Truyền thông tin order đã cập nhật
             });
 
+            fetchCart();
+            fetchNumberOfCart();
             if (res.payment_url === '') {
                 // thanh toán COD => Chuyển đến trang thanh toán thành công
                 const id_order = res.id_order;

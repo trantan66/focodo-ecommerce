@@ -66,11 +66,30 @@ function ProductDetail(props) {
                         useBrowserFullscreen={false}
                         showPlayButton={false}
                         thumbnailPosition="bottom"
+                        additionalClass="fullscreen"
                         renderItem={(item) => (
-                            <img
-                                src={item.original}
-                                style={{ width: '400px', height: '300px', objectFit: 'contain' }}
-                            />
+                            <div
+                            style={{
+                                display: 'flex',
+                                justifyContent: 'center',
+                                alignItems: 'center',
+                                objectFit: 'contain',
+                                // height: '100%', // Chiều cao đầy đủ của container
+                                // width: '100%', // Đảm bảo chiều rộng chiếm toàn bộ khu vực chứa
+                            }}
+                            >
+                                <img
+                                    src={item.original}
+                                    style={{
+                                        minHeight: '300px', // Chiều cao đầy đủ của container
+                                        // width: '100%', // Đảm bảo chiều rộng chiếm toàn bộ khu vực chứa
+                                        objectFit: 'fill',
+                                        //height: 'auto',
+                                        width: '80%', // Đảm bảo không vượt quá chiều rộng của màn hình
+                                        maxHeight: '400px',
+                                    }}
+                                />
+                            </div>
                         )}
                         renderThumbInner={(item) => (
                             <img
@@ -81,13 +100,18 @@ function ProductDetail(props) {
                     />
                 </div>
                 <div className="mx-3">
-                    <p className="text-[40px] font-semibold">{props.name}</p>
+                    <p className="mt-2 text-[25px] font-semibold">{props.name}</p>
                     <p className="opacity-50 italic text-[16px]">{props.subcription}</p>
                     <div className="flex gap-4">
-                        <p className="text-[32px] text-gray-500 line-through font-semibold italic mt-2 mb-2">
-                            {formatCurrency(props.price)}
-                        </p>
-                        <p className="text-[32px] text-[#FF0000] font-semibold italic mt-2 mb-2">
+                        {props.saleprice != props.price ? (
+                            <p className="text-[22px] text-gray-500 line-through font-semibold italic mt-2 mb-2">
+                                {formatCurrency(props.price)}
+                            </p>
+                        ) : (
+                            ''
+                        )}
+
+                        <p className="text-[22px] text-[#FF0000] font-semibold italic mt-2 mb-2">
                             {formatCurrency(props.saleprice)}
                         </p>
                     </div>

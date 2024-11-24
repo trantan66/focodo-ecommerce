@@ -1,26 +1,8 @@
-import { UploadOutlined } from '@ant-design/icons';
-import { Button, Input, Rate, Upload } from 'antd';
+import { Rate } from 'antd';
 import TextArea from 'antd/es/input/TextArea';
 import React, { useEffect, useState } from 'react';
 const desc = ['Rất tệ', 'Tệ', 'Bình thường', 'Tốt', 'Tuyệt vời'];
 function ProductList({ id_product, name, price, img, values, setValues }) {
-    const prop = {
-        name: 'file',
-        multiple: true,
-        accept: 'image/*',
-        action: '/upload', // API endpoint cho xử lý ảnh
-        onChange(info) {
-            const { status } = info.file;
-            if (status !== 'uploading') {
-                console.log(info.file, info.fileList);
-            }
-            if (status === 'done') {
-                console.log(`${info.file.name} file uploaded successfully.`);
-            } else if (status === 'error') {
-                console.log(`${info.file.name} file upload failed.`);
-            }
-        },
-    };
     const [value, setValue] = useState(3);
     const [content, setContent] = useState('');
     const [images, setImages] = useState([]);
@@ -44,7 +26,6 @@ function ProductList({ id_product, name, price, img, values, setValues }) {
                 };
             return item;
         });
-        console.log(newValues);
         setValues(newValues);
     }, [images]);
 
@@ -78,7 +59,6 @@ function ProductList({ id_product, name, price, img, values, setValues }) {
                                     };
                                 return item;
                             });
-                            console.log(newValues);
                             setValues(newValues);
                             setValue(value);
                         }}
@@ -140,7 +120,6 @@ function ProductList({ id_product, name, price, img, values, setValues }) {
                                 };
                             return item;
                         });
-                        // console.log(newValue);
                         setContent(e.target.value);
                         setValues(newValues);
                     }}
