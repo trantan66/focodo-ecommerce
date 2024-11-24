@@ -257,9 +257,6 @@ function Order() {
         const phone = document.querySelector('input[name="phone"]').value; // Lấy giá trị ô input số điện thoại
         const address = document.querySelector('input[name="address"]').value; // Lấy giá trị ô input địa chỉ
 
-        const commune = communes.find((commune) => commune.code === selectedCommune);
-        const province = provinces.find((province) => province.code === selectedProvince);
-        const district = districts.find((district) => district.code === selectedDistrict);
         // Cập nhật customer với thông tin cần thiết
         const Customer = {
             full_name: fullName,
@@ -486,23 +483,7 @@ function Order() {
                     ))}
 
                     {/* input discount code */}
-                    <div className="flex mt-[50px]">
-                        <input
-                            type="text"
-                            className="border border-gray-300 rounded w-[60%] h-[40px]"
-                            placeholder="Nhập mã giảm giá"
-                            defaultValue={discountCodeFromCart}
-                            value={voucherCode}
-                            onChange={(e) => setVoucherCode(e.target.value)}
-                        />
-                        <button
-                            ref={applyButtonRef}
-                            className="bg-black text-white rounded w-[100px] h-[40px] ml-[20px] hover:bg-gray-700"
-                            onClick={applyVoucher}
-                        >
-                            Áp dụng
-                        </button>
-                    </div>
+                    <div className="flex mt-[50px]"></div>
 
                     {/* Get Voucher */}
                     <div className="py-3">
