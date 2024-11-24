@@ -4,8 +4,10 @@ import { login } from '../Services/AuthService';
 import { getUserFromToken } from '../Services/UserService';
 import useAuth from '../Hooks/useAuth';
 import { useNavigate, useLocation } from 'react-router-dom';
+import useCart from '../Hooks/useCart';
 const Login = () => {
     const { auth, setAuth } = useAuth();
+    const { fetchCart, fetchNumberOfCart } = useCart();
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
     const [error, setError] = useState('');
@@ -28,10 +30,11 @@ const Login = () => {
                 setUsername('');
                 setPassword('');
                 if (res.result.role === 'ADMIN') {
-                    navigate('/admin', { replace: true });
+                    navigate('/admin');
                 } else {
-                    navigate('/userprofile', { replace: true });
-                    window.location.reload();
+                    navigate('/userprofile');
+                    fetchCart();
+                    fetchNumberOfCart();
                 }
             }
         } catch (e) {

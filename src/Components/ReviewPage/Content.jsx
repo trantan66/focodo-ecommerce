@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import ReviewCard from './ReviewCard';
 import { Product_Items } from '../Product/Product_Items';
 import { useParams, useNavigate } from 'react-router-dom';
@@ -18,13 +18,10 @@ function Content() {
         fetchOrderById(orderId);
     }, []);
 
-    const [loadingIcon, setLoadingIcon] = useState(false);
     const [loadingScreen, setLoadingScreen] = useState(false);
     const fetchOrderById = async () => {
         try {
             const { data } = await fetchOrderByIdFromAPI(orderId);
-
-            console.log(data);
             const arrays = data.order_details.map((item) => {
                 return { id_product: item.product.id, rating: 3, content: '', images: [] };
             });
@@ -36,17 +33,12 @@ function Content() {
     };
 
     const handleSubmit = async () => {
-        setLoadingIcon(true);
         setLoadingScreen(true);
 
         const res = await createReviewToAPI(orderId, values);
-
-        console.log('Response:', res);
-
         // Check if all responses have status 200 and a valid result
         const allSuccess = res.every((res) => res.code === 0 && res.result);
 
-        setLoadingIcon(false);
         setLoadingScreen(false);
         if (allSuccess) {
             navigate(-1);

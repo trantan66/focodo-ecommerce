@@ -14,6 +14,7 @@ import UserProfile from './Pages/UserProfile';
 import Order from './Pages/LayoutOrder';
 import Review from './Pages/ReviewPage';
 import OrderDetail from './Pages/OrderDetail';
+import OrderReviews from './Pages/OrderReviews';
 import Search from './Pages/Search';
 import Login from './Pages/Login';
 import Register from './Pages/Register';
@@ -62,6 +63,7 @@ function App() {
                     <Route path="cart" element={<Cart />}></Route>
                     <Route path="order" element={<Order />}></Route>
                     <Route path="orderdetail/:id" element={<OrderDetail />}></Route>
+                    <Route path="orderreviews/:id_order" element={<OrderReviews />}></Route>
                     <Route element={<AuthRoutes />}>
                         <Route path="login" element={<Login />}></Route>
                         <Route path="register" element={<Register />}></Route>
