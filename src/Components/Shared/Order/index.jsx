@@ -223,10 +223,6 @@ function Order() {
     const [phone, setPhone] = useState('');
     const [address, setAddress] = useState('');
 
-    // const [dataProvince, setDataProvince] = useState('');
-    // const [dataDistrict, setDataDistrict] = useState('');
-    // const [dataCommune, setDataCommune] = useState('');
-
     const [infoUser, setInfoUser] = useState([]);
 
     // Gọi API lấy thông tin người dùng
@@ -244,9 +240,6 @@ function Order() {
                 setSelectedProvince(data.province || '');
                 setSelectedDistrict(data.district || '');
                 setSelectedCommune(data.ward || '');
-
-                // setDataDistrict(data.district || '');
-                // setDataCommune(data.ward || '');
             }
         } catch (error) {
             console.error('Error fetching info user:', error);
@@ -272,9 +265,9 @@ function Order() {
             full_name: fullName,
             phone: phone,
             address: address,
-            province: province ? province.name : '', // Thêm tỉnh
-            district: district ? district.name : '', // Thêm huyện
-            ward: commune ? commune.name : '', // Thêm xã/phường
+            province: selectedProvince, // Thêm tỉnh
+            district: selectedDistrict, // Thêm huyện
+            ward: selectedCommune, // Thêm xã/phường
         };
 
         // Cập nhật order với các thông tin cần thiết
