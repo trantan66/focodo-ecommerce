@@ -9,128 +9,21 @@ import { getUser } from '../../../Services/UserService';
 import useCart from '../../../Hooks/useCart';
 
 function Order() {
-    const [isModalOpen, setIsModalOpen] = useState(false);
-    const [selectedVoucher, setSelectedVoucher] = useState(null);
-
-    const showModal = () => {
-        setIsModalOpen(true);
-    };
-
-    const handleOk = () => {
-        const totalPriceProduct = calculateTotal();
-        const selectedVoucherDetail = vouchers.find((voucher) => voucher.id_voucher === selectedVoucher);
-        if (totalPriceProduct < selectedVoucherDetail.min_total) {
-            alert(`Đơn hàng phải có giá trị tối thiểu ${selectedVoucherDetail.min_total}`);
-        } else {
-            setVoucherCode(selectedVoucher);
-            setDiscount(selectedVoucherDetail.discount_price);
-            setIsModalOpen(false);
-        }
-    };
-
-    const handleCancel = () => {
-        setIsModalOpen(false);
-    };
-
-    const handleVoucherChange = (e) => {
-        setSelectedVoucher(e.target.value);
-    };
-    const [vouchers, setVouchers] = useState([]);
-    const fetAllVoucher = async () => {
-        const allVoucher = await getAllVoucherUser();
-        setVouchers(allVoucher);
-    };
-
-    const [selectedPaymentMethod, setSelectedPaymentMethod] = useState('1'); // Theo dõi phương thức thanh toán
-    const [paymentMethods, setPaymentMethods] = useState([]); // State để lưu các phương thức thanh toán
-
-    const [selectedMethod, setSelectedMethod] = useState('standard'); // State để lưu các phương thức thanh toán
-
-    const [provinces, setProvinces] = useState([]); // State để lưu danh sách tỉnh/thành phố
-    const [selectedProvince, setSelectedProvince] = useState(''); // Theo dõi tỉnh/thành phố được chọn
-    const [selectedProvinceName, setSelectedProvinceName] = useState(''); // Lưu tên tỉnh/thành phố
-
-    const [districts, setDistricts] = useState([]); // State để lưu danh sách quận/huyện
-    const [selectedDistrict, setSelectedDistrict] = useState(''); // Theo dõi quận/huyện được chọn
-    const [selectedDistrictName, setSelectedDistrictName] = useState(''); // Lưu tên quận/huyện
-
-    const [communes, setCommunes] = useState([]); // State để lưu danh sách xã/phường
-    const [selectedCommune, setSelectedCommune] = useState(''); // Theo dõi xã/phường được chọn
-    const [selectedCommuneName, setSelectedCommuneName] = useState(''); // Lưu tên xã/phường
-
-    const [products, setProducts] = useState([]); // Danh sách sản phẩm trong giỏ hàng
-    const [values, setValues] = useState([]); // Số lượng của từng sản phẩm
-
-    const [discount, setDiscount] = useState(0);
-    const [voucherCode, setVoucherCode] = useState('');
-
-    // Lấy giá trị discount từ URL
-    const location = useLocation();
-    const queryParams = new URLSearchParams(location.search);
-    const discountValueFromCart = queryParams.get('discountValue') || 0;
-    const discountCodeFromCart = queryParams.get('discountCode') || '';
-    const navigate = useNavigate();
-
-    // Hàm để lấy giỏ hàng của người dùng
-    const fetchCartChecked = async () => {
-        try {
-            // gọi API get các sản phẩm từ giỏ hàng
-            const cartItems = await fetchCartCheckedOfUser();
-            setProducts(cartItems);
-            setValues(cartItems.map((item) => item.quantity));
-            // gọi các discount và vouchercode từ Cart (nếu có)
-            if (discountValueFromCart && discountCodeFromCart) {
-                setDiscount(discountValueFromCart);
-                setVoucherCode(discountCodeFromCart);
-            }
-        } catch (error) {
-            console.error('Error fetching cart:', error);
-        }
-    };
-
-    const applyVoucher = async () => {
-        try {
-            const total = calculateTotal(); // Tính tổng tiền
-            // Gọi API checkVoucher để kiểm tra mã giảm giá
-            console.log(voucherCode);
-            console.log(total);
-
-            const checkResponse = await checkVoucher(voucherCode, total);
-            if (checkResponse === true) {
-                // Nếu mã giảm giá hợp lệ, lấy thông tin voucher từ API getVoucher
-                const voucherResponse = await getVoucher(voucherCode);
-                if (voucherResponse) {
-                    // Cập nhật giá trị discount_price từ kết quả API
-                    const discountPrice = voucherResponse.discount_price;
-                    setDiscount(discountPrice);
-                } else {
-                    console.log('Mã giảm giá không hợp lệ hoặc đã hết hạn.');
-                }
-            } else {
-                console.log('Mã giảm giá không hợp lệ.');
-            }
-        } catch (error) {
-            console.log('Mã giảm giá không hợp lệ hoặc đã hết hạn.');
-        }
-    };
-
-    // Gọi API khi component được render lần đầu
     useEffect(() => {
         fetchCartChecked();
         fetchPaymentMethods();
         fetAllVoucher();
+        fetchInfoUser();
     }, []);
 
-    // Hàm tính tổng tiền cho sản phẩm được chọn
-    const calculateTotal = () => {
-        return values.reduce((total, quantity, index) => {
-            // Kiểm tra nếu sản phẩm có thuộc tính check = true
-            if (products[index].check) {
-                return total + quantity * products[index].unit_price; // Tính tổng cho sản phẩm đó
-            }
-            return total; // Không tính cho sản phẩm không được chọn
-        }, 0);
-    };
+    const [provinces, setProvinces] = useState([]); // State để lưu danh sách tỉnh/thành phố
+    const [selectedProvince, setSelectedProvince] = useState(''); // Theo dõi tỉnh/thành phố được chọn
+
+    const [districts, setDistricts] = useState([]); // State để lưu danh sách quận/huyện
+    const [selectedDistrict, setSelectedDistrict] = useState(''); // Theo dõi quận/huyện được chọn
+
+    const [communes, setCommunes] = useState([]); // State để lưu danh sách xã/phường
+    const [selectedCommune, setSelectedCommune] = useState(''); // Theo dõi xã/phường được chọn
 
     // Fetch province data on component mount
     useEffect(() => {
@@ -155,7 +48,6 @@ function Order() {
             })
             .catch((error) => console.error('Error fetching districts:', error));
     }, [selectedProvince, provinces]);
-
     useEffect(() => {
         if (!districts.length || !selectedDistrict) return;
 
@@ -170,65 +62,140 @@ function Order() {
             })
             .catch((error) => console.error('Error fetching communes:', error));
     }, [selectedDistrict, districts]);
-
-    const handleMethodChange = (e) => {
-        setSelectedMethod(e.target.value);
-    };
-
-    // Hàm xử lý thay đổi phương thức thanh toán
-    const handlePaymentMethodChange = (e) => {
-        setSelectedPaymentMethod(e.target.value); // Cập nhật phương thức thanh toán được chọn
-    };
-
+    // Change province
     const handleProvinceChange = (e) => {
         setSelectedProvince(e.target.value);
         setSelectedDistrict('');
     };
-
+    // Change district
     const handleDistrictChange = (e) => {
         setSelectedDistrict(e.target.value);
         setSelectedCommune('');
     };
-
+    // Change commune
     const handleCommuneChange = (e) => {
         setSelectedCommune(e.target.value);
     };
+    const navigate = useNavigate();
 
-    // Phí vận chuyển
-    const shippingFee = selectedMethod === 'express' ? 20000 : 10000;
-
-    // Tổng tiền cuối cùng
-    const finalTotal = calculateTotal() + shippingFee - discount;
-
-    // Hàm định dạng tiền tệ
-    const formatCurrency = (value) => {
-        return new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(value);
-    };
-
-    // Hàm để gọi API lấy phương thức thanh toán
+    // Payment method
+    const [selectedPaymentMethod, setSelectedPaymentMethod] = useState(''); // Theo dõi phương thức thanh toán
+    const [paymentMethods, setPaymentMethods] = useState([]); // State để lưu các phương thức thanh toán
     const fetchPaymentMethods = async () => {
         try {
-            const methods = await getAllPaymentMethod(); // Gọi API để lấy phương thức thanh toán
-            setPaymentMethods(methods); // Lưu phương thức vào state
+            const methods = await getAllPaymentMethod();
+            setPaymentMethods(methods);
         } catch (error) {
             console.error('Error fetching payment methods:', error);
         }
     };
 
+    // Shipping method
+    const [selectedMethod, setSelectedMethod] = useState('');
+    // shipping fee
+    const shippingFee = selectedMethod === 'express' ? 20000 : 10000;
+    const handleMethodChange = (e) => {
+        setSelectedMethod(e.target.value);
+    };
+
+    const [products, setProducts] = useState([]);
+    const [values, setValues] = useState([]);
+
+    const [discount, setDiscount] = useState(0);
+    const [voucherCode, setVoucherCode] = useState('');
+
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    const [selectedVoucher, setSelectedVoucher] = useState(null);
+
+    // get cart of user
+    const fetchCartChecked = async () => {
+        try {
+            const cartItems = await fetchCartCheckedOfUser();
+            setProducts(cartItems);
+            setValues(cartItems.map((item) => item.quantity));
+        } catch (error) {
+            console.error('Error fetching cart:', error);
+        }
+    };
+
+    const showModal = () => {
+        setIsModalOpen(true);
+    };
+    const handleOk = () => {
+        const totalPriceProduct = calculateTotal();
+        const selectedVoucherDetail = vouchers.find((voucher) => voucher.id_voucher === selectedVoucher);
+        if (totalPriceProduct < selectedVoucherDetail.min_total) {
+            alert(`Đơn hàng phải có giá trị tối thiểu ${selectedVoucherDetail.min_total}`);
+        } else {
+            setVoucherCode(selectedVoucher);
+            setDiscount(selectedVoucherDetail.discount_price);
+            setIsModalOpen(false);
+        }
+    };
+    const handleCancel = () => {
+        setIsModalOpen(false);
+    };
+    const handleVoucherChange = (e) => {
+        setSelectedVoucher(e.target.value);
+    };
+    const [vouchers, setVouchers] = useState([]);
+    const fetAllVoucher = async () => {
+        const allVoucher = await getAllVoucherUser();
+        setVouchers(allVoucher);
+    };
+
+    const applyVoucher = async () => {
+        try {
+            const total = calculateTotal();
+            const checkResponse = await checkVoucher(voucherCode, total);
+            if (checkResponse === true) {
+                const voucherResponse = await getVoucher(voucherCode);
+                if (voucherResponse) {
+                    const discountPrice = voucherResponse.discount_price;
+                    setDiscount(discountPrice);
+                } else {
+                    console.log('Mã giảm giá không hợp lệ hoặc đã hết hạn.');
+                }
+            } else {
+                console.log('Mã giảm giá không hợp lệ.');
+            }
+        } catch (error) {
+            console.log('Mã giảm giá không hợp lệ hoặc đã hết hạn.');
+        }
+    };
+
+    const calculateTotal = () => {
+        return values.reduce((total, quantity, index) => {
+            if (products[index].check) {
+                return total + quantity * products[index].unit_price;
+            }
+            return total;
+        }, 0);
+    };
+
+    // Chang payment method
+    const handlePaymentMethodChange = (e) => {
+        setSelectedPaymentMethod(e.target.value);
+    };
+
+    // final price
+    const finalTotal = calculateTotal() + shippingFee - discount;
+
+    // format money
+    const formatCurrency = (value) => {
+        return new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(value);
+    };
+
+    const [infoUser, setInfoUser] = useState([]);
     const [fullName, setFullName] = useState('');
     const [phone, setPhone] = useState('');
     const [address, setAddress] = useState('');
 
-    const [infoUser, setInfoUser] = useState([]);
-
-    // Gọi API lấy thông tin người dùng
     const fetchInfoUser = async () => {
         try {
-            const data = await getUser(); // Gọi API để lấy thông tin người dùng
+            const data = await getUser();
             setInfoUser(data);
-            console.log(data);
             if (data) {
-                // Cập nhật các giá trị vào từng state riêng biệt
                 setFullName(data.full_name || '');
                 setPhone(data.phone || '');
                 setAddress(data.address || '');
@@ -242,50 +209,42 @@ function Order() {
         }
     };
 
-    useEffect(() => {
-        fetchInfoUser(); // Gọi API khi component mount
-    }, []); // Chỉ gọi 1 lần khi component mount
-
     const { fetchCart, fetchNumberOfCart } = useCart();
 
     // Hàm gọi khi nhấn đặt hàng
     const handleSubmit = async () => {
-        const fullName = document.querySelector('input[name="full_name"]').value; // Lấy giá trị ô input họ và tên
-        const phone = document.querySelector('input[name="phone"]').value; // Lấy giá trị ô input số điện thoại
-        const address = document.querySelector('input[name="address"]').value; // Lấy giá trị ô input địa chỉ
+        const fullName = document.querySelector('input[name="full_name"]').value;
+        const phone = document.querySelector('input[name="phone"]').value;
+        const address = document.querySelector('input[name="address"]').value;
 
-        // Cập nhật customer với thông tin cần thiết
         const Customer = {
             full_name: fullName,
             phone: phone,
             address: address,
-            province: selectedProvince, // Thêm tỉnh
-            district: selectedDistrict, // Thêm huyện
-            ward: selectedCommune, // Thêm xã/phường
+            province: selectedProvince,
+            district: selectedDistrict,
+            ward: selectedCommune,
         };
 
-        // Cập nhật order với các thông tin cần thiết
         const Order = {
-            description: '', // Có thể thêm mô tả nếu cần
-            shipping_price: shippingFee, // Thêm phí vận chuyển vào đơn hàng
-            total_price: calculateTotal(), // Thêm tổng tiền vào đơn hàng
-            discount_price: parseInt(discount), // Thêm giá trị giảm giá vào đơn hàng
-            final_price: finalTotal, // Thêm tổng cuối cùng vào đơn hàng
-            payment_method: parseInt(selectedPaymentMethod), // Phương thức thanh toán đã chọn
-            id_voucher: voucherCode, // ID voucher nếu có
+            description: '',
+            shipping_price: shippingFee,
+            total_price: calculateTotal(),
+            discount_price: parseInt(discount),
+            final_price: finalTotal,
+            payment_method: parseInt(selectedPaymentMethod),
+            id_voucher: voucherCode,
             details: products.map((product, index) => ({
                 id_product: product.id_product,
                 unit_price: product.unit_price,
                 quantity: values[index],
-                // Có thể thêm các thông tin khác nếu cần
-            })), // Danh sách sản phẩm trong đơn hàng
+            })),
         };
 
         try {
-            // Gọi API để tạo đơn hàng
             const res = await callCreateOrder({
-                customer: Customer, // Truyền thông tin customer đã cập nhật
-                order: Order, // Truyền thông tin order đã cập nhật
+                customer: Customer,
+                order: Order,
             });
 
             fetchCart();
@@ -482,7 +441,20 @@ function Order() {
                     ))}
 
                     {/* input discount code */}
-                    <div className="flex mt-[50px]"></div>
+                    <div className="flex mr-[100px] mt-[50px]">
+                        <input
+                            type="text"
+                            className="border border-gray-300 rounded w-full h-[40px]"
+                            placeholder="Nhập mã giảm giá"
+                            onChange={(e) => setVoucherCode(e.target.value)}
+                        />
+                        <button
+                            className="bg-black text-white rounded w-[100px] h-[40px] ml-[20px]"
+                            onClick={applyVoucher}
+                        >
+                            Áp dụng
+                        </button>
+                    </div>
 
                     {/* Get Voucher */}
                     <div className="py-3">
