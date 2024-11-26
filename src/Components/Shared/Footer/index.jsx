@@ -1,76 +1,105 @@
-import './Footer.css';
-import logo from '../image/logo.png';
 import React from 'react';
-import { Typography } from 'antd';
+import { EnvironmentOutlined, PayCircleOutlined, CreditCardOutlined } from '@ant-design/icons';
+
 import { TwitterOutlined, FacebookOutlined, TikTokOutlined, InstagramOutlined } from '@ant-design/icons';
-const { Title } = Typography;
+import { Link } from 'react-router-dom';
+
+import logo from '../image/logo.png';
+
 function Footer() {
     return (
         <>
-            <div className="Footer mt-[30px]">
-                <div className="container">
-                    <div className="inner-wrap">
-                        <div className="inner-footer-left">
-                            <div className="w-[150px] h-[150px]">
-                                <img src={logo} alt="logo" />
-                            </div>
-                            <p>Hệ thống quảng bá và kinh doanh đặc sản Huế</p>
+            <div className="w-full mt-[30px] bg-[#2e2e2e]">
+                <div className="w-[1200px] mx-auto grid grid-cols-4 gap-5">
+                    <div className="">
+                        <div className="w-[150px] h-[150px]">
+                            <img src={logo} alt="logo" />
                         </div>
-                        <div className="inner-footer-middle">
-                            <Title level={4} style={{ color: 'white' }}>
-                                Liên Hệ
-                            </Title>
-                            <p>Địa chỉ: 54 Nguyễn Lương Bằng</p>
-                            <p>Email: focodo-ecommerce@gmail.com</p>
-                            <p>Hotline: 0123456789</p>
+                        <p className="text-white ">FOCODO - Hệ thống quảng bá và kinh doanh đặc sản Huế</p>
+                    </div>
+                    <div className="mt-[20px] space-y-2">
+                        <h1 className="text-xl text-white font-medium uppercase">Chính sách</h1>
+                        <div className="">
+                            <Link to="/guidepage" className="text-white !hover:text-red-500 !no-underline">
+                                1. Hướng dẫn thanh toán
+                            </Link>
                         </div>
-                        <div className="inner-footer-right">
-                            <p>Hướng dẫn</p>
-                            <p>Đặt và mua hàng</p>
-                            <p>Thanh toán online</p>
-                            <p>Chính sách giao hàng</p>
-                            <p>Các câu hỏi thường gặp</p>
-                            <p>Điều khoản sử dụng website</p>
+                        <div className="">
+                            <Link to="/contact" className="text-white !hover:text-blue-500 !no-underline">
+                                2. Liên hệ
+                            </Link>
+                        </div>
+                    </div>
+                    <div className="mt-[20px] space-y-3">
+                        <h1 className="text-xl text-white font-medium uppercase">Địa chỉ cửa hàng</h1>
+                        <div className="">
+                            {' '}
+                            <EnvironmentOutlined style={{ color: 'red', marginRight: '8px' }} />
+                            <span className="text-white">FOCODO Đà Nẵng</span>
+                        </div>
+                        <div className="">
+                            {' '}
+                            <EnvironmentOutlined style={{ color: 'yellow', marginRight: '8px' }} />
+                            <span className="text-white">FOCODO Huế</span>
+                        </div>
+                        <div className="">
+                            {' '}
+                            <EnvironmentOutlined style={{ color: 'green', marginRight: '8px' }} />
+                            <span className="text-white">FOCODO TP Hồ Chí Minh</span>
+                        </div>
+                    </div>
+                    <div className="mt-[20px] space-y-2">
+                        <h1 className="text-xl text-white font-medium uppercase">Phương thức thanh toán</h1>
+                        <div className="flex items-center">
+                            <PayCircleOutlined style={{ color: 'green', fontSize: '24px', marginRight: '8px' }} />
+                            <span className="text-white">COD - Thanh toán khi nhận hàng</span>
+                        </div>
+
+                        <div className="flex items-center">
+                            <CreditCardOutlined style={{ color: 'blue', fontSize: '24px', marginRight: '8px' }} />
+                            <span className="text-white">VNPay - Thanh toán online</span>
                         </div>
                     </div>
                 </div>
-                <div className="footer-icon">
-                    <TwitterOutlined
-                        style={{
-                            backgroundColor: '#1DA1F2',
-                            color: '#ffffff',
-                            padding: '10px',
-                            borderRadius: '50%',
-                            margin: '10px',
-                        }}
-                    />
-                    <FacebookOutlined
-                        style={{
-                            backgroundColor: '#1877F2',
-                            color: '#ffffff',
-                            padding: '10px',
-                            borderRadius: '50%',
-                            margin: '10px',
-                        }}
-                    />
-                    <TikTokOutlined
-                        style={{
-                            backgroundColor: '#000000',
-                            color: '#ffffff',
-                            padding: '10px',
-                            borderRadius: '50%',
-                            margin: '10px',
-                        }}
-                    />
-                    <InstagramOutlined
-                        style={{
-                            backgroundColor: '#E1306C',
-                            color: '#ffffff',
-                            padding: '10px',
-                            borderRadius: '50%',
-                            margin: '10px',
-                        }}
-                    />
+                <div className="mt-[20px]">
+                    <div className="w-[225px] mx-auto">
+                        <TwitterOutlined
+                            style={{
+                                backgroundColor: '#1DA1F2',
+                                color: '#ffffff',
+                                padding: '10px',
+                                borderRadius: '50%',
+                                margin: '10px',
+                            }}
+                        />
+                        <FacebookOutlined
+                            style={{
+                                backgroundColor: '#1877F2',
+                                color: '#ffffff',
+                                padding: '10px',
+                                borderRadius: '50%',
+                                margin: '10px',
+                            }}
+                        />
+                        <TikTokOutlined
+                            style={{
+                                backgroundColor: '#000000',
+                                color: '#ffffff',
+                                padding: '10px',
+                                borderRadius: '50%',
+                                margin: '10px',
+                            }}
+                        />
+                        <InstagramOutlined
+                            style={{
+                                backgroundColor: '#E1306C',
+                                color: '#ffffff',
+                                padding: '10px',
+                                borderRadius: '50%',
+                                margin: '10px',
+                            }}
+                        />
+                    </div>
                 </div>
             </div>
         </>

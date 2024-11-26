@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Button, Modal, Radio } from 'antd';
 import axios from 'axios';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { fetchCartCheckedOfUser } from '../../../Services/CartService';
 import { checkVoucher, getVoucher, getAllVoucherUser } from '../../../Services/VoucherService';
 import { getAllPaymentMethod, callCreateOrder } from '../../../Services/OrderService';
@@ -9,6 +9,9 @@ import { getUser } from '../../../Services/UserService';
 import useCart from '../../../Hooks/useCart';
 
 function Order() {
+    const navigate = useNavigate();
+    const { fetchCart, fetchNumberOfCart } = useCart();
+
     useEffect(() => {
         fetchCartChecked();
         fetchPaymentMethods();
@@ -76,7 +79,29 @@ function Order() {
     const handleCommuneChange = (e) => {
         setSelectedCommune(e.target.value);
     };
-    const navigate = useNavigate();
+
+    const [infoUser, setInfoUser] = useState([]);
+    const [fullName, setFullName] = useState('');
+    const [phone, setPhone] = useState('');
+    const [address, setAddress] = useState('');
+    // set data info user
+    const fetchInfoUser = async () => {
+        try {
+            const data = await getUser();
+            setInfoUser(data);
+            if (data) {
+                setFullName(data.full_name || '');
+                setPhone(data.phone || '');
+                setAddress(data.address || '');
+
+                setSelectedProvince(data.province || '');
+                setSelectedDistrict(data.district || '');
+                setSelectedCommune(data.ward || '');
+            }
+        } catch (error) {
+            console.error('Error fetching info user:', error);
+        }
+    };
 
     // Payment method
     const [selectedPaymentMethod, setSelectedPaymentMethod] = useState(''); // Theo dõi phương thức thanh toán
@@ -89,10 +114,12 @@ function Order() {
             console.error('Error fetching payment methods:', error);
         }
     };
+    const handlePaymentMethodChange = (e) => {
+        setSelectedPaymentMethod(e.target.value);
+    };
 
     // Shipping method
     const [selectedMethod, setSelectedMethod] = useState('');
-    // shipping fee
     const shippingFee = selectedMethod === 'express' ? 20000 : 10000;
     const handleMethodChange = (e) => {
         setSelectedMethod(e.target.value);
@@ -117,7 +144,27 @@ function Order() {
             console.error('Error fetching cart:', error);
         }
     };
-
+    // apply voucher
+    const applyVoucher = async () => {
+        try {
+            const total = calculateTotal();
+            const checkResponse = await checkVoucher(voucherCode, total);
+            if (checkResponse === true) {
+                const voucherResponse = await getVoucher(voucherCode);
+                if (voucherResponse) {
+                    const discountPrice = voucherResponse.discount_price;
+                    setDiscount(discountPrice);
+                } else {
+                    console.log('Mã giảm giá không hợp lệ hoặc đã hết hạn.');
+                }
+            } else {
+                console.log('Mã giảm giá không hợp lệ.');
+            }
+        } catch (error) {
+            console.log('Mã giảm giá không hợp lệ hoặc đã hết hạn.');
+        }
+    };
+    // Modal voucher
     const showModal = () => {
         setIsModalOpen(true);
     };
@@ -144,26 +191,7 @@ function Order() {
         setVouchers(allVoucher);
     };
 
-    const applyVoucher = async () => {
-        try {
-            const total = calculateTotal();
-            const checkResponse = await checkVoucher(voucherCode, total);
-            if (checkResponse === true) {
-                const voucherResponse = await getVoucher(voucherCode);
-                if (voucherResponse) {
-                    const discountPrice = voucherResponse.discount_price;
-                    setDiscount(discountPrice);
-                } else {
-                    console.log('Mã giảm giá không hợp lệ hoặc đã hết hạn.');
-                }
-            } else {
-                console.log('Mã giảm giá không hợp lệ.');
-            }
-        } catch (error) {
-            console.log('Mã giảm giá không hợp lệ hoặc đã hết hạn.');
-        }
-    };
-
+    // calc total price of product
     const calculateTotal = () => {
         return values.reduce((total, quantity, index) => {
             if (products[index].check) {
@@ -172,46 +200,14 @@ function Order() {
             return total;
         }, 0);
     };
-
-    // Chang payment method
-    const handlePaymentMethodChange = (e) => {
-        setSelectedPaymentMethod(e.target.value);
-    };
-
-    // final price
+    // calc final price
     const finalTotal = calculateTotal() + shippingFee - discount;
-
     // format money
     const formatCurrency = (value) => {
         return new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(value);
     };
 
-    const [infoUser, setInfoUser] = useState([]);
-    const [fullName, setFullName] = useState('');
-    const [phone, setPhone] = useState('');
-    const [address, setAddress] = useState('');
-
-    const fetchInfoUser = async () => {
-        try {
-            const data = await getUser();
-            setInfoUser(data);
-            if (data) {
-                setFullName(data.full_name || '');
-                setPhone(data.phone || '');
-                setAddress(data.address || '');
-
-                setSelectedProvince(data.province || '');
-                setSelectedDistrict(data.district || '');
-                setSelectedCommune(data.ward || '');
-            }
-        } catch (error) {
-            console.error('Error fetching info user:', error);
-        }
-    };
-
-    const { fetchCart, fetchNumberOfCart } = useCart();
-
-    // Hàm gọi khi nhấn đặt hàng
+    // function submit Order
     const handleSubmit = async () => {
         const fullName = document.querySelector('input[name="full_name"]').value;
         const phone = document.querySelector('input[name="phone"]').value;
@@ -260,10 +256,6 @@ function Order() {
         } catch (error) {
             navigate(`/ErrorOrder`);
         }
-    };
-
-    const backToCart = () => {
-        navigate(`/Cart`);
     };
 
     return (
@@ -408,7 +400,7 @@ function Order() {
                     </div>
 
                     <div className="flex justify-between items-center space-y-5">
-                        <a href="#" className="text-blue-500" onClick={backToCart}>
+                        <a href="/Cart" className="text-blue-500">
                             Quay lại giỏ hàng
                         </a>
                         <button className="w-[200px] h-[50px] bg-blue-500 text-white rounded-md" onClick={handleSubmit}>

@@ -12,8 +12,8 @@ import { useNavigate } from 'react-router-dom';
 import useCart from '../../Hooks/useCart';
 
 function Carts() {
-    const { numberOfCart, updateNumberOfCart, carts, fetchCart } = useCart();
     const navigate = useNavigate();
+    const { numberOfCart, updateNumberOfCart, carts, fetchCart } = useCart();
 
     const [products, setProducts] = useState([]);
     const [values, setValues] = useState([]);
