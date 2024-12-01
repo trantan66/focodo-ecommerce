@@ -1,4 +1,4 @@
-import { Link, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import React, { useEffect, useState } from 'react';
 import { fetchOrderByIdFromAPI, updateOrderStatus } from '../../Services/OrderService';
 import { Modal, notification } from 'antd';
@@ -28,7 +28,6 @@ export function ProductList(props) {
 }
 
 export function Orders(props) {
-    const navigate = useNavigate();
     const formatCurrency = (amount) => {
         return new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(amount);
     };
@@ -47,7 +46,8 @@ export function Orders(props) {
                 description: 'Trạng thái đã được cập nhật.',
                 duration: '1',
             });
-            window.location.reload();
+            props.fetchOrders();
+            // window.location.reload();
         }
     };
     const handleCanceledClick = () => {
@@ -117,8 +117,8 @@ export function Orders(props) {
                         </button>
 
                         {review ? (
-                            <button  className="mr-4 bg-black text-white w-[10%] h-[40px] rounded-lg hover:bg-[#3C3D37] transition duration-300 my-3">
-                            <Link className="hover:no-underline" to={`/orderreviews/${props.id}`}>
+                            <button className="mr-4 bg-black text-white w-[10%] h-[40px] rounded-lg hover:bg-[#3C3D37] transition duration-300 my-3">
+                                <Link className="hover:no-underline" to={`/orderreviews/${props.id}`}>
                                     {' '}
                                     Xem Đánh giá
                                 </Link>

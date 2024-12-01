@@ -14,7 +14,7 @@ function Comment(props) {
                     <p className="text-[17px] font-semibold italic">{props.name}</p>
                     <Rate style={{ fontSize: 12 }} disabled defaultValue={props.rate}></Rate>
                     <p className="text-[17px] italic opacity-50">{props.content}</p>
-                    <div className='flex mt-2'>
+                    <div className="flex mt-2">
                         {props.imgs.map((url) => (
                             <img src={url} style={{ width: 100, height: 100, marginRight: 5 }} />
                         ))}
@@ -33,8 +33,8 @@ function ReviewDisplay() {
     const indexOfLastReview = currentPage * reviewsPerPage;
     const indexOfFirstReview = indexOfLastReview - reviewsPerPage;
     const handlePageChange = (page) => {
-      setCurrentPage(page);
-  };
+        setCurrentPage(page);
+    };
     const fetchReview = async (id) => {
         const response = await fetchReviewByIdFromAPI(id);
         setReview(response.data);
@@ -43,16 +43,18 @@ function ReviewDisplay() {
         fetchReview(id);
     }, []);
 
-    const currentReview = review.slice(indexOfFirstReview,indexOfLastReview);
+    const currentReview = review.slice(indexOfFirstReview, indexOfLastReview);
 
     return (
         <div className="">
             {currentReview.map((item) => (
                 <Comment
                     id={item.id}
-                    date={item.date.split('T')[0].split('-').reverse().join('/') +
-                                ' ' +
-                                item.date.split('T')[1].split('.')[0]}
+                    date={
+                        item.date.split('T')[0].split('-').reverse().join('/') +
+                        ' ' +
+                        item.date.split('T')[1].split('.')[0]
+                    }
                     avatar={item.user.avatar || sigma}
                     name={item.user.full_name}
                     rate={item.rating}
@@ -61,14 +63,18 @@ function ReviewDisplay() {
                 ></Comment>
             ))}
             <div className="mt-5">
-                <Pagination
-                    showSizeChanger={false}
-                    current={currentPage}
-                    onChange={handlePageChange}
-                    total={review.length}
-                    pageSize={reviewsPerPage}
-                    className="flex justify-center items-center"
-                />
+                {review.length > reviewsPerPage ? (
+                    <Pagination
+                        showSizeChanger={false}
+                        current={currentPage}
+                        onChange={handlePageChange}
+                        total={review.length}
+                        pageSize={reviewsPerPage}
+                        className="flex justify-center items-center"
+                    />
+                ) : (
+                    ''
+                )}
             </div>
         </div>
     );
