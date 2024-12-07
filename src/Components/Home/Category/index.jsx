@@ -15,7 +15,7 @@ function Category() {
     return (
         <>
             {categories && (
-                <div className="grid grid-cols-4 grid-rows-1 grid-flow-col w-full mt-[50px] mb-[30px] gap-2">
+                <div className="grid grid-cols-4 grid-rows-1 grid-flow-col w-full mt-[100px] mb-[30px] gap-2">
                     {categories.map((category) => (
                         <div key={category.id} className="">
                             <div>

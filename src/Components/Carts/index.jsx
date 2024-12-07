@@ -159,7 +159,7 @@ function Carts() {
                                 />
                                 <Button onClick={() => increase(index)}>+</Button>
                             </Space>
-                            <p className="w-[100px] text-right">
+                            <p className="w-[120px] text-right">
                                 {(values[index] * product.unit_price).toLocaleString()} đ
                             </p>
                             <CloseOutlined

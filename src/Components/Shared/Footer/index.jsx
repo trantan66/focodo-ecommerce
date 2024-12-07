@@ -20,14 +20,14 @@ function Footer() {
                     <div className="mt-[20px] space-y-2">
                         <h1 className="text-xl text-white font-medium uppercase">Chính sách</h1>
                         <div className="">
-                            <Link to="/guidepage" className="text-white !hover:text-red-500 !no-underline">
+                            <a href="/guidepage" className="text-white !hover:text-red-500 !no-underline">
                                 1. Hướng dẫn thanh toán
-                            </Link>
+                            </a>
                         </div>
                         <div className="">
-                            <Link to="/contact" className="text-white !hover:text-blue-500 !no-underline">
+                            <a href="/contact" className="text-white !hover:text-blue-500 !no-underline">
                                 2. Liên hệ
-                            </Link>
+                            </a>
                         </div>
                     </div>
                     <div className="mt-[20px] space-y-3">

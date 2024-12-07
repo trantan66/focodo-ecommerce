@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { Button, Modal, Radio } from 'antd';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
@@ -109,6 +109,7 @@ function Order() {
     const fetchPaymentMethods = async () => {
         try {
             const methods = await getAllPaymentMethod();
+            setSelectedPaymentMethod(methods[0].id.toString());
             setPaymentMethods(methods);
         } catch (error) {
             console.error('Error fetching payment methods:', error);
@@ -119,7 +120,7 @@ function Order() {
     };
 
     // Shipping method
-    const [selectedMethod, setSelectedMethod] = useState('');
+    const [selectedMethod, setSelectedMethod] = useState('standard');
     const shippingFee = selectedMethod === 'express' ? 20000 : 10000;
     const handleMethodChange = (e) => {
         setSelectedMethod(e.target.value);
@@ -132,7 +133,7 @@ function Order() {
     const [voucherCode, setVoucherCode] = useState('');
 
     const [isModalOpen, setIsModalOpen] = useState(false);
-    const [selectedVoucher, setSelectedVoucher] = useState(null);
+    const [selectedVoucher, setSelectedVoucher] = useState('');
 
     // get cart of user
     const fetchCartChecked = async () => {
@@ -147,21 +148,28 @@ function Order() {
     // apply voucher
     const applyVoucher = async () => {
         try {
-            const total = calculateTotal();
-            const checkResponse = await checkVoucher(voucherCode, total);
+            const total = calculateTotal;
+            const checkResponse = await checkVoucher(selectedVoucher, total);
             if (checkResponse === true) {
-                const voucherResponse = await getVoucher(voucherCode);
+                const voucherResponse = await getVoucher(selectedVoucher);
                 if (voucherResponse) {
                     const discountPrice = voucherResponse.discount_price;
+                    setVoucherCode(selectedVoucher);
                     setDiscount(discountPrice);
                 } else {
-                    console.log('Mã giảm giá không hợp lệ hoặc đã hết hạn.');
+                    alert('Mã giảm giá không hợp lệ hoặc đã hết hạn.');
+                    setVoucherCode('');
+                    setDiscount(0);
                 }
             } else {
-                console.log('Mã giảm giá không hợp lệ.');
+                alert('Mã giảm giá không hợp lệ.');
+                setDiscount(0);
+                setVoucherCode('');
             }
         } catch (error) {
-            console.log('Mã giảm giá không hợp lệ hoặc đã hết hạn.');
+            alert('Mã giảm giá không hợp lệ hoặc đã hết hạn.');
+            setDiscount(0);
+            setVoucherCode('');
         }
     };
     // Modal voucher
@@ -169,14 +177,18 @@ function Order() {
         setIsModalOpen(true);
     };
     const handleOk = () => {
-        const totalPriceProduct = calculateTotal();
+        const totalPriceProduct = calculateTotal;
         const selectedVoucherDetail = vouchers.find((voucher) => voucher.id_voucher === selectedVoucher);
-        if (totalPriceProduct < selectedVoucherDetail.min_total) {
-            alert(`Đơn hàng phải có giá trị tối thiểu ${selectedVoucherDetail.min_total}`);
+        if (selectedVoucherDetail) {
+            if (totalPriceProduct < selectedVoucherDetail.min_total) {
+                alert(`Đơn hàng phải có giá trị tối thiểu ${selectedVoucherDetail.min_total}`);
+            } else {
+                setVoucherCode(selectedVoucher);
+                setDiscount(selectedVoucherDetail.discount_price);
+                setIsModalOpen(false);
+            }
         } else {
-            setVoucherCode(selectedVoucher);
-            setDiscount(selectedVoucherDetail.discount_price);
-            setIsModalOpen(false);
+            alert(`Vui lòng chọn một mã giảm giá bất kỳ`);
         }
     };
     const handleCancel = () => {
@@ -192,16 +204,13 @@ function Order() {
     };
 
     // calc total price of product
-    const calculateTotal = () => {
+    const calculateTotal = useMemo(() => {
         return values.reduce((total, quantity, index) => {
-            if (products[index].check) {
-                return total + quantity * products[index].unit_price;
-            }
-            return total;
+            return total + quantity * products[index].unit_price;
         }, 0);
-    };
+    }, [values]);
     // calc final price
-    const finalTotal = calculateTotal() + shippingFee - discount;
+    const finalTotal = calculateTotal + shippingFee - discount;
     // format money
     const formatCurrency = (value) => {
         return new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(value);
@@ -225,7 +234,7 @@ function Order() {
         const Order = {
             description: '',
             shipping_price: shippingFee,
-            total_price: calculateTotal(),
+            total_price: calculateTotal,
             discount_price: parseInt(discount),
             final_price: finalTotal,
             payment_method: parseInt(selectedPaymentMethod),
@@ -236,7 +245,6 @@ function Order() {
                 quantity: values[index],
             })),
         };
-
         try {
             const res = await callCreateOrder({
                 customer: Customer,
@@ -435,10 +443,11 @@ function Order() {
                     {/* input discount code */}
                     <div className="flex mr-[100px] mt-[50px]">
                         <input
+                            value={selectedVoucher}
                             type="text"
                             className="border border-gray-300 rounded w-full h-[40px]"
                             placeholder="Nhập mã giảm giá"
-                            onChange={(e) => setVoucherCode(e.target.value)}
+                            onChange={(e) => setSelectedVoucher(e.target.value)}
                         />
                         <button
                             className="bg-black text-white rounded w-[100px] h-[40px] ml-[20px]"
@@ -494,9 +503,40 @@ function Order() {
                         </Modal>
                     </div>
 
+                    <div className="w-[450px] flex justify-between py-3">
+                        <span>Tạm tính:</span>
+                        <span>{formatCurrency(calculateTotal)}</span>
+                    </div>
                     {/* Hiển thị giảm giá */}
                     <div className="w-[450px] flex justify-between py-3">
-                        <span>Giảm giá:</span>
+                        <span className="flex items-center gap-[10px]">
+                            <span>Giảm giá:</span>
+                            {voucherCode && (
+                                <span className="flex items-center gap-[7px] text-[#338dbc]">
+                                    <svg width="16" height="15" xmlns="http://www.w3.org/2000/svg" fill="#338dbc">
+                                        <path d="M14.476 0H8.76c-.404 0-.792.15-1.078.42L.446 7.207c-.595.558-.595 1.463 0 2.022l5.703 5.35c.296.28.687.42 1.076.42.39 0 .78-.14 1.077-.418l7.25-6.79c.286-.268.447-.632.447-1.01V1.43C16 .64 15.318 0 14.476 0zm-2.62 5.77c-.944 0-1.713-.777-1.713-1.732 0-.954.77-1.73 1.714-1.73.945 0 1.714.776 1.714 1.73 0 .955-.768 1.73-1.713 1.73z"></path>
+                                    </svg>
+                                    <span>{voucherCode}</span>
+                                    <svg
+                                        fillRule="evenodd"
+                                        viewBox="64 64 896 896"
+                                        focusable="false"
+                                        data-icon="close"
+                                        width="16"
+                                        height="16"
+                                        fill="currentColor"
+                                        aria-hidden="true"
+                                        className="cursor-pointer"
+                                        onClick={() => {
+                                            setVoucherCode('');
+                                            setDiscount(0);
+                                        }}
+                                    >
+                                        <path d="M799.86 166.31c.02 0 .04.02.08.06l57.69 57.7c.04.03.05.05.06.08a.12.12 0 010 .06c0 .03-.02.05-.06.09L569.93 512l287.7 287.7c.04.04.05.06.06.09a.12.12 0 010 .07c0 .02-.02.04-.06.08l-57.7 57.69c-.03.04-.05.05-.07.06a.12.12 0 01-.07 0c-.03 0-.05-.02-.09-.06L512 569.93l-287.7 287.7c-.04.04-.06.05-.09.06a.12.12 0 01-.07 0c-.02 0-.04-.02-.08-.06l-57.69-57.7c-.04-.03-.05-.05-.06-.07a.12.12 0 010-.07c0-.03.02-.05.06-.09L454.07 512l-287.7-287.7c-.04-.04-.05-.06-.06-.09a.12.12 0 010-.07c0-.02.02-.04.06-.08l57.7-57.69c.03-.04.05-.05.07-.06a.12.12 0 01.07 0c.03 0 .05.02.09.06L512 454.07l287.7-287.7c.04-.04.06-.05.09-.06a.12.12 0 01.07 0z"></path>
+                                    </svg>
+                                </span>
+                            )}
+                        </span>
                         <span name="span-discount">-{formatCurrency(discount)}</span>
                     </div>
 
