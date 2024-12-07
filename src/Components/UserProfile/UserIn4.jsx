@@ -37,7 +37,6 @@ function UserIn4({ data }) {
         }
     }, [data]);
 
-    // Fetch province data on component mount
     useEffect(() => {
         axios
             .get('https://api.mysupership.vn/v1/partner/areas/province')
@@ -46,30 +45,35 @@ function UserIn4({ data }) {
             })
             .catch((error) => console.error('Error fetching provinces:', error));
     }, []);
-
-    // Fetch district data when a province is selected
     useEffect(() => {
-        if (selectedProvince) {
-            axios
-                .get(`https://api.mysupership.vn/v1/partner/areas/district?province=${selectedProvince}`)
-                .then((response) => {
-                    setDistricts(response.data.results);
-                })
-                .catch((error) => console.error('Error fetching districts:', error));
-        }
-    }, [selectedProvince]);
+        if (!provinces.length || !selectedProvince) return;
 
-    // Fetch commune data when a district is selected
+        const selected = provinces.find((province) => province.name === selectedProvince);
+
+        if (!selected) return;
+
+        axios
+            .get(`https://api.mysupership.vn/v1/partner/areas/district?province=${selected.code}`)
+            .then((response) => {
+                setDistricts(response.data.results);
+            })
+            .catch((error) => console.error('Error fetching districts:', error));
+    }, [selectedProvince, provinces]);
+
     useEffect(() => {
-        if (selectedDistrict) {
-            axios
-                .get(`https://api.mysupership.vn/v1/partner/areas/commune?district=${selectedDistrict}`)
-                .then((response) => {
-                    setCommunes(response.data.results);
-                })
-                .catch((error) => console.error('Error fetching communes:', error));
-        }
-    }, [selectedDistrict]);
+        if (!districts.length || !selectedDistrict) return;
+
+        const selected = districts.find((district) => district.name === selectedDistrict);
+
+        if (!selected) return;
+
+        axios
+            .get(`https://api.mysupership.vn/v1/partner/areas/commune?district=${selected.code}`)
+            .then((response) => {
+                setCommunes(response.data.results);
+            })
+            .catch((error) => console.error('Error fetching communes:', error));
+    }, [selectedDistrict, districts]);
 
     const handleAvatarChange = async (event) => {
         const file = event.target.files[0]; // Lấy tệp từ input
@@ -101,17 +105,14 @@ function UserIn4({ data }) {
     const handleSubmit = async (e) => {
         e.preventDefault();
         setLoading(true);
-        const selectedProvinceName = provinces.find((p) => p.code === selectedProvince)?.name || data.province;
-        const selectedDistrictName = districts.find((d) => d.code === selectedDistrict)?.name || data.district;
-        const selectedCommuneName = communes.find((c) => c.code === selectedCommune)?.name || data.ward;
         const UserProfileRequest = {
             full_name: name,
             email: email,
             phone: phone,
             address: address,
-            province: selectedProvinceName,
-            district: selectedDistrictName,
-            ward: selectedCommuneName,
+            province: selectedProvince,
+            district: selectedDistrict,
+            ward: selectedCommune,
         };
         // console.log(UserProfileRequest);
         try {
@@ -154,53 +155,46 @@ function UserIn4({ data }) {
                     <select
                         value={selectedProvince}
                         onChange={handleProvinceChange}
-                        className="block w-full p-[8px] border rounded-md px-4"
+                        className="block w-full p-[8px] border rounded-md"
+                        required
                     >
                         <option>{data.province || 'Chọn Tỉnh/Thành Phố'}</option>
-                        {provinces
-                            .filter((province) => province.name !== data.province)
-                            .map((province) => (
-                                <option key={province.code} value={province.code}>
-                                    {province.name}
-                                </option>
-                            ))}
+                        {provinces.map((province) => (
+                            <option key={province.code} value={province.name}>
+                                {province.name}
+                            </option>
+                        ))}
                     </select>
                     <span className="">Quận / Huyện</span>
                     <select
                         value={selectedDistrict}
                         onChange={handleDistrictChange}
-                        // disabled={!selectedProvince}
-                        className="block w-full p-[8px] border rounded-md  px-4"
+                        disabled={!selectedProvince}
+                        className="block w-full p-[8px] border rounded-md "
+                        required
                     >
-                        <option disabled={data.district && selectedDistrict ? true : false}>
-                            {data.district && selectedDistrict ? data.district : 'Chọn Quận/Huyện'}
-                        </option>
-                        {districts
-                            .filter((district) => district.name !== data.district)
-                            .map((district) => (
-                                <option key={district.code} value={district.code}>
-                                    {district.name}
-                                </option>
-                            ))}
+                        <option> {selectedDistrict || 'Chọn Quận/Huyện'} </option>
+                        {districts.map((district) => (
+                            <option key={district.code} value={district.name}>
+                                {district.name}
+                            </option>
+                        ))}
                     </select>
 
                     <span className="">Phường / Xã</span>
                     <select
                         value={selectedCommune}
                         onChange={handleCommuneChange}
-                        // disabled={!selectedDistrict}
-                        className="block w-full p-[8px] border rounded-md  px-4"
+                        disabled={!selectedDistrict}
+                        className="block w-full p-[8px] border rounded-md "
+                        required
                     >
-                        <option disabled={data.ward && selectedCommune ? true : false}>
-                            {data.ward && selectedCommune ? data.ward : 'Chọn Xã/Phường'}
-                        </option>
-                        {communes
-                            .filter((commune) => commune.name !== data.ward)
-                            .map((commune) => (
-                                <option key={commune.code} value={commune.code}>
-                                    {commune.name}
-                                </option>
-                            ))}
+                        <option>{selectedCommune || 'Chọn Xã/Phường'}</option>
+                        {communes.map((commune) => (
+                            <option key={commune.code} value={commune.name}>
+                                {commune.name}
+                            </option>
+                        ))}
                     </select>
                     <span>Địa chỉ</span>
                     <Input value={address} onChange={(e) => setAddress(e.target.value)}></Input>

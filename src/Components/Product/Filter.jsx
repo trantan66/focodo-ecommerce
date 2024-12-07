@@ -35,9 +35,18 @@ function Filter() {
     };
     return (
         <div className="">
-            <p className="text-[16px] font-semibold mb-3">DANH MỤC SẢN PHẨM</p>
-            <Input className="mb-3" size="large" placeholder="Tìm sản phẩm" prefix={<SearchOutlined />} />
-            <Collapse collapsible="icon" accordion bordered={false} style={{ background: 'none' }}>
+            <p className="text-[14px] font-semibold mb-3">DANH MỤC SẢN PHẨM</p>
+
+            <Collapse
+                style={{
+                    background: 'none',
+                    height : '45%', // Giới hạn chiều cao
+                    overflowY: 'auto', // Thêm cuộn dọc
+                }}
+                collapsible="icon"
+                accordion
+                bordered={false}
+            >
                 {categories.map((section) => (
                     <Panel
                         header={

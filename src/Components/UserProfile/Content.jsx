@@ -11,8 +11,7 @@ import order from '../Shared/image/shipping_3900732.png';
 import { fetchReviewsOfUserFromAPI, updateReview } from '../../Services/ReviewService';
 import TextArea from 'antd/es/input/TextArea';
 import 'reactjs-popup/dist/index.css';
-import { addProductToCart } from '../../Services/CartService';
-import fetchCart from '../Carts/index';
+
 function Content() {
     const [password, setPassword] = useState('');
     const [newPassword, setNewPassword] = useState('');
@@ -30,7 +29,7 @@ function Content() {
     const [selectedStatus, setSelectedStatus] = useState(status[0]);
     const [openModalId, setOpenModalId] = useState(null);
 
-    const fetchOrders = useCallback(async () => {
+    const fetchOrders = async () => {
         try {
             const { data, total } = await fetchOrderByStatus(currentPage, ordersPerPage, selectedStatus);
             setOrders(data);
@@ -40,14 +39,14 @@ function Content() {
         } catch (error) {
             console.error('Error fetching orders:', error);
         }
-    }, [currentPage, ordersPerPage, selectedStatus]);
+    };
 
     const handlePageChange = (page) => {
         setCurrentPage(page);
     };
     useEffect(() => {
         fetchOrders();
-    }, [fetchOrders]);
+    }, [currentPage, ordersPerPage, selectedStatus]);
 
     const [reviews, setReviews] = useState([]);
     const [reviewsPerPage, setReviewsPerPage] = useState(2);
@@ -125,6 +124,7 @@ function Content() {
                                     ></ProductList>
                                 ))}
                                 <Orders
+                                fetchOrders={fetchOrders}
                                     id={data.id_order}
                                     review={data.review_check}
                                     status={data.order_status}
