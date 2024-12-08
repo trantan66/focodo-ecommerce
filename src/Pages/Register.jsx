@@ -36,7 +36,7 @@ const Register = () => {
             return;
         }
 
-        if (phone.length != 10) {
+        if (phone.length !== 10) {
             setError('Số điện thoại phải có 10 số.');
             return;
         }

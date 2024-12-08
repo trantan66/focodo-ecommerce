@@ -1,20 +1,18 @@
 import { Input } from 'antd';
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { login } from '../Services/AuthService';
 import { getUserFromToken } from '../Services/UserService';
 import useAuth from '../Hooks/useAuth';
-import { useNavigate, useLocation } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import useCart from '../Hooks/useCart';
 const Login = () => {
-    const { auth, setAuth } = useAuth();
+    const { setAuth } = useAuth();
     const { fetchCart, fetchNumberOfCart } = useCart();
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
     const [error, setError] = useState('');
 
     const navigate = useNavigate();
-    const location = useLocation();
-    const from = location.state?.from?.pathname || '/';
     const handleLogin = async (e) => {
         e.preventDefault();
         try {

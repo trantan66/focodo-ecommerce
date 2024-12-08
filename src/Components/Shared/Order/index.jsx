@@ -7,6 +7,7 @@ import { checkVoucher, getVoucher, getAllVoucherUser } from '../../../Services/V
 import { getAllPaymentMethod, callCreateOrder } from '../../../Services/OrderService';
 import { getUser } from '../../../Services/UserService';
 import useCart from '../../../Hooks/useCart';
+import { formatCurrency } from '../../../utils/FormatCurrency';
 
 function Order() {
     const navigate = useNavigate();
@@ -208,13 +209,9 @@ function Order() {
         return values.reduce((total, quantity, index) => {
             return total + quantity * products[index].unit_price;
         }, 0);
-    }, [values]);
+    }, [values, products]);
     // calc final price
     const finalTotal = calculateTotal + shippingFee - discount;
-    // format money
-    const formatCurrency = (value) => {
-        return new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(value);
-    };
 
     // function submit Order
     const handleSubmit = async () => {

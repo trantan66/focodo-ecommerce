@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useContext } from 'react';
+import React, { useEffect, useState } from 'react';
 import { SearchOutlined, ShoppingCartOutlined, UserOutlined, ProfileOutlined, LogoutOutlined } from '@ant-design/icons';
 import { AiOutlineLogin, AiOutlineUserAdd } from 'react-icons/ai';
 import { Input } from 'antd';
@@ -8,6 +8,7 @@ import { searchProducts } from '../../../Services/ProductService';
 import { useNavigate } from 'react-router-dom';
 import useCart from '../../../Hooks/useCart';
 import useAuth from '../../../Hooks/useAuth';
+import { formatCurrency } from '../../../utils/FormatCurrency';
 
 function Header() {
     const navigate = useNavigate();
@@ -109,7 +110,7 @@ function Header() {
     // Gọi calculateDiscount khi products thay đổi
     useEffect(() => {
         calculateDiscount();
-    }, [products]); // Chỉ gọi khi products thay đổi
+    }, [products]);
 
     // Focus vào ô tìm kiếm
     const handleFocus = () => {
@@ -123,10 +124,6 @@ function Header() {
         }, 200);
     };
 
-    // Fotmat money
-    const formatCurrency = (amount) => {
-        return new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(amount);
-    };
     const fetchProductsSearch = async () => {
         const response = await searchProducts(valueInput);
         setProductsOfSearch(response.result.data);

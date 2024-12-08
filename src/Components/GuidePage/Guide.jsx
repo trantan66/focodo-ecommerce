@@ -1,7 +1,6 @@
 import React from 'react';
 
 function Guide() {
-    const fixedDate = new Date('2024-11-17');
     return (
         <>
             <div className="w-[1000px] mx-auto space-y-10 mt-3">
