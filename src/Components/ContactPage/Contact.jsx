@@ -10,7 +10,7 @@ function Contact() {
                     <div className="w-[575px] space-y-4">
                         <h1 className="text-2xl font-medium uppercase">Nơi giải đáp toàn bộ thắc mắc của bạn</h1>
                         <h3 className="font-medium">
-                            Email: <span className="text-orange-500">focodo-ecommerce@focodo.com</span>
+                            Email: <span className="text-orange-500">dacsanhuefocodo@gmail.com</span>
                         </h3>
                         <h3 className="font-medium">
                             Hotline: <span className="text-orange-500">0911.85.8888 | 0977.33.7979</span>

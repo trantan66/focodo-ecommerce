@@ -223,10 +223,10 @@ function Header() {
                             <p>Hotline: 0911.85.8888 | 0977.33.7979</p>
                         </div>
                         <div className="inner-icon relative">
-                            <ShoppingCartOutlined className="text-xl" onClick={toggleCart} />
+                            <ShoppingCartOutlined className="text-2xl" onClick={toggleCart} />
                             {/* Hình tròn đỏ hiển thị số lượng sản phẩm */}
                             {numberOfCart > 0 && (
-                                <div className="absolute top-0 right-6 bg-red-500 text-white rounded-full w-5 h-5 text-xs flex items-center justify-center transform -translate-y-3">
+                                <div className="absolute top-1 right-7 bg-red-500 text-white rounded-full w-5 h-5 text-xs flex items-center justify-center transform -translate-y-3">
                                     {numberOfCart}
                                 </div>
                             )}
@@ -238,7 +238,7 @@ function Header() {
                                     {checkLogin ? (
                                         <div className="relative w-[450px] max-h-[550px] bg-white mt-[90px] ml-[985px] p-[20px] rounded-xl shadow-md">
                                             {/* Tam giác nhô lên */}
-                                            <div className="absolute -top-3 left-[70%] transform -translate-x-1/2 w-0 h-0 border-l-[10px] border-l-transparent border-r-[10px] border-r-transparent border-b-[15px] border-b-white"></div>
+                                            <div className="absolute -top-3 left-[69%] transform -translate-x-1/2 w-0 h-0 border-l-[10px] border-l-transparent border-r-[10px] border-r-transparent border-b-[15px] border-b-white"></div>
                                             <p className="font-medium text-center text-xl mb-[10px]">GIỎ HÀNG</p>
                                             <div className="max-h-[300px] overflow-y-auto scrollbar">
                                                 {products && products.length > 0 ? (
@@ -340,7 +340,7 @@ function Header() {
                                     )}
                                 </div>
                             )}
-                            <UserOutlined className="text-xl ml-[15px]" onClick={toggleUser} />
+                            <UserOutlined className="text-2xl ml-[15px]" onClick={toggleUser} />
                             {isUserVisible && (
                                 <div
                                     className="cart-overlay fixed top-0 left-0 w-screen h-screen bg-black bg-opacity-50 z-10"

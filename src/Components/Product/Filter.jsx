@@ -40,7 +40,7 @@ function Filter() {
             <Collapse
                 style={{
                     background: 'none',
-                    height : '45%', // Giới hạn chiều cao
+                    height: '830px', // Giới hạn chiều cao
                     overflowY: 'auto', // Thêm cuộn dọc
                 }}
                 collapsible="icon"
