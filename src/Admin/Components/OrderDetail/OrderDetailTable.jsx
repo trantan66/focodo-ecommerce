@@ -1,10 +1,14 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { formatCurrency } from '../../../utils/FormatCurrency';
+import { GiMoneyStack } from 'react-icons/gi';
+import { MdDiscount } from 'react-icons/md';
+import { FaShippingFast } from 'react-icons/fa';
+import { GrMoney } from 'react-icons/gr';
 
 function OrderDetailTable({ data }) {
     return (
-        <div className="bg-[#282941] pt-3 p-4 mr-4 rounded-sm flex-[2] text-white">
+        <div className="bg-[#282941] pt-3 p-4 mr-2 rounded-sm flex-[2] text-white">
             <strong className="text-white font-medium">Chi tiết đơn hàng</strong>
             <div className="mt-3">
                 <table className="w-full text-white border-x-gray-400">
@@ -55,17 +59,29 @@ function OrderDetailTable({ data }) {
 
             <div className="flex flex-col items-end pt-3">
                 <div className="grid grid-cols-2 gap-3">
-                    <span>Tổng tiền:</span>
+                    <div className="flex flex-row gap-2 items-center">
+                        <GrMoney />
+                        <span>Tổng tiền:</span>
+                    </div>
                     <span className="text-left">{formatCurrency(data.total_price)}</span>
 
-                    <span>Discount:</span>
-                    <span className="text-left">{data.discount_price}%</span>
+                    <div className="flex flex-row gap-2 items-center">
+                        <MdDiscount />
+                        <span>Giảm giá:</span>
+                    </div>
+                    <span className="text-left">{formatCurrency(data.discount_price)}</span>
+                    <div className="flex flex-row gap-2 items-center">
+                        <FaShippingFast />
+                        <span>Ship:</span>
+                    </div>
 
-                    <span>Ship:</span>
                     <span className="text-left">{formatCurrency(data.shipping_price)}</span>
 
-                    <span>Thành tiền:</span>
-                    {formatCurrency(data.final_price)}
+                    <div className="flex flex-row gap-2 items-center">
+                        <GiMoneyStack />
+                        <span>Thành tiền:</span>
+                    </div>
+                    <span className="text-left">{formatCurrency(data.final_price)}</span>
                 </div>
             </div>
         </div>

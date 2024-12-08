@@ -151,3 +151,19 @@ export const fetchOrderStatus = async () => {
         throw error;
     }
 };
+export const updatePaymentStatus = async (id, status) => {
+    try {
+        const response = await axiosInstance.put(`orders/updatePaymentStatus/${id}?status=${status}`, null, {
+            headers: {
+                ...getHeader(),
+            },
+        });
+
+        return {
+            data: response.data,
+        };
+    } catch (error) {
+        console.error('Error update payment status:', error);
+        throw error;
+    }
+};

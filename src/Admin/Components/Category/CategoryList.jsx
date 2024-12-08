@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import CategoryTableHeader from './CategoryTableHeader';
-import { notification, Pagination, Select } from 'antd';
+import { notification, Pagination, Popconfirm, Select } from 'antd';
 import { Dialog, DialogPanel, DialogTitle } from '@headlessui/react';
 import {
     addCategoryToAPI,
@@ -159,7 +159,7 @@ function CategoryList() {
             setLoadingIcon(false);
             setLoadingScreen(false);
             closeUpdateDialog();
-            setImagePreviews("");
+            setImagePreviews('');
             await fetchCategories(currentPage, categoriesPerPage);
             // setTimeout(() => {
             //     window.location.reload();
@@ -193,23 +193,20 @@ function CategoryList() {
     };
 
     const handleRemoveCategory = async (categoryId) => {
-        const confirmed = window.confirm('Bạn có chắc chắn muốn xóa danh mục này?');
-        if (confirmed) {
-            try {
-                await DeleteCategory(categoryId);
-            } catch (error) {
-                console.error('Error deleting the category:', error);
-                notification.error({
-                    message: 'Có lỗi xảy ra!',
-                    description: 'Không thể xóa danh mục. Vui lòng thử lại.',
-                });
-            } finally {
-                notification.success({
-                    message: 'Xóa danh mục thành công!',
-                    description: 'Danh mục đã được xóa khỏi danh sách.',
-                });
-                await fetchCategories(currentPage, categoriesPerPage);
-            }
+        try {
+            await DeleteCategory(categoryId);
+        } catch (error) {
+            console.error('Error deleting the category:', error);
+            notification.error({
+                message: 'Có lỗi xảy ra!',
+                description: 'Không thể xóa danh mục. Vui lòng thử lại.',
+            });
+        } finally {
+            notification.success({
+                message: 'Xóa danh mục thành công!',
+                description: 'Danh mục đã được xóa khỏi danh sách.',
+            });
+            await fetchCategories(currentPage, categoriesPerPage);
         }
     };
 
@@ -279,12 +276,17 @@ function CategoryList() {
                                         <td className="text-center">{items.number_of_products}</td>
                                         <td className="text-center">{items.subcategories.length}</td>
                                         <td>
-                                            <button
-                                                className="bg-red-500 p-2 rounded-md"
-                                                onClick={() => handleRemoveCategory(items.id)}
+                                            <Popconfirm
+                                                title="Bạn có chắc chắn muốn xóa danh mục này không?"
+                                                onConfirm={() => handleRemoveCategory(items.id)}
+                                                okText="Có"
+                                                cancelText="Không"
+                                                placement="topRight"
                                             >
-                                                <FaTrashAlt />
-                                            </button>
+                                                <button className="bg-red-500 p-2 rounded-md">
+                                                    <FaTrashAlt />
+                                                </button>
+                                            </Popconfirm>
                                         </td>
                                     </tr>
                                 ))}

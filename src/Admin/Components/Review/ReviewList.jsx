@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import ReviewTableHeader from './ReviewTableHeader';
 import { Link } from 'react-router-dom';
-import { notification, Pagination } from 'antd';
+import { notification, Pagination, Popconfirm } from 'antd';
 import { DeleteReview, fetchReviewsFromAPI } from '../../../Services/ReviewService';
 import { FaTrashAlt } from 'react-icons/fa';
 import Rating from 'react-rating';
@@ -71,24 +71,21 @@ function ReviewList() {
     };
 
     const handleRemoveReview = async (ReviewId) => {
-        const confirmed = window.confirm('Bạn có chắc chắn muốn xóa đánh giá này?');
-        if (confirmed) {
-            try {
-                await DeleteReview(ReviewId);
-            } catch (error) {
-                console.error('Error deleting the review:', error);
-                notification.error({
-                    message: 'Có lỗi xảy ra!',
-                    description: 'Không thể xóa đánh giá. Vui lòng thử lại.',
-                });
-            } finally {
-                setReviews((prevReviews) => prevReviews.filter((review) => review.id !== ReviewId));
-                setTotalReviews((prevTotal) => prevTotal - 1);
-                notification.success({
-                    message: 'Xóa đánh giá thành công!',
-                    description: 'Đánh giá đã được xóa khỏi danh sách.',
-                });
-            }
+        try {
+            await DeleteReview(ReviewId);
+        } catch (error) {
+            console.error('Error deleting the review:', error);
+            notification.error({
+                message: 'Có lỗi xảy ra!',
+                description: 'Không thể xóa đánh giá. Vui lòng thử lại.',
+            });
+        } finally {
+            setReviews((prevReviews) => prevReviews.filter((review) => review.id !== ReviewId));
+            setTotalReviews((prevTotal) => prevTotal - 1);
+            notification.success({
+                message: 'Xóa đánh giá thành công!',
+                description: 'Đánh giá đã được xóa khỏi danh sách.',
+            });
         }
     };
 
@@ -132,9 +129,6 @@ function ReviewList() {
                                                     >
                                                         {review.product.name}
                                                     </Link>
-                                                    {/* <div className="text-xs text-white font-light">
-                            {review.product.name}
-                          </div> */}
                                                 </div>
                                             </div>
                                         </td>
@@ -175,12 +169,17 @@ function ReviewList() {
                                         </td>
                                         <td>{formatDate(review.date)}</td>
                                         <td>
-                                            <button
-                                                className="bg-red-500 p-2 rounded-md"
-                                                onClick={() => handleRemoveReview(review.id)}
+                                            <Popconfirm
+                                                title="Bạn có chắc chắn muốn xóa đánh giá này không?"
+                                                onConfirm={() => handleRemoveReview(review.id)}
+                                                okText="Có"
+                                                cancelText="Không"
+                                                placement="topRight"
                                             >
-                                                <FaTrashAlt />
-                                            </button>
+                                                <button className="bg-red-500 p-2 rounded-md">
+                                                    <FaTrashAlt />
+                                                </button>
+                                            </Popconfirm>
                                         </td>
                                     </tr>
                                 ))}

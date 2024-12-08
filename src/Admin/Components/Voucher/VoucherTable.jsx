@@ -62,6 +62,13 @@ function VoucherTable() {
     };
     const handleSubmit = async (e) => {
         e.preventDefault();
+        if (new Date(startDate) > new Date(endDate)) {
+            notification.error({
+                message: 'Ngày bắt đầu phải trước ngày kết thúc!',
+                description: 'Ngày bắt đầu phải trước ngày kết thúc!',
+            });
+            return;
+        }
         setLoadingIcon(true);
         setLoadingScreen(true);
 
@@ -91,20 +98,28 @@ function VoucherTable() {
             setIsDialogOpen(false);
             setLoadingIcon(false);
             setLoadingScreen(false);
+            await fetchVoucher();
         }
     };
 
     const resetForm = () => {
-        setVoucherId('')
-        setStartDate('')
-        setEndDate('')
-        setQuantity('')
-        setMinTotal('')
-        setDiscountPrice('')
+        setVoucherId('');
+        setStartDate('');
+        setEndDate('');
+        setQuantity('');
+        setMinTotal('');
+        setDiscountPrice('');
     };
 
     const handleUpdateSubmit = async (e) => {
         e.preventDefault();
+        if (new Date(startDateUpdate) > new Date(endDateUpdate)) {
+            notification.error({
+                message: 'Ngày bắt đầu phải trước ngày kết thúc!',
+                description: 'Ngày bắt đầu phải trước ngày kết thúc!',
+            });
+            return;
+        }
         setLoadingIcon(true);
         setLoadingScreen(true);
 

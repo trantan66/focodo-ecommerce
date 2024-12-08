@@ -8,13 +8,13 @@ function WeeklyRevenue() {
         const fetchWeek = async () => {
             try {
                 const { data } = await fetchRevenueLastSevenDays();
-
                 const formattedData = data.map((item) => {
                     const date = new Date(item.day);
-                    const weekday = date.toLocaleDateString('vi-VN', { weekday: 'long' });
+                    const weekday = date.getDay();
+                    const weekdayShort = weekday === 0 ? 'CN' : `T${weekday + 1}`;
 
                     return {
-                        weekday,
+                        weekday: weekdayShort,
                         revenue: item.revenue,
                     };
                 });
@@ -23,6 +23,7 @@ function WeeklyRevenue() {
                 console.error('Lỗi khi lấy thống kê theo tuần:', error);
             }
         };
+
         fetchWeek();
     }, []);
 

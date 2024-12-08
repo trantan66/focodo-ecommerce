@@ -8,7 +8,7 @@ import { StarFilled, StarOutlined } from '@ant-design/icons';
 function ReviewAverageProduct() {
     const [products, setProducts] = useState([]);
     const [currentPage, setCurrentPage] = useState(1);
-    const productsPerPage = 4;
+    const productsPerPage = 3;
     const [totalProducts, setTotalProducts] = useState(0);
     const [cachedProducts, setCachedProducts] = useState({});
     const fetchProducts = useCallback(async () => {

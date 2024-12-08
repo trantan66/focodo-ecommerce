@@ -2,15 +2,19 @@ import React, { useEffect, useState } from 'react';
 import { getPaymentStatus } from '../../Lib/Utils/PaymentStatus';
 import { getOrderStatus } from '../../Lib/Utils/OrderStatus';
 import { useParams } from 'react-router-dom';
-import { updateOrderStatus } from '../../../Services/OrderService';
+import { updateOrderStatus, updatePaymentStatus } from '../../../Services/OrderService';
 import { notification } from 'antd';
 
-function OrderDetailTableHeader({ data }) {
+function OrderDetailTableHeader({ data, fetchData }) {
     const { orderId } = useParams();
     const [statusOrder, setStatusOrder] = useState('');
+    const [paymentStatus, setPaymentStatus] = useState('');
     useEffect(() => {
         if (data && data.order_status) {
             setStatusOrder(data.order_status);
+        }
+        if (data && data.payment_status) {
+            setPaymentStatus(data.payment_status);
         }
     }, [data]);
     const handleConfirmStatus = () => {
@@ -24,6 +28,12 @@ function OrderDetailTableHeader({ data }) {
     };
     const handleDeliveredStatus = () => {
         submitOrderStatusChange('Đã giao');
+    };
+    const handlePaidStatus = () => {
+        submitPaymentStatusChange('Thành công');
+    };
+    const handleCancelPaidStatus = () => {
+        submitPaymentStatusChange('Chưa thanh toán');
     };
 
     const submitOrderStatusChange = async (status) => {
@@ -42,6 +52,26 @@ function OrderDetailTableHeader({ data }) {
                 description: 'Trạng thái đã được cập nhật.',
                 duration: '1',
             });
+            fetchData(orderId);
+        }
+    };
+    const submitPaymentStatusChange = async (status) => {
+        try {
+            await updatePaymentStatus(orderId, status);
+            setPaymentStatus(status);
+        } catch (error) {
+            console.error('Error updating the payment status:', error);
+            notification.error({
+                message: 'Có lỗi xảy ra!',
+                description: 'Không thể cập nhật trạng thái. Vui lòng thử lại.',
+            });
+        } finally {
+            notification.success({
+                message: 'Cập nhật trạng thái thành công!',
+                description: 'Trạng thái đã được cập nhật.',
+                duration: '1',
+            });
+            fetchData(orderId);
         }
     };
     return (
@@ -60,7 +90,7 @@ function OrderDetailTableHeader({ data }) {
                 {data.payment_status && data.order_status && (
                     <div className="flex flex-row">
                         <div className="mt-2 pl-2">
-                            <span className="pr-2">{getPaymentStatus(data.payment_status)}</span>
+                            <span className="pr-2">{getPaymentStatus(paymentStatus)}</span>
                         </div>
                         <div className="mt-2">
                             <span>{getOrderStatus(statusOrder)}</span>
@@ -108,6 +138,22 @@ function OrderDetailTableHeader({ data }) {
                         className="text-[#FFAB00]  bg-[#4D4036] px-6 mb-3 rounded-md hover:bg-yellow-800"
                     >
                         Hoàn tác hủy đơn
+                    </button>
+                )}
+                {paymentStatus === 'Chưa thanh toán' && statusOrder === 'Đã giao' && (
+                    <button
+                        onClick={handlePaidStatus}
+                        className="text-[#696CFF]  bg-[#35365F] px-6 mb-3 rounded-md hover:bg-blue-800"
+                    >
+                        Xác nhận thanh toán
+                    </button>
+                )}
+                {paymentStatus === 'Thành công' && statusOrder !== 'Đã giao' && (
+                    <button
+                        onClick={handleCancelPaidStatus}
+                        className="text-[#FFAB00]  bg-[#4D4036] px-6 mb-3 rounded-md hover:bg-yellow-800"
+                    >
+                        Hoàn tác thanh toán
                     </button>
                 )}
                 {statusOrder === 'Đã giao' && ''}

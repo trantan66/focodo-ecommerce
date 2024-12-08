@@ -22,15 +22,22 @@ function AnnualRevenue() {
     const [currentY, setCurrentY] = useState(true);
     const [preYear, setPreYear] = useState(true);
 
-    const currentYear = new Date().getFullYear();
+    const [currentYear, setCurrentYear] = useState(true);
+    useEffect(() => {
+        const now = new Date().getFullYear();
+        setCurrentYear(now);
+    }, []);
 
     const handleLegendClick = (value) => {
         if (value === currentYear) {
-            setCurrentY(!currentY);
-        } else if (value === currentYear - 1) {
             setPreYear(!preYear);
+            if (!currentY && preYear) setCurrentY(true);
+        } else if (value === currentYear - 1) {
+            setCurrentY(!currentY);
+            if (!preYear && currentY) setPreYear(true);
         }
     };
+
     const COLORS = ['#696CFF', '#282941'];
 
     const [currentYearRevenue, setCurrentYearRevenue] = useState([]);
@@ -82,7 +89,14 @@ function AnnualRevenue() {
         { name: 'Progress', value: Math.round(percentIncrease) },
         { name: 'Remaining', value: Math.round(percentIncrease) < 100 ? 100 - Math.round(percentIncrease) : 0 },
     ];
-    
+    const handlePreYear = () => {
+        const now = new Date().getFullYear();
+        setCurrentYear(now - 1);
+    };
+    const handleCurrentYear = () => {
+        const now = new Date().getFullYear();
+        setCurrentYear(now);
+    };
 
     return (
         <div className="w-7/12 bg-[#282941] py-4 pl-4 rounded-sm flex flex-row">
@@ -123,7 +137,7 @@ function AnnualRevenue() {
                                             opacity:
                                                 (value === currentYear && !currentY) ||
                                                 (value === currentYear - 1 && !preYear)
-                                                    ? 0.5
+                                                    ? 0.2
                                                     : 1,
                                         }}
                                     >
@@ -153,10 +167,18 @@ function AnnualRevenue() {
 
                         <MenuItems className="absolute right-0 mt-2 w-48 rounded-md shadow-lg bg-[#282941] ring-1 ring-black ring-opacity-5 z-10">
                             <div className="py-2">
-                                <MenuItem as="div" className="px-4 py-2 hover:bg-gray-700 text-gray-300">
+                                <MenuItem
+                                    onClick={handleCurrentYear}
+                                    as="div"
+                                    className="px-4 py-2 hover:bg-gray-700 text-gray-300"
+                                >
                                     {currentYear}
                                 </MenuItem>
-                                <MenuItem as="div" className="px-4 py-2 hover:bg-gray-700 text-gray-300">
+                                <MenuItem
+                                    onClick={handlePreYear}
+                                    as="div"
+                                    className="px-4 py-2 hover:bg-gray-700 text-gray-300"
+                                >
                                     {currentYear - 1}
                                 </MenuItem>
                             </div>

@@ -1,30 +1,13 @@
-import React, { useState } from 'react';
-import { GiPayMoney } from 'react-icons/gi';
+import React from 'react';
+import { GiModernCity, GiPayMoney } from 'react-icons/gi';
 import { IoCart } from 'react-icons/io5';
-import { Dialog, DialogPanel, DialogTitle } from '@headlessui/react';
 import { formatCurrency } from '../../../utils/FormatCurrency';
 import { formatPhoneNumber } from '../../../utils/FormatPhoneNumber';
+import { FaAddressCard, FaCity, FaUserCheck } from 'react-icons/fa';
+import { MdAttachEmail, MdOutlineContactPhone } from 'react-icons/md';
+import { TbBuildingWarehouse } from 'react-icons/tb';
 
 function CustomerInfo({ customerdata }) {
-    const [isOpen, setIsOpen] = useState(false);
-    const [selectedCustomer, setSelectedCustomer] = useState(null);
-
-    function openDialog(customer) {
-        setSelectedCustomer(customer);
-        setIsOpen(true);
-    }
-
-    function closeDialog() {
-        setIsOpen(false);
-        setSelectedCustomer(null);
-    }
-
-    function handleSubmit() {
-        // Xử lý gửi dữ liệu ở đây
-        console.log('Data submitted:', selectedCustomer);
-        closeDialog();
-    }
-
     return (
         <div className="bg-[#282941] p-4 mr-4 rounded-sm text-white">
             <div className="flex flex-col ">
@@ -77,117 +60,39 @@ function CustomerInfo({ customerdata }) {
                 <strong className="text-xl mt-4 border-b-2">Chi tiết</strong>
 
                 <div className="flex flex-col gap-4 mt-4">
-                    <span>Username: {customerdata.username}</span>
-                    <span>Email: {''}</span>
-                    <div>
-                        <span>Trạng thái: </span>
-                        {/* <span
-                className={
-                  customerdata.status === "Hoạt động"
-                    ? "capitalize py-1 px-2 rounded-md text-xs text-green-900 bg-green-300"
-                    : ""
-                }
-              >
-                {customerdata.status}
-              </span> */}
+                    <div className="flex flex-row gap-2 items-center">
+                        <FaUserCheck />
+                        <span>Username: {customerdata.username}</span>
                     </div>
-                    <span>Số điện thoại: {customerdata.phone ? formatPhoneNumber(customerdata.phone) : 'Chưa có số điện thoại'}</span>
-                    <span>Địa chỉ: {customerdata.address}</span>
+                    <div className="flex flex-row gap-2 items-center">
+                        <MdAttachEmail />
+                        <span>Email: {customerdata.email ? customerdata.email : 'Chưa có email'}</span>
+                    </div>
+                    <div className="flex flex-row gap-2 items-center">
+                        <MdOutlineContactPhone />
+                        <span>
+                            Số điện thoại:{' '}
+                            {customerdata.phone ? formatPhoneNumber(customerdata.phone) : 'Chưa có số điện thoại'}
+                        </span>
+                    </div>
+                    <div className="flex flex-row gap-2 items-center">
+                        <GiModernCity />
+                        <span>{customerdata.province}</span>
+                    </div>
+                    <div className="flex flex-row gap-2 items-center">
+                        <FaCity />
+                        <span>{customerdata.district}</span>
+                    </div>
+                    <div className="flex flex-row gap-2 items-center">
+                        <TbBuildingWarehouse />
+                        <span>{customerdata.ward}</span>
+                    </div>
+                    <div className="flex flex-row gap-2 items-center">
+                        <FaAddressCard />
+                        <span>Địa chỉ: {customerdata.address}</span>
+                    </div>
                 </div>
-
-                <button className="bg-blue-600 mt-4 rounded-md p-2" onClick={() => openDialog(customerdata)}>
-                    Cập nhật
-                </button>
             </div>
-
-            <Dialog open={isOpen} as="div" className="relative z-10" onClose={closeDialog}>
-                <div className="fixed inset-0 bg-black/30" />
-                <div className="fixed inset-0 z-10 overflow-y-auto">
-                    <div className="flex min-h-full items-center justify-center p-4">
-                        <DialogPanel className="w-full max-w-md rounded-xl bg-[#282941] p-6 backdrop-blur-2xl">
-                            <DialogTitle as="h3" className="text-lg font-medium leading-6 text-white">
-                                Cập nhật thông tin khách hàng
-                            </DialogTitle>
-                            {selectedCustomer && (
-                                <form className="mt-4 space-y-4">
-                                    <div>
-                                        <label className="block text-sm font-medium text-white">Tên khách hàng</label>
-                                        <input
-                                            type="text"
-                                            value={selectedCustomer.full_name}
-                                            onChange={(e) =>
-                                                setSelectedCustomer({
-                                                    ...selectedCustomer,
-                                                    name: e.target.value,
-                                                })
-                                            }
-                                            className="ext-sm focus:outline-none border border-gray-300 mt-1 p-2 w-full rounded-md bg-[#282941] text-white"
-                                        />
-                                    </div>
-                                    <div>
-                                        <label className="block text-sm font-medium text-white">Email</label>
-                                        <input
-                                            type="email"
-                                            value={selectedCustomer.email}
-                                            onChange={(e) =>
-                                                setSelectedCustomer({
-                                                    ...selectedCustomer,
-                                                    email: e.target.value,
-                                                })
-                                            }
-                                            className="ext-sm focus:outline-none border border-gray-300 mt-1 p-2 w-full rounded-md bg-[#282941] text-white"
-                                        />
-                                    </div>
-                                    <div>
-                                        <label className="block text-sm font-medium text-white">Số điện thoại</label>
-                                        <input
-                                            type="text"
-                                            value={selectedCustomer.phone}
-                                            onChange={(e) =>
-                                                setSelectedCustomer({
-                                                    ...selectedCustomer,
-                                                    phone: e.target.value,
-                                                })
-                                            }
-                                            className="ext-sm focus:outline-none border border-gray-300 mt-1 p-2 w-full rounded-md bg-[#282941] text-white"
-                                        />
-                                    </div>
-                                    <div>
-                                        <label className="block text-sm font-medium text-white">Địa chỉ</label>
-                                        <input
-                                            type="text"
-                                            value={selectedCustomer.address}
-                                            onChange={(e) =>
-                                                setSelectedCustomer({
-                                                    ...selectedCustomer,
-                                                    address: e.target.value,
-                                                })
-                                            }
-                                            className="ext-sm focus:outline-none border border-gray-300 mt-1 p-2 w-full rounded-md bg-[#282941] text-white"
-                                        />
-                                    </div>
-                                    <div className="flex justify-end">
-                                        <button
-                                            type="button"
-                                            className="bg-blue-600 text-white py-2 px-4 rounded-md"
-                                            onClick={handleSubmit}
-                                        >
-                                            Xác nhận
-                                        </button>
-                                        <button
-                                            type="button"
-                                            className="ml-2 bg-gray-600 text-white py-2 px-4 rounded-md"
-                                            onClick={closeDialog}
-                                        >
-                                            Hủy
-                                        </button>
-                                    </div>
-                                </form>
-                            )}
-                        </DialogPanel>
-                    </div>
-                </div>
-            </Dialog>
         </div>
     );
 }

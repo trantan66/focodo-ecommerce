@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 
-import { Cell, Legend, Pie, PieChart, ResponsiveContainer } from 'recharts';
+import { Cell, Pie, PieChart } from 'recharts';
 import { fetchRateCustomerReturning, fetchTotalCustomer } from '../../../Services/DashboardService';
 
 function RateCustomerReturn() {
@@ -29,49 +29,55 @@ function RateCustomerReturn() {
         };
         fetchCustomer();
     }, []);
-
-    const data = [
-        { name: 'Tỉ lệ quay lại', value: dataRateCustomerReturning },
-        { name: 'Khách hàng', value: dataTotalCustomer },
-    ];
-
-    const RADIAN = Math.PI / 180;
-    const COLORS = ['#03C3EC', '#F7A602'];
-
-    const renderCustomizedLabel = ({ cx, cy, midAngle, innerRadius, outerRadius, percent }) => {
-        const radius = innerRadius + (outerRadius - innerRadius) * 0.5;
-        const x = cx + radius * Math.cos(-midAngle * RADIAN);
-        const y = cy + radius * Math.sin(-midAngle * RADIAN);
-
-        return (
-            <text x={x} y={y} fill="white" textAnchor={x > cx ? 'start' : 'end'} dominantBaseline="central">
-                {`${(percent * 100).toFixed(0)}%`}
-            </text>
-        );
-    };
+    const percentage = Math.floor((dataRateCustomerReturning / dataTotalCustomer) * 100);
+    const data = [{ value: percentage }, { value: 100 - percentage }];
+    const COLORS = ['#6C63FF', '#2D2F48'];
     return (
         <div className="bg-[#282941] p-4 rounded-sm flex flex-col gap-2 w-6/12">
-            <ResponsiveContainer width="100%" height="100%">
-                <PieChart width={400} height={300}>
+            <div style={{ position: 'relative', width: 200, height: 100 }}>
+                <PieChart width={200} height={100}>
                     <Pie
+                        data={data}
+                        cx="40%"
+                        cy="100%"
                         startAngle={180}
                         endAngle={0}
-                        data={data}
-                        cx="50%"
-                        cy="75%"
-                        labelLine={false}
-                        label={renderCustomizedLabel}
-                        outerRadius={57}
-                        fill="#8884d8"
+                        innerRadius={60}
+                        outerRadius={80}
+                        paddingAngle={0}
                         dataKey="value"
+                        stroke="none"
                     >
-                        {data.map((_, index) => (
-                            <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                        {data.map((entry, index) => (
+                            <Cell key={`cell-${index}`} fill={COLORS[index]} />
                         ))}
                     </Pie>
-                    <Legend />
                 </PieChart>
-            </ResponsiveContainer>
+                <div
+                    style={{
+                        position: 'absolute',
+                        top: '70%',
+                        left: '40%',
+                        transform: 'translate(-50%, -50%)',
+                        fontSize: '20px',
+                        color: 'white',
+                    }}
+                >
+                    {percentage}%
+                </div>
+                <div
+                    style={{
+                        position: 'absolute',
+                        top: '120%',
+                        left: '40%',
+                        transform: 'translate(-50%, -50%)',
+                        fontSize: '15px',
+                        color: 'gray',
+                    }}
+                >
+                    Tỉ lệ quay lại
+                </div>
+            </div>
         </div>
     );
 }

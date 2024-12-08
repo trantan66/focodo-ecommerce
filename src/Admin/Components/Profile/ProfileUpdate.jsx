@@ -192,14 +192,14 @@ function ProfileUpdate({ data }) {
                     {preview && (
                         <div className="absolute bottom-[-4rem] left-1/2 transform -translate-x-1/2 mt-4 flex space-x-4">
                             <button
-                                className="bg-green-500 text-white rounded-md px-6 py-2 whitespace-nowrap flex flex-row items-center gap-2"
+                                className="bg-[#36483F] text-[#71DD37] hover:bg-green-800 rounded-md px-6 py-2 whitespace-nowrap flex flex-row items-center gap-2"
                                 onClick={handleConfirm}
                             >
                                 <GoCheckCircleFill /> Xác nhận
                             </button>
 
                             <button
-                                className="bg-red-500 text-white rounded-md px-6 py-2 whitespace-nowrap flex flex-row items-center gap-2"
+                                className="bg-[#4D2F3A] text-[#B63728] hover:bg-red-900 rounded-md px-6 py-2 whitespace-nowrap flex flex-row items-center gap-2"
                                 onClick={handleCancel}
                             >
                                 <MdCancel />
