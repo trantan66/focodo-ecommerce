@@ -6,14 +6,16 @@ export const AuthProvider = ({ children }) => {
     const [auth, setAuth] = useState({});
     const [loading, setLoading] = useState(true);
     const fetchUser = async () => {
-        try {
-            const response = await getUserFromToken();
-            if (response && response.result) {
-                setAuth({ user: response.result });
+        if (localStorage.getItem('access_token')) {
+            try {
+                const response = await getUserFromToken();
+                if (response && response.result) {
+                    setAuth({ user: response.result });
+                    setLoading(false);
+                }
+            } catch (e) {
                 setLoading(false);
             }
-        } catch (e) {
-            setLoading(false);
         }
     };
 

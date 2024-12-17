@@ -29,7 +29,6 @@ const Search = () => {
     const fetchProductsSearching = async () => {
         setLoading(true);
         const response = await searchProducts(query, page - 1, pageSize);
-        console.log(response);
         if (response.code == 0) {
             setTotalRecods(response.result.pagination && response.result.pagination.total_records);
             setProducts(response.result.data);

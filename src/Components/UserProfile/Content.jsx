@@ -124,7 +124,7 @@ function Content() {
                                     ></ProductList>
                                 ))}
                                 <Orders
-                                fetchOrders={fetchOrders}
+                                    fetchOrders={fetchOrders}
                                     id={data.id_order}
                                     review={data.review_check}
                                     status={data.order_status}
@@ -312,10 +312,12 @@ function Content() {
                                             Chỉnh sửa
                                         </button>
                                         <Modal
-                                            closable={false}
+                                            centered
+                                            closeIcon={false}
                                             afterClose={reset}
                                             footer={null}
                                             open={openModalId === item.id}
+                                            onCancel={() => setOpenModalId(null)}
                                             className=""
                                         >
                                             <div className="flex flex-col p-3">

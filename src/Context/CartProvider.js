@@ -6,11 +6,13 @@ export const CartProvider = ({ children }) => {
     const [numberOfCart, setNumberOfCart] = useState(0);
     const [carts, setCarts] = useState([]);
     const fetchNumberOfCart = async () => {
-        try {
-            const result = await getNumberOfCart();
-            setNumberOfCart(result);
-        } catch (error) {
-            console.error('Error fetching number of cart:', error);
+        if (localStorage.getItem('access_token')) {
+            try {
+                const result = await getNumberOfCart();
+                setNumberOfCart(result);
+            } catch (error) {
+                console.error('Error fetching number of cart:', error);
+            }
         }
     };
     const updateNumberOfCart = (newCount) => {
@@ -18,11 +20,13 @@ export const CartProvider = ({ children }) => {
     };
 
     const fetchCart = async () => {
-        try {
-            const cartItems = await fetchCartOfUser();
-            setCarts(cartItems);
-        } catch (error) {
-            console.error('Error fetching cart:', error);
+        if (localStorage.getItem('access_token')) {
+            try {
+                const cartItems = await fetchCartOfUser();
+                setCarts(cartItems);
+            } catch (error) {
+                console.error('Error fetching cart:', error);
+            }
         }
     };
 

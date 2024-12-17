@@ -6,7 +6,7 @@ import { fetchReviewByIdFromAPI } from '../../Services/ReviewService';
 import sigma from '../image/avatar/sigma.jpg';
 function Comment(props) {
     return (
-        <div className="flex flex-col bg-[#FAF7F0] mb-3 rounded-md">
+        <div key={props.id} className="flex flex-col bg-[#FAF7F0] mb-3 rounded-md">
             <p className="ml-auto text-[12px] opacity-50 italic mr-2 mt-1">{props.date}</p>
             <div className="flex ml-2 pb-3">
                 <img src={props.avatar} alt="" className="max-w-[56px] max-h-[56px] rounded-full" />

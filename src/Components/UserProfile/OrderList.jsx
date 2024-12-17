@@ -156,7 +156,11 @@ export function Orders(props) {
         orderDetail.order_details.forEach((element) => {
             handleAddToCart(element.product.id, element.quantity);
         });
-        alert('Sản phẩm đã được thêm vào giỏ hàng');
+        notification.success({
+            message: 'Thêm vào giỏ hàng thành công!',
+            description: 'Sản phẩm đã được thêm vào giỏ',
+            duration: '1',
+        });
     };
     const [orderDetail, setOrderDetail] = useState({});
     useEffect(() => {

@@ -240,3 +240,13 @@ export const fetchAllProduct = async () => {
         throw error;
     }
 };
+
+export const getRelatedProducts = async (id) => {
+    try {
+        const response = await axiosInstance.get(`products/getRelatedProducts/${id}`);
+        return response.result;
+    } catch (error) {
+        console.error('Error fetching products:', error);
+        throw error;
+    }
+};

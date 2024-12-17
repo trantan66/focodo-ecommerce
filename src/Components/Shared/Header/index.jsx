@@ -32,9 +32,6 @@ function Header() {
         setIsUserVisible(false);
     };
 
-    // check xem đã đăng nhập hay chưa
-    const checkLogin = localStorage.getItem('access_token');
-
     const [isSearchActive, setIsSearchActive] = useState(false);
     const [valueInput, setValueInput] = useState('');
     const [isCartVisible, setIsCartVisible] = useState(false);
@@ -51,7 +48,7 @@ function Header() {
     }, [carts]);
 
     // đăng xuất
-    const { logout } = useAuth();
+    const { logout, auth } = useAuth();
     const handleLogout = () => {
         logout();
         updateNumberOfCart(0);
@@ -148,7 +145,7 @@ function Header() {
         fetchProductsSearch();
     }, [valueInput]);
     return (
-        <div className="Header relative">
+        <div className="Header relative bg-white">
             <div className="w-full h-[90px]">
                 <div className="container ">
                     <div className="inner-wrap">
@@ -235,7 +232,7 @@ function Header() {
                                     className="cart-overlay fixed top-0 left-0 w-screen h-screen bg-black bg-opacity-50 z-10"
                                     onClick={handleOverlayClick}
                                 >
-                                    {checkLogin ? (
+                                    {auth.user ? (
                                         <div className="relative w-[450px] max-h-[550px] bg-white mt-[90px] ml-[985px] p-[20px] rounded-xl shadow-md">
                                             {/* Tam giác nhô lên */}
                                             <div className="absolute -top-3 left-[69%] transform -translate-x-1/2 w-0 h-0 border-l-[10px] border-l-transparent border-r-[10px] border-r-transparent border-b-[15px] border-b-white"></div>
@@ -265,7 +262,7 @@ function Header() {
                                                         </div>
                                                     ))
                                                 ) : (
-                                                    <p>No products available</p> // Nếu không có sản phẩm
+                                                    <p>Chưa có sản phẩm</p> // Nếu không có sản phẩm
                                                 )}
                                             </div>
 
@@ -346,7 +343,7 @@ function Header() {
                                     className="cart-overlay fixed top-0 left-0 w-screen h-screen bg-black bg-opacity-50 z-10"
                                     onClick={handleOverlayClick}
                                 >
-                                    {checkLogin ? (
+                                    {auth.user ? (
                                         <div className="relative w-[225px] h-[125px] bg-white mt-[90px] ml-[1175px] p-[20px] rounded-xl shadow-md space-y-3">
                                             {/* Tam giác nhô lên */}
                                             <div className="absolute -top-3 left-[70%] transform -translate-x-1/2 w-0 h-0 border-l-[10px] border-l-transparent border-r-[10px] border-r-transparent border-b-[15px] border-b-white"></div>
