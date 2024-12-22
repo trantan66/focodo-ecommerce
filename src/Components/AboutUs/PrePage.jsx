@@ -18,7 +18,7 @@ function PrePage() {
                         <span className=" text-[22px] text-[#3B3030]  font-bold p-2.5 group-hover:text-white duration-500">
                             Đa Dạng Sản Phẩm
                         </span>
-                        <div class="w-full h-0.5 bg-[#3B3030] mt-2 mb-4 group-hover:bg-white duration-500"></div>
+                        <div className="w-full h-0.5 bg-[#3B3030] mt-2 mb-4 group-hover:bg-white duration-500"></div>
                         <p className=" text-[#3B3030] text-[18px] text-center group-hover:text-white duration-500">
                             FoCoDo cung cấp nhiều loại đặc sản đến từ Huế, giúp lựa chọn của bạn đa dạng hơn
                         </p>
@@ -34,7 +34,7 @@ function PrePage() {
                         <p className=" text-[25px] text-[#FFFFFF]  font-bold mx-4 pl-3 group-hover:text-[#222831] duration-500">
                             Vận Chuyển Toàn Quốc
                         </p>
-                        <div class="w-full h-0.5 bg-[#FFFFFF] mt-2 mb-4 group-hover:bg-[#222831] duration-500"></div>
+                        <div className="w-full h-0.5 bg-[#FFFFFF] mt-2 mb-4 group-hover:bg-[#222831] duration-500"></div>
                         <p className=" text-[#FFFFFF] text-[18px] text-center group-hover:text-[#222831] duration-500">
                             Hệ thống vận chuyển trải dài khắp cả nước cùng với các hình thức giao hàng khác nhau
                         </p>
@@ -51,7 +51,7 @@ function PrePage() {
                         <p className=" text-[25px] text-[#FFFFFF] text-center  font-bold mx-4 group-hover:text-[#222831] duration-500">
                             Thanh Toán Đa Dạng
                         </p>
-                        <div class="w-full h-0.5 bg-[#FFFFFF] mt-2 mb-4 group-hover:bg-[#222831] duration-500"></div>
+                        <div className="w-full h-0.5 bg-[#FFFFFF] mt-2 mb-4 group-hover:bg-[#222831] duration-500"></div>
                         <p className=" text-[#FFFFFF] text-[18px] text-center group-hover:text-[#222831] duration-500">
                             Khách hàng có thể thanh toán bằng nhiều hình thức khác nhau
                         </p>

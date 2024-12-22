@@ -22,11 +22,11 @@ function AnnualRevenue() {
     const [currentY, setCurrentY] = useState(true);
     const [preYear, setPreYear] = useState(true);
 
-    const [currentYear, setCurrentYear] = useState(true);
-    useEffect(() => {
-        const now = new Date().getFullYear();
-        setCurrentYear(now);
-    }, []);
+    const [currentYear, setCurrentYear] = useState(new Date().getFullYear());
+    // useEffect(() => {
+    //     const now = new Date().getFullYear();
+    //     setCurrentYear(now);
+    // }, []);
 
     const handleLegendClick = (value) => {
         if (value === currentYear) {

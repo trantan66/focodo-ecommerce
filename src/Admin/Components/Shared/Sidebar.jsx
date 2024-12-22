@@ -1,7 +1,7 @@
 import React from 'react';
 import { FcComboChart } from 'react-icons/fc';
 import { DASHBOARD_SIDEBAR_BOTTOM_LINKS, DASHBOARD_SIDEBAR_LINKS } from '../../Lib/Const/Navigation';
-import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import classNames from 'classnames';
 import { RiLogoutBoxRLine } from 'react-icons/ri';
 import useAuth from '../../../Hooks/useAuth';
@@ -9,10 +9,9 @@ const linkClass = 'flex item gap-2 font-light px-3 py-2 hover:bg-neutral-700 rou
 
 function Sidebar() {
     const { logout } = useAuth();
-    const navigate = useNavigate();
     const handleLogout = () => {
         logout();
-        navigate('/login', { replace: true });
+        window.location.href = '/login';
     };
     return (
         <div className="sticky top-0 bg-[#2B2C40] w-60 p-4 flex flex-col text-white">

@@ -288,6 +288,13 @@ function Order() {
         }
     };
 
+    const getPaymentMethod = (id) => {
+        const method = {
+            COD: 'Thanh toán khi nhận hàng (COD)',
+            VNPAY: 'Thanh toán qua VNPay',
+        };
+        return method[id];
+    };
     return (
         <>
             <div className="w-[1200px] mx-auto flex justify-center">
@@ -423,7 +430,7 @@ function Order() {
                                     onChange={handlePaymentMethodChange}
                                 />
                                 <label htmlFor={paymentMethod.id} className="m-0">
-                                    {paymentMethod.method}
+                                    {getPaymentMethod(paymentMethod.method)}
                                 </label>
                             </div>
                         ))}

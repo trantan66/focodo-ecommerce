@@ -11,12 +11,12 @@ export const AuthProvider = ({ children }) => {
                 const response = await getUserFromToken();
                 if (response && response.result) {
                     setAuth({ user: response.result });
-                    setLoading(false);
                 }
             } catch (e) {
-                setLoading(false);
+                console.log(e);
             }
         }
+        setLoading(false);
     };
 
     const logout = async () => {

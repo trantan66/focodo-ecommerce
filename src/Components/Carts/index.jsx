@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Button, InputNumber, Space, Checkbox } from 'antd';
+import { Button, InputNumber, Space, Checkbox, notification } from 'antd';
 import { CloseOutlined } from '@ant-design/icons';
 import {
     updateQuantityInCart,
@@ -114,7 +114,11 @@ function Carts() {
         if (calculateTotal() > 0) {
             navigate(`/Order`);
         } else {
-            alert('Bạn phải chọn sản phẩm trước khi đặt!');
+            notification.warning({
+                message: 'Không có sản phẩm trong giỏ hàng!',
+                description: 'Bạn phải chọn sản phẩm trước khi đặt.',
+                duration: '2',
+            });
         }
     };
 

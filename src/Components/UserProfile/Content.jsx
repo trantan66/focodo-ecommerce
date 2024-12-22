@@ -57,7 +57,6 @@ function Content() {
         try {
             const { data, total } = await fetchReviewsOfUserFromAPI(currentPage, reviewsPerPage);
             setReviews(data);
-            console.log(data);
             setTotalReviews(total);
         } catch (error) {
             console.error('Error fetching reviews:', error);
@@ -114,7 +113,7 @@ function Content() {
                 <div className="flex flex-col gap-4">
                     {orders.length > 0 ? (
                         orders.map((data, index) => (
-                            <div className="">
+                            <div key={index}>
                                 {data.order_details.map((items, index) => (
                                     <ProductList
                                         name={items.product.name}
@@ -183,6 +182,9 @@ function Content() {
                             description: 'Mật khẩu đã được thay đổi.',
                             duration: '2',
                         });
+                        setPassword('');
+                        setConfirmPassword('');
+                        setNewPassword('');
                     } catch (error) {
                         console.error('Error updating password: ', error);
                     }
@@ -197,9 +199,6 @@ function Content() {
         } catch (error) {
             console.error('Error handling password change:', error);
         } finally {
-            setPassword('');
-            setConfirmPassword('');
-            setNewPassword('');
         }
         // Cập nhật mật khẩu
     };
@@ -223,8 +222,8 @@ function Content() {
             });
         } finally {
             notification.success({
-                message: 'Cập nhật thành công!',
-                description: 'Cập nhật thành công!',
+                message: 'Chỉnh sửa đánh giá !',
+                description: 'Cập nhật đánh giá thành công!',
                 duration: '1.5',
             });
             fetchUserReviews();
@@ -297,7 +296,7 @@ function Content() {
                     <div className="flex flex-col gap-3 ">
                         {reviews ? (
                             reviews.map((item, index) => (
-                                <div className="flex flex-col gap-3 my-4 mx-2  pt-3">
+                                <div key={index} className="flex flex-col gap-3 my-4 mx-2  pt-3">
                                     <div className="flex">
                                         <img className="h-[100px] w-[150px]" src={item.product.image} alt="" />
                                         <p className="text-[16px] italic font-semibold mx-2">{item.product.name}</p>
@@ -454,8 +453,9 @@ function Content() {
                                                 <Rate style={{ fontSize: 12 }} disabled value={item.rating}></Rate>
                                                 <p className="text-[17px] italic">{item.content}</p>
                                                 <div className="flex mt-2">
-                                                    {item.images.map((url) => (
+                                                    {item.images.map((url, index) => (
                                                         <img
+                                                            key={index}
                                                             src={url}
                                                             style={{ width: 100, height: 100, marginRight: 5 }}
                                                         />

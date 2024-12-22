@@ -52,7 +52,7 @@ axiosInstance.interceptors.response.use(
             localStorage.removeItem('access_token');
             localStorage.removeItem('refresh_token');
             window.location.href = '/login';
-            console.log(error.response.result);
+            // console.log(error.response.result);
         }
         return Promise.reject(error);
     },
