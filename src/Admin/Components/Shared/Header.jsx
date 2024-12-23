@@ -77,45 +77,13 @@ function Header() {
             </div>
 
             <div className="flex items-center gap-4 mr-2">
-                {/* <Popover className="relative">
-                    <PopoverButton className="p-1.5 rounded-sm inline-flex items-center text-white hover:text-gray-900 focus:outline-none active:bg-gray-600">
-                        <HiOutlineChatAlt fontSize={24} />
-                        <div className="absolute bottom-0 right-0 w-4 h-4 bg-red-500 rounded-full flex items-center justify-center text-white text-xs">
-                            3
-                        </div>
-                    </PopoverButton>
-
-                    <PopoverPanel className="absolute right-0 mt-2 w-48 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5">
-                        <div className="py-2">
-                            <Link to="analytics" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
-                                Analytics
-                            </Link>
-                            <p className="pl-8 text-xs text-gray-500">View detailed reports</p>
-
-                            <Link to="engagement" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
-                                Engagement
-                            </Link>
-                            <p className="pl-8 text-xs text-gray-500">Track user interactions</p>
-
-                            <Link to="security" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
-                                Security
-                            </Link>
-                            <p className="pl-8 text-xs text-gray-500">Manage security settings</p>
-
-                            <Link
-                                to="/integrations"
-                                className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-                            >
-                                Integrations
-                            </Link>
-                            <p className="pl-8 text-xs text-gray-500">Connect other services</p>
-                        </div>
-                    </PopoverPanel>
-                </Popover> */}
                 <Popover className="relative">
                     {({ open, close }) => (
                         <>
-                            <PopoverButton className="p-1.5 rounded-sm inline-flex items-center text-white hover:text-gray-900 focus:outline-none active:bg-gray-600">
+                            <PopoverButton
+                                onClick={() => fetchNotification(notificationPerPage)}
+                                className="p-1.5 rounded-sm inline-flex items-center text-white hover:text-gray-900 focus:outline-none active:bg-gray-600"
+                            >
                                 <HiOutlineBell fontSize={24} />
                                 <span className="absolute bottom-0 right-0 w-2.5 h-2.5 bg-[#696CFF] rounded-full"></span>
                             </PopoverButton>
