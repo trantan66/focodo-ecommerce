@@ -14,7 +14,6 @@ function Content() {
     const [images, setImages] = useState([]);
     const [imagePreviews, setImagePreviews] = useState([]);
     const [openModalId, setOpenModalId] = useState(null);
-    console.log(imagePreviews);
     const reset = () => {
         setRating('');
         setContent('');
@@ -188,7 +187,6 @@ function Content() {
                                                 className=""
                                                 value={content}
                                                 onChange={(e) => {
-                                                    console.log(e.target.value);
                                                     setContent(e.target.value);
                                                 }}
                                                 placeholder="Để lại bình luận ở đây"

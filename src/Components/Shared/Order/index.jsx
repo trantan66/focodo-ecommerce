@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useMemo } from 'react';
-import { Button, Modal, Radio } from 'antd';
+import { Button, Modal, notification, Radio } from 'antd';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { fetchCartCheckedOfUser } from '../../../Services/CartService';
@@ -157,17 +157,29 @@ function Order() {
                     setVoucherCode(selectedVoucher);
                     setDiscount(discountPrice);
                 } else {
-                    alert('Mã giảm giá không hợp lệ hoặc đã hết hạn.');
+                    notification.error({
+                        message: 'Lỗi!',
+                        description: 'Mã giảm giá không hợp lệ hoặc đã hết hạn.',
+                        duration: '1',
+                    });
                     setVoucherCode('');
                     setDiscount(0);
                 }
             } else {
-                alert('Mã giảm giá không hợp lệ.');
+                notification.error({
+                    message: 'Lỗi!',
+                    description: 'Mã giảm giá không hợp lệ hoặc đã hết hạn.',
+                    duration: '1',
+                });
                 setDiscount(0);
                 setVoucherCode('');
             }
         } catch (error) {
-            alert('Mã giảm giá không hợp lệ hoặc đã hết hạn.');
+            notification.error({
+                message: 'Lỗi!',
+                description: 'Mã giảm giá không hợp lệ hoặc đã hết hạn.',
+                duration: '1',
+            });
             setDiscount(0);
             setVoucherCode('');
         }
@@ -181,14 +193,24 @@ function Order() {
         const selectedVoucherDetail = vouchers.find((voucher) => voucher.id_voucher === selectedVoucher);
         if (selectedVoucherDetail) {
             if (totalPriceProduct < selectedVoucherDetail.min_total) {
-                alert(`Đơn hàng phải có giá trị tối thiểu ${selectedVoucherDetail.min_total}`);
+                notification.error({
+                    message: 'Lỗi voucher!',
+                    description: `Đơn hàng phải có giá trị tối thiểu ${formatCurrency(
+                        selectedVoucherDetail.min_total,
+                    )}`,
+                    duration: '1.5',
+                });
             } else {
                 setVoucherCode(selectedVoucher);
                 setDiscount(selectedVoucherDetail.discount_price);
                 setIsModalOpen(false);
             }
         } else {
-            alert(`Vui lòng chọn một mã giảm giá bất kỳ`);
+            notification.warning({
+                message: 'Lỗi voucher!',
+                description: `Vui lòng chọn một mã giảm giá bất kỳ`,
+                duration: '1.5',
+            });
         }
     };
     const handleCancel = () => {
@@ -266,6 +288,13 @@ function Order() {
         }
     };
 
+    const getPaymentMethod = (id) => {
+        const method = {
+            COD: 'Thanh toán khi nhận hàng (COD)',
+            VNPAY: 'Thanh toán qua VNPay',
+        };
+        return method[id];
+    };
     return (
         <>
             <div className="w-[1200px] mx-auto flex justify-center">
@@ -401,7 +430,7 @@ function Order() {
                                     onChange={handlePaymentMethodChange}
                                 />
                                 <label htmlFor={paymentMethod.id} className="m-0">
-                                    {paymentMethod.method}
+                                    {getPaymentMethod(paymentMethod.method)}
                                 </label>
                             </div>
                         ))}

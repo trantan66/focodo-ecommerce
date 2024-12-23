@@ -4,19 +4,18 @@ import { HiOutlineBell } from 'react-icons/hi';
 import { ImProfile } from 'react-icons/im';
 import { IoIosSearch } from 'react-icons/io';
 import { RiLogoutBoxRLine } from 'react-icons/ri';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import useAuth from '../../../Hooks/useAuth';
 import { fetchAllNotification, updateNotification } from '../../../Services/NotificationService';
 
 function Header() {
     const { auth, logout } = useAuth();
-    const navigate = useNavigate();
     const [notifications, setNotification] = useState([]);
     const [notificationPerPage, setNotificationPerPage] = useState(4);
 
     const handleLogout = () => {
         logout();
-        navigate('/login', { replace: true });
+        window.location.href = '/login';
     };
     const fetchNotification = async (notificationPerPage) => {
         try {
@@ -165,7 +164,7 @@ function Header() {
                                 {({ active }) => (
                                     <span
                                         to="/"
-                                        className={`flex items-center px-4 py-2 text-sm text-white ${
+                                        className={`flex cursor-pointer items-center px-4 py-2 text-sm text-white ${
                                             active ? 'bg-[#434463]' : ''
                                         }`}
                                         onClick={handleLogout}

@@ -4,7 +4,7 @@ function Guide() {
     const fixedDate = new Date('2024-11-17');
     return (
         <>
-            <div className="w-[1000px] mx-auto space-y-10 mt-3">
+            <div className="w-[1000px] mx-auto space-y-10 py-4">
                 <h1 className="text-2xl font-medium uppercase">Hướng dẫn thanh toán</h1>
                 {/* <input
                     type="date"

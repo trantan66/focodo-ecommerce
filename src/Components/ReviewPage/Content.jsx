@@ -41,11 +41,17 @@ function Content() {
 
         setLoadingScreen(false);
         if (allSuccess) {
+            notification.success({
+                message: 'Đánh giá sản phẩm!',
+                description: 'Đánh giá sản phẩm thành công',
+                duration: '1.5',
+            });
             navigate(-1);
         } else {
             notification.error({
                 message: 'Có lỗi xảy ra!',
                 description: 'Không thể đánh giá sản phẩm. Vui lòng thử lại.',
+                duration: '1.5',
             });
         }
     };

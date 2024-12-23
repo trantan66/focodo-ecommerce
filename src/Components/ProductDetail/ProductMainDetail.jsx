@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useContext } from 'react';
 import delivery from '../image/delivery.png';
-import { Button, InputNumber } from 'antd';
+import { Button, InputNumber, notification } from 'antd';
 import ImageGallery from 'react-image-gallery';
 import 'react-image-gallery/styles/css/image-gallery.css';
 import { useParams } from 'react-router-dom';
@@ -47,8 +47,19 @@ function ProductDetail(props) {
             const res = await addProductToCart({ id_product: idProductTest, quantity: value });
             fetchNumberOfCart();
             fetchCart();
-            alert('Sản phẩm đã được thêm vào giỏ hàng');
+            notification.success({
+                message: 'Thêm vào giỏ hàng thành công!',
+                description: 'Sản phẩm đã được thêm vào giỏ',
+                duration: '1',
+            });
         } catch (error) {
+            if (error.response.data.message === 'Product is not enough quantity') {
+                notification.error({
+                    message: 'Lỗi thêm sản phẩm!',
+                    description: 'Số lượng sản phẩm không đủ. Vui lòng thử lại sau!',
+                    duration: '1.5',
+                });
+            }
             console.error('Error addToCart product:', error);
         }
     };
@@ -59,8 +70,8 @@ function ProductDetail(props) {
 
     return (
         <div>
-            <div className="flex justify-center">
-                <div className="size-[40%]">
+            <div className="grid grid-cols-[40%_60%] gap-[20px]">
+                <div>
                     <ImageGallery
                         items={galleryImages}
                         useBrowserFullscreen={false}
@@ -69,24 +80,29 @@ function ProductDetail(props) {
                         additionalClass="fullscreen"
                         renderItem={(item) => (
                             <div
-                            style={{
-                                display: 'flex',
-                                justifyContent: 'center',
-                                alignItems: 'center',
-                                objectFit: 'contain',
-                                // height: '100%', // Chiều cao đầy đủ của container
-                                // width: '100%', // Đảm bảo chiều rộng chiếm toàn bộ khu vực chứa
-                            }}
+                                style={{
+                                    display: 'flex',
+                                    justifyContent: 'center',
+                                    alignItems: 'center',
+                                    objectFit: 'contain',
+                                    // height: '100%', // Chiều cao đầy đủ của container
+                                    // width: '100%', // Đảm bảo chiều rộng chiếm toàn bộ khu vực chứa
+                                }}
                             >
                                 <img
                                     src={item.original}
                                     style={{
-                                        minHeight: '300px', // Chiều cao đầy đủ của container
-                                        // width: '100%', // Đảm bảo chiều rộng chiếm toàn bộ khu vực chứa
-                                        objectFit: 'fill',
-                                        //height: 'auto',
-                                        width: '80%', // Đảm bảo không vượt quá chiều rộng của màn hình
-                                        maxHeight: '400px',
+                                        // minHeight: '300px', // Chiều cao đầy đủ của container
+                                        // // width: '100%', // Đảm bảo chiều rộng chiếm toàn bộ khu vực chứa
+                                        objectFit: 'contain',
+                                        // //height: 'auto',
+                                        // width: '80%', // Đảm bảo không vượt quá chiều rộng của màn hình
+                                        // maxHeight: '400px',
+
+                                        maxWidth: '800px',
+                                        width: '100%',
+                                        height: 'auto',
+                                        maxHeight: '500px',
                                     }}
                                 />
                             </div>
@@ -132,12 +148,24 @@ function ProductDetail(props) {
                     <div className="flex mt-4 ">
                         <button
                             onClick={handleButtonClick}
-                            className=" bg-[#FAF7F0] text-black border border-black w-[200px] h-[48px] rounded-lg hover:bg-[#D8D2C2] transition duration-300 "
+                            className=" bg-[#FAF7F0] text-black border border-black min-w-[200px] font-semibold py-[10px] px-[15px] rounded-lg hover:bg-[#D8D2C2] transition duration-300 "
                         >
                             Thêm vào giỏ hàng
                         </button>
-                        <button className="bg-black text-white w-[200px] h-[48px] rounded-lg hover:bg-[#3C3D37] transition duration-300 ml-4">
-                            Thanh toán
+                        <button className="bg-[#00abff] text-white min-w-[200px] font-semibold py-[10px] px-[15px] rounded-lg hover:bg-[#0089cc] transition duration-300 ml-4">
+                            <a href="" className="hover:no-underline hover:text-white">
+                                Zalo
+                            </a>
+                        </button>
+                    </div>
+                    <div className="flex mt-2">
+                        <button className=" bg-[#21569a] text-white border border-black min-w-[200px] font-semibold py-[10px] px-[15px] rounded-lg hover:bg-[#1a457b] transition duration-300 ">
+                            Messenger
+                        </button>
+                        <button className="bg-[#a349a3] text-white min-w-[200px] font-semibold py-[10px] px-[15px] rounded-lg hover:opacity-[0.9] transition duration-300 ml-4">
+                            <a href="" className="hover:no-underline hover:text-white">
+                                CSKH: 033.864.9496
+                            </a>
                         </button>
                     </div>
                     <div className="flex opacity-50 mt-3">
@@ -165,10 +193,8 @@ function ProductMainDetail() {
         setProduct(response.data);
     };
     useEffect(() => {
-        console.log(id);
         fetchProduct(id);
     }, []);
-    console.log(product);
     return (
         <div>
             <ProductDetail

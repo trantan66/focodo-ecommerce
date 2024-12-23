@@ -1,12 +1,44 @@
 import { useParams } from 'react-router-dom';
-import { Reviews } from './Reviews';
 import { Pagination, Rate } from 'antd';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { fetchReviewByIdFromAPI } from '../../Services/ReviewService';
 import sigma from '../image/avatar/sigma.jpg';
+import ImageGallery from 'react-image-gallery';
+
 function Comment(props) {
+    const [isFullscreen, setIsFullscreen] = useState(false);
+    const [sliderImages, setSliderImages] = useState([]);
+    const [selectedImage, setSelectedImage] = useState('');
+    const galleryRef = useRef(null);
+
+    useEffect(() => {
+        const orderedImages = props.imgs.map((imgUrl) => ({
+            original: imgUrl,
+            thumbnail: imgUrl,
+        }));
+        setSliderImages(orderedImages);
+    }, [props.imgs]);
+
+    const handleImageClick = (url) => {
+        const index = props.imgs.indexOf(url);
+        if (isFullscreen && selectedImage === url) {
+            setIsFullscreen(false);
+            setSelectedImage('');
+        } else {
+            setIsFullscreen(true);
+            setSelectedImage(url);
+            setTimeout(() => {
+                galleryRef.current.slideToIndex(index);
+            }, 0);
+        }
+    };
+
+    const handleSlide = (currentIndex) => {
+        setSelectedImage(sliderImages[currentIndex].original);
+    };
+
     return (
-        <div className="flex flex-col bg-[#FAF7F0] mb-3 rounded-md">
+        <div key={props.id} className="flex flex-col bg-[#FAF7F0] mb-3 rounded-md">
             <p className="ml-auto text-[12px] opacity-50 italic mr-2 mt-1">{props.date}</p>
             <div className="flex ml-2 pb-3">
                 <img src={props.avatar} alt="" className="max-w-[56px] max-h-[56px] rounded-full" />
@@ -16,11 +48,53 @@ function Comment(props) {
                     <p className="text-[17px] italic opacity-50">{props.content}</p>
                     <div className="flex mt-2">
                         {props.imgs.map((url) => (
-                            <img src={url} style={{ width: 100, height: 100, marginRight: 5 }} />
+                            <img
+                                className="image_review"
+                                src={url}
+                                style={{
+                                    cursor: 'pointer',
+                                    width: 'auto',
+                                    height: 100,
+                                    marginRight: 5,
+                                    border: selectedImage === url ? '2px solid #1890ff' : 'none',
+                                }}
+                                onClick={() => handleImageClick(url)}
+                            />
                         ))}
                     </div>
                 </div>
             </div>
+            {isFullscreen && (
+                <ImageGallery
+                    ref={galleryRef}
+                    items={sliderImages}
+                    showThumbnails={false}
+                    useBrowserFullscreen={false}
+                    showPlayButton={false}
+                    showFullscreenButton={false}
+                    onSlide={handleSlide}
+                    renderItem={(item) => (
+                        <div
+                            style={{
+                                display: 'flex',
+                                justifyContent: 'center',
+                                alignItems: 'center',
+                                objectFit: 'contain',
+                            }}
+                        >
+                            <img
+                                src={item.original}
+                                style={{
+                                    objectFit: 'contain',
+                                    maxWidth: '800px',
+                                    width: 'auto',
+                                    height: '400px',
+                                }}
+                            />
+                        </div>
+                    )}
+                />
+            )}
         </div>
     );
 }

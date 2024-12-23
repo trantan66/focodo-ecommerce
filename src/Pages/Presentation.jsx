@@ -1,10 +1,6 @@
-import React from "react";
-import PrePage from "../Components/AboutUs/PrePage";
+import React from 'react';
+import PrePage from '../Components/AboutUs/PrePage';
 function Presentation() {
-  return (
-    <div>
-      <PrePage/>
-    </div>
-  );
+    return <PrePage />;
 }
 export default Presentation;

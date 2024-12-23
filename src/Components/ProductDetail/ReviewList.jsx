@@ -7,7 +7,7 @@ import { StarFilled, StarOutlined } from '@ant-design/icons';
 import Rating from 'react-rating';
 function ReviewsCount(props) {
     return (
-        <div className="mt-4 ">
+        <div className="mt-5">
             <p className="text-[24px] italic font-semibold">Đánh giá</p>
             <div className="flex mt-3 justify-center">
                 <div className="flex flex-col bg-[#F5F5F7] rounded-[15%] size-[200px]">
@@ -27,27 +27,47 @@ function ReviewsCount(props) {
                 <div style={{ width: '500px' }} className="mx-4 my-2 ">
                     <div className="flex">
                         <p className="text-[12px] w-[75px] mt-1">Rất tốt</p>
-                        <Progress percent={props.verygood/props.total*100} strokeColor="#FFB84D" showInfo={false}></Progress>
+                        <Progress
+                            percent={(props.verygood / props.total) * 100}
+                            strokeColor="#FFB84D"
+                            showInfo={false}
+                        ></Progress>
                         <p className="mx-3">{props.verygood}</p>
                     </div>
                     <div className="flex mt-3.5">
                         <p className="text-[12px] w-[75px] mt-1">Tốt</p>
-                        <Progress percent={props.good/props.total*100} strokeColor="#FFB84D" showInfo={false}></Progress>
+                        <Progress
+                            percent={(props.good / props.total) * 100}
+                            strokeColor="#FFB84D"
+                            showInfo={false}
+                        ></Progress>
                         <p className="mx-3">{props.good}</p>
                     </div>
                     <div className="flex mt-3.5">
                         <p className="text-[12px] w-[75px] mt-1">Trung bình </p>
-                        <Progress percent={props.normal/props.total*100} strokeColor="#FFB84D" showInfo={false}></Progress>
+                        <Progress
+                            percent={(props.normal / props.total) * 100}
+                            strokeColor="#FFB84D"
+                            showInfo={false}
+                        ></Progress>
                         <p className="mx-3">{props.normal}</p>
                     </div>
                     <div className="flex mt-3.5">
                         <p className="text-[12px] w-[75px] mt-1">Tệ</p>
-                        <Progress percent={props.bad/props.total*100} strokeColor="#FFB84D" showInfo={false}></Progress>
+                        <Progress
+                            percent={(props.bad / props.total) * 100}
+                            strokeColor="#FFB84D"
+                            showInfo={false}
+                        ></Progress>
                         <p className="mx-3">{props.bad}</p>
                     </div>
                     <div className="flex mt-3.5">
                         <p className="text-[12px] w-[75px] mt-1">Rất tệ</p>
-                        <Progress percent={props.verybad/props.total*100} strokeColor="#FFB84D" showInfo={false}></Progress>
+                        <Progress
+                            percent={(props.verybad / props.total) * 100}
+                            strokeColor="#FFB84D"
+                            showInfo={false}
+                        ></Progress>
                         <p className="mx-3">{props.verybad}</p>
                     </div>
                 </div>

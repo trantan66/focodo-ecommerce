@@ -1,10 +1,6 @@
 import React from 'react';
 import Guide from '../Components/GuidePage/Guide';
 function GuidePage() {
-    return (
-        <div>
-            <Guide />
-        </div>
-    );
+    return <Guide />;
 }
 export default GuidePage;

@@ -37,7 +37,6 @@ function ProductList() {
             const { data, total } = await fetchProductsByCategoryFromAPI(categoryId, currentPage, productsPerPage);
             setProducts(data);
             setTotalProducts(total);
-            console.log(data);
         } catch (error) {
             console.error('Lỗi khi lấy sản phẩm:', error);
         }
@@ -90,9 +89,9 @@ function ProductList() {
     //     console.log('Sorted Products:', sortedProducts);
     // }, [sortedProducts]);
     return (
-        <div className="flex justify-center mx-auto my-4 w-[1200px]">
+        <div className="flex mx-auto py-4 w-[1200px]">
             <Filter />
-            <div className="">
+            <div className="w-[100%]">
                 <div className="flex ml-10">
                     <span>Số lượng sản phẩm: </span>
                     <span className="font-bold ml-1">{totalProducts}</span>

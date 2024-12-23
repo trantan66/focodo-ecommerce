@@ -13,18 +13,18 @@ function Navigation() {
     const items = [
         {
             label: (
-                <Link to="/" className="no-underline hover:no-underline">
+                <a href="/" className="no-underline hover:no-underline">
                     Trang chủ
-                </Link>
+                </a>
             ),
             key: '/',
             icon: <HomeOutlined />,
         },
         {
             label: (
-                <Link to="product/1" className="no-underline hover:no-underline">
+                <a href="/product/1" className="no-underline hover:no-underline">
                     Danh mục sản phẩm
-                </Link>
+                </a>
             ),
 
             key: 'product',
@@ -32,27 +32,27 @@ function Navigation() {
         },
         {
             label: (
-                <Link to="guidepage" className="no-underline hover:no-underline">
+                <a href="/guidepage" className="no-underline hover:no-underline">
                     Hướng dẫn
-                </Link>
+                </a>
             ),
             key: 'guide',
             icon: <BookOutlined />,
         },
         {
             label: (
-                <Link to="presentation" className="no-underline hover:no-underline">
+                <a href="/presentation" className="no-underline hover:no-underline">
                     Giới thiệu
-                </Link>
+                </a>
             ),
             key: 'presentation',
             icon: <UsergroupAddOutlined />,
         },
         {
             label: (
-                <Link to="contact" className="no-underline hover:no-underline">
+                <a href="/contact" className="no-underline hover:no-underline">
                     Liên hệ
-                </Link>
+                </a>
             ),
             key: 'contact',
             icon: <ContactsOutlined />,

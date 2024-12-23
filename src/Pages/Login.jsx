@@ -1,9 +1,9 @@
 import { Input } from 'antd';
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { login } from '../Services/AuthService';
 import { getUserFromToken } from '../Services/UserService';
 import useAuth from '../Hooks/useAuth';
-import { useNavigate, useLocation } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import useCart from '../Hooks/useCart';
 const Login = () => {
     const { auth, setAuth } = useAuth();
@@ -13,10 +13,13 @@ const Login = () => {
     const [error, setError] = useState('');
 
     const navigate = useNavigate();
-    const location = useLocation();
-    const from = location.state?.from?.pathname || '/';
     const handleLogin = async (e) => {
         e.preventDefault();
+
+        if (!username.trim() || !password.trim()) {
+            setError('Vui lòng nhập tên đăng nhập và mật khẩu');
+            return;
+        }
         try {
             const response = await login(username, password);
             if (response && response.result) {

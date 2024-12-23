@@ -3,12 +3,7 @@ import Content from '../Components/ReviewPage/Content';
 import { useParams } from 'react-router-dom';
 
 function ReviewPage() {
-
-    return (
-        <div >
-            <Content/>
-        </div>
-    );
+    return <Content />;
 }
 
 export default ReviewPage;

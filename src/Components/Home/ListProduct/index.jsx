@@ -41,7 +41,9 @@ function ListProduct() {
                     <div className="w-full h-auto flex justify-center items-center">
                         <div className="grid grid-cols-4 gap-4 w-[1200px]">
                             {products.map((product) => (
-                                <ProductCard product={product} />
+                                <div key={product.id}>
+                                    <ProductCard product={product} />
+                                </div>
                             ))}
                         </div>
                     </div>
