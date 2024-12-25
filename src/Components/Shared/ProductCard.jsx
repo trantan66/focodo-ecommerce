@@ -56,7 +56,7 @@ const ProductCard = ({ product }) => {
     return (
         <div key={product.id} className="bg-[#F6F6F6] p-[15px] rounded-[8px]">
             <a href={`/productdetail/${product.id}`} className="outline-none">
-                <img src={product.image} alt={product.name} className="w-full h-[200px] object-cover" />
+                <img src={product.image} alt={product.name} className="w-full h-[250px] object-cover" />
             </a>
 
             <div className="text-[17px] font-semibold mt-[8px] h-[26px] line-clamp-1">
@@ -89,7 +89,7 @@ const ProductCard = ({ product }) => {
                         </div>
                         <div className="flex items-center justify-center leading-[18px] h-[18px] p-[5px] bg-green-500 rounded-[8px]">
                             <span className="inline-block text-white font-bold text-[15px]">
-                                {product.discount * 100}%
+                                {(product.discount * 100).toFixed(0)}%
                             </span>
                         </div>
                     </div>

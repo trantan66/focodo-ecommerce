@@ -42,9 +42,6 @@ function Slider() {
                     <p className="italic text-xl font-normal text-left ml-[50px] mt-[25px] text-black">
                         Món đặc sản mà bất cứ ai đến với vùng đất cố đô cũng muốn mang về làm quà
                     </p>
-                    <button className="w-[200px] h-[50px] bg-white ml-[50px] mt-[25px] text-black font-normal text-center rounded border border-black">
-                        Mua sắm nào!!
-                    </button>
                 </div>
                 <div className="row-span-2 w-full h-full" style={{ backgroundColor: '#EDEDED' }}>
                     <img src={mexung} alt="Mè xửng" className="w-[300px] h-[500px] mt-[50px] ml-auto object-cover" />

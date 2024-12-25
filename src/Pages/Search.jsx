@@ -40,7 +40,7 @@ const Search = () => {
         query &&
         loading == false && (
             <div className="max-w-[1200px] mx-auto px-[15px] mb-[20px]">
-                <ul className="flex items-center py-[10px] text-[14px]">
+                <ul className="list-none flex items-center py-[10px] text-[14px]">
                     <li>
                         <a href="/" className="hover:no-underline">
                             Trang chủ

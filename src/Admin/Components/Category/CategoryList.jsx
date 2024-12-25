@@ -40,13 +40,12 @@ function CategoryList() {
     const [descriptionUpdate, setDesciptionUpdate] = useState();
     const [parentCategoryUpdate, setParentcategoryUpdate] = useState();
     const [imageUpdate, setImageUpdate] = useState();
-    const [checkImageQuantityUpdate, setCheckImageQuantityUpdate] = useState(true);
+    const [checkImageQuantityUpdate, setCheckImageQuantityUpdate] = useState(false);
     const [idCategory, setIdCategory] = useState();
 
     const fetchCategoryById = async (categoryId) => {
         try {
             const { data } = await fetchCategoryByIdFromAPI(categoryId);
-
             setNameUpdate(data.name);
             setDesciptionUpdate(data.description);
             setParentcategoryUpdate(data.parent_category);

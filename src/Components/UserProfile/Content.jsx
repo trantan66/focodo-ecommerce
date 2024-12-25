@@ -5,7 +5,7 @@ import { Orders, ProductList } from './OrderList';
 import './Style.css';
 import { fetchOrderByStatus } from '../../Services/OrderService';
 import useAuth from '../../Hooks/useAuth';
-import homelander from '../image/avatar/homelander.jpg';
+import default_avatar from '../image/avatar/default_avatar.png';
 import { checkPassword, updatePasswordToAPI } from '../../Services/UserService';
 import order from '../Shared/image/shipping_3900732.png';
 import { fetchReviewsOfUserFromAPI, updateReview } from '../../Services/ReviewService';
@@ -494,7 +494,7 @@ function Content() {
     return (
         <div>
             <div className="flex mx-5 my-3 gap-3">
-                <img src={auth.user.avatar || homelander} alt="" className="w-12 h-12 rounded-full " />
+                <img src={auth.user.avatar || default_avatar} alt="" className="w-12 h-12 rounded-full " />
                 <div className="">
                     <p className="text-[16px] font-semibold ">{auth.user.full_name}</p>
                     <p className="text-[14px]  ">{auth.user.username}</p>

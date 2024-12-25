@@ -55,12 +55,12 @@ function CompleteOrder() {
                         <p>Mã đơn hàng: {order?.id}</p> {/* Hiển thị mã đơn hàng từ order */}
                         <p>
                             Nhân viên bán hàng của Focodo Ecommerce sẽ sớm liên hệ với quý khách bằng đó điện thoại
-                            0123456789. Quý khách vui lòng nghe máy để xác nhận đơn hàng
+                            0338649496. Quý khách vui lòng nghe máy để xác nhận đơn hàng
                         </p>
                         <p>
                             Để thuận lợi trong việc thanh toán. Quý khách chỉ thanh toán sau khi nhận cuộc gọi xác nhận
-                            đơn hàng. Quý khách vui lòng gọi hotline 20123456789 để được hỗ trợ trong thời gian sớm
-                            nhất. Xin cảm ơn
+                            đơn hàng. Quý khách vui lòng gọi hotline 0911858888 để được hỗ trợ trong thời gian sớm nhất.
+                            Xin cảm ơn
                         </p>
                         <p>Rất hân hạnh được phục vụ.</p>
                     </div>

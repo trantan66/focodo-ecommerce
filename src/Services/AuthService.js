@@ -5,7 +5,7 @@ const login = async (username, password) => {
 };
 
 const register = async ({ fullName, email, phone, username, password }) => {
-    return await axiosInstance.post('/auth/register', { fullName, email, phone, username, password });
+    return await axiosInstance.post('/auth/register', { full_name: fullName, email, phone, username, password });
 };
 
 const checkTokenExpired = async (token) => {

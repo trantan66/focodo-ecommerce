@@ -31,6 +31,12 @@ const Register = () => {
             return;
         }
 
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailRegex.test(email)) {
+            setError('Email không hợp lệ.');
+            return;
+        }
+
         if (password.length < 6) {
             setError('Mật khẩu phải có ít nhất 6 ký tự.');
             return;
@@ -53,6 +59,10 @@ const Register = () => {
                 navigate('/login', { replace: true });
             }
         } catch (e) {
+            if (e.response.data.code === 1021) {
+                setError('Số điện thoại đã được sử dụng');
+                return;
+            }
             console.log(e);
             setError('Đăng ký thất bại, vui lòng thử lại.');
         }

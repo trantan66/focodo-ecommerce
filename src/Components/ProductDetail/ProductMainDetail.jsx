@@ -116,8 +116,12 @@ function ProductDetail(props) {
                     />
                 </div>
                 <div className="mx-3">
-                    <p className="mt-2 text-[25px] font-semibold">{props.name}</p>
-                    <p className="opacity-50 italic text-[16px]">{props.subcription}</p>
+                    <p className="mb-2 text-[25px] font-semibold">{props.name}</p>
+
+                    <div
+                        dangerouslySetInnerHTML={{ __html: props.subcription }}
+                        className="sub_content text-[14px]"
+                    ></div>
                     <div className="flex gap-4">
                         {props.saleprice != props.price ? (
                             <p className="text-[22px] text-gray-500 line-through font-semibold italic mt-2 mb-2">
@@ -153,17 +157,27 @@ function ProductDetail(props) {
                             Thêm vào giỏ hàng
                         </button>
                         <button className="bg-[#00abff] text-white min-w-[200px] font-semibold py-[10px] px-[15px] rounded-lg hover:bg-[#0089cc] transition duration-300 ml-4">
-                            <a href="" className="hover:no-underline hover:text-white">
+                            <a
+                                href="http://zalo.me/0338649496"
+                                target="_blank"
+                                className="block hover:no-underline hover:text-white"
+                            >
                                 Zalo
                             </a>
                         </button>
                     </div>
                     <div className="flex mt-2">
                         <button className=" bg-[#21569a] text-white border border-black min-w-[200px] font-semibold py-[10px] px-[15px] rounded-lg hover:bg-[#1a457b] transition duration-300 ">
-                            Messenger
+                            <a
+                                href="https://www.messenger.com/t/544722352048370"
+                                target="_blank"
+                                className="block hover:no-underline hover:text-white"
+                            >
+                                Messenger
+                            </a>
                         </button>
                         <button className="bg-[#a349a3] text-white min-w-[200px] font-semibold py-[10px] px-[15px] rounded-lg hover:opacity-[0.9] transition duration-300 ml-4">
-                            <a href="" className="hover:no-underline hover:text-white">
+                            <a href="tel:0338649496" className="block hover:no-underline hover:text-white">
                                 CSKH: 033.864.9496
                             </a>
                         </button>
@@ -179,7 +193,7 @@ function ProductDetail(props) {
             </div>
             <div className="mt-5">
                 <p className="text-[24px] italic font-semibold">Mô tả </p>
-                <div dangerouslySetInnerHTML={{ __html: props.description }} className="mt-3"></div>
+                <div dangerouslySetInnerHTML={{ __html: props.description }} className="mt-3 main_content"></div>
             </div>
         </div>
     );

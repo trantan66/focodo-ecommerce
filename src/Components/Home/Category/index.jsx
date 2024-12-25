@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import comhen from '../image/comhen.jpg';
 import { getCategoriesByOptions } from '../../../Services/CategoryService';
 function Category() {
-    const options = ['Bánh Huế', 'Mè xửng', 'Hạt sen Huế', 'Mắm Cô Ri'];
+    const options = ['Bánh Huế', 'Mè xửng', 'Hạt sen Huế', 'Mắm Huế'];
     const [categories, setCategories] = useState();
     const fetchCategories = async () => {
         const response = await getCategoriesByOptions(options);

@@ -10,7 +10,10 @@ function Intro() {
                     <p className="ml-[250px] mt-[150px] text-xl text-gray-500">Welcome to</p>
                     <p className="ml-[250px] mt-[20px] text-8xl text-white font-medium">FoCoDo</p>
                     <p className="ml-[250px] mt-[20px] text-xl text-gray-500">Món ăn đặc trung mang hương vị xứ Huế</p>
-                    <button className="w-[200px] h-[50px] bg-white ml-[250px] mt-[25px] text-black font-normal text-center rounded border-black border-[1px] hover:opacity-[0.8]">
+                    <button
+                        onClick={() => (window.location.href = '/product/1')}
+                        className="w-[200px] h-[50px] bg-white ml-[250px] mt-[25px] text-black font-normal text-center rounded border-black border-[1px] hover:opacity-[0.8]"
+                    >
                         Mua sắm nào!!
                     </button>
                 </div>

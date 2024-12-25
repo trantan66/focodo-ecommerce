@@ -2,7 +2,7 @@ import { useParams } from 'react-router-dom';
 import { Pagination, Rate } from 'antd';
 import { useEffect, useRef, useState } from 'react';
 import { fetchReviewByIdFromAPI } from '../../Services/ReviewService';
-import sigma from '../image/avatar/sigma.jpg';
+import default_avatar from '../image/avatar/default_avatar.png';
 import ImageGallery from 'react-image-gallery';
 
 function Comment(props) {
@@ -129,7 +129,7 @@ function ReviewDisplay() {
                         ' ' +
                         item.date.split('T')[1].split('.')[0]
                     }
-                    avatar={item.user.avatar || sigma}
+                    avatar={item.user.avatar || default_avatar}
                     name={item.user.full_name}
                     rate={item.rating}
                     content={item.content}
