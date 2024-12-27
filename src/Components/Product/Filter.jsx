@@ -21,16 +21,12 @@ function Filter() {
         fetchCategories();
     }, []);
     const handlePanelClick = (id) => {
-        console.log(id);
-        navigate(`/product/${id}`);
-        window.location.reload();
+        window.location.href = `/product/${id}`;
 
         // Thực hiện các hành động khác ở đây
     };
     const handleClick = (id) => {
-        console.log(id);
-        navigate(`/product/${id}`);
-        window.location.reload();
+        window.location.href = `/product/${id}`;
         // Thực hiện các hành động khác ở đây
     };
     return (

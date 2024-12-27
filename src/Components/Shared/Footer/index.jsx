@@ -63,17 +63,6 @@ function Footer() {
                 </div>
                 <div className="mt-[20px]">
                     <div className="w-[225px] mx-auto">
-                        <a href="https://twitter.com/" target="_blank" rel="noreferrer">
-                            <TwitterOutlined
-                                style={{
-                                    backgroundColor: '#1DA1F2',
-                                    color: '#ffffff',
-                                    padding: '10px',
-                                    borderRadius: '50%',
-                                    margin: '10px',
-                                }}
-                            />
-                        </a>
                         <a
                             href="https://www.facebook.com/profile.php?id=61570908876111"
                             target="_blank"
@@ -89,11 +78,7 @@ function Footer() {
                                 }}
                             />
                         </a>
-                        <a
-                            href="https://www.facebook.com/profile.php?id=61570908876111"
-                            target="_blank"
-                            rel="noreferrer"
-                        >
+                        <a href="https://www.tiktok.com/@dacsanhue.focodo" target="_blank" rel="noreferrer">
                             <TikTokOutlined
                                 style={{
                                     backgroundColor: '#000000',

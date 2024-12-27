@@ -298,7 +298,11 @@ function Content() {
                             reviews.map((item, index) => (
                                 <div key={index} className="flex flex-col gap-3 my-4 mx-2  pt-3">
                                     <div className="flex">
-                                        <img className="h-[100px] w-[150px]" src={item.product.image} alt="" />
+                                        <img
+                                            className="h-[100px] w-[100px] object-cover"
+                                            src={item.product.image}
+                                            alt=""
+                                        />
                                         <p className="text-[16px] italic font-semibold mx-2">{item.product.name}</p>
                                         <button
                                             onClick={() => {
@@ -434,10 +438,10 @@ function Content() {
                                             </div>
                                         </Modal>
                                     </div>
-                                    <div className="flex flex-col mb-3 rounded-md border-t border-gray-400">
-                                        <div className="flex ml-2 pb-3">
+                                    <div className="flex flex-col mb-3 border-t border-gray-400">
+                                        <div className="flex ml-2 py-3">
                                             <img
-                                                src={item.user.avatar}
+                                                src={item.user.avatar || default_avatar}
                                                 alt=""
                                                 className="max-w-[56px] max-h-[56px] rounded-full"
                                             />

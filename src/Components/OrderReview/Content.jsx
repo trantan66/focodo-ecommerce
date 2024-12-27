@@ -3,6 +3,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { fetchReviewsOfOrderFromAPI, updateReview } from '../../Services/ReviewService';
 import { Button, Modal, Rate, Spin, notification } from 'antd';
 import TextArea from 'antd/es/input/TextArea';
+import default_avatar from '../image/avatar/default_avatar.png';
 
 function Content() {
     const [reviews, setReviews] = useState([]);
@@ -108,6 +109,7 @@ function Content() {
                                 Chỉnh sửa
                             </button>
                             <Modal
+                                onCancel={() => setOpenModalId(null)}
                                 closable={false}
                                 afterClose={reset}
                                 footer={null}
@@ -216,9 +218,13 @@ function Content() {
                                 </div>
                             </Modal>
                         </div>
-                        <div className="flex flex-col mb-3 rounded-md border-t border-gray-400">
-                            <div className="flex ml-2 pb-3">
-                                <img src={item.user.avatar} alt="" className="max-w-[56px] max-h-[56px] rounded-full" />
+                        <div className="flex flex-col mb-3 border-t border-gray-400">
+                            <div className="flex ml-2 py-3">
+                                <img
+                                    src={item.user.avatar || default_avatar}
+                                    alt=""
+                                    className="max-w-[56px] max-h-[56px] rounded-full"
+                                />
                                 <div className="ml-2">
                                     <p className="text-[17px] font-semibold italic">{item.user.full_name}</p>
                                     <p className="text-[14px] opacity-50 italic mr-2 mt-1">

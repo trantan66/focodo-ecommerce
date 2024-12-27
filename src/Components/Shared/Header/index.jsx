@@ -241,13 +241,15 @@ function Header() {
                                                 {products && products.length > 0 ? (
                                                     products.map((product, index) => (
                                                         <div key={product.id_cart} className="flex items-center mb-2">
-                                                            <img
-                                                                src={product.image}
-                                                                alt={product.product_name}
-                                                                className="w-[75px] h-[75px] object-cover"
-                                                            />
+                                                            <div className="w-[75px] h-[75px]">
+                                                                <img
+                                                                    src={product.image}
+                                                                    alt={product.product_name}
+                                                                    className="object-cover w-full h-full"
+                                                                />
+                                                            </div>
                                                             <div className="ml-[10px] flex justify-between w-full">
-                                                                <div>
+                                                                <div className="mr-[10px]">
                                                                     <p className="font-medium text-lg">
                                                                         {product.product_name}
                                                                     </p>
@@ -303,34 +305,21 @@ function Header() {
 
                                             <p className="font-medium text-center text-xl mb-[10px]">GIỎ HÀNG</p>
 
-                                            <div className="mt-[15px] mb-[15px] space-y-1">
-                                                <div className="w-full flex justify-between font-medium text-lg ">
-                                                    <p>Tạm tính:</p>
-                                                    <p className="">{formatCurrency(calculateOriginPrice())}</p>
-                                                </div>
-                                                <div className="w-full flex justify-between font-medium text-lg ">
-                                                    <p>Giảm giá:</p>
-                                                    <p className="">{formatCurrency(discount)}</p>
-                                                </div>
-                                                <div className="w-full flex justify-between font-medium text-lg ">
-                                                    <p>Tổng tiền:</p>
-                                                    <p className="text-red-500">
-                                                        {formatCurrency(calculateFinalPrice())}
-                                                    </p>
-                                                </div>
+                                            <div className="mt-[15px] text-center mb-[15px] space-y-1">
+                                                Vui lòng đăng nhập để xem giỏ hàng
                                             </div>
                                             <div className="w-full flex justify-between">
                                                 <button
-                                                    className="w-[48%] h-[50px] font-medium rounded border border-black-500"
-                                                    onClick={handleToCart}
+                                                    className="w-[48%] h-[50px] font-medium rounded border border-black-500 hover:opacity-80"
+                                                    onClick={() => (window.location.href = '/login')}
                                                 >
-                                                    Chỉnh sửa giỏ hàng
+                                                    Đăng nhập
                                                 </button>
                                                 <button
-                                                    className="w-[48%] h-[50px] font-medium rounded border border-black bg-black text-white"
-                                                    onClick={handleToOrder}
+                                                    className="w-[48%] h-[50px] font-medium rounded border border-black bg-black text-white hover:opacity-80"
+                                                    onClick={() => (window.location.href = '/register')}
                                                 >
-                                                    Thanh toán
+                                                    Đăng ký
                                                 </button>
                                             </div>
                                         </div>

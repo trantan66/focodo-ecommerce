@@ -60,10 +60,6 @@ function App() {
                     <Route path="contact" element={<ContactPage />} />
 
                     <Route path="productdetail/:id" element={<ProductDetail />} />
-                    <Route path="cart" element={<Cart />}></Route>
-                    <Route path="order" element={<Order />}></Route>
-                    <Route path="orderdetail/:id" element={<OrderDetail />}></Route>
-                    <Route path="orderreviews/:id_order" element={<OrderReviews />}></Route>
                     <Route element={<AuthRoutes />}>
                         <Route path="login" element={<Login />}></Route>
                         <Route path="register" element={<Register />}></Route>
@@ -73,6 +69,10 @@ function App() {
                     </Route>
                     <Route element={<PrivateRoutes allowedRoles={[roles.user, roles.admin]} />}>
                         <Route path="userprofile" element={<UserProfile />} />
+                        <Route path="cart" element={<Cart />}></Route>
+                        <Route path="order" element={<Order />}></Route>
+                        <Route path="orderdetail/:id" element={<OrderDetail />}></Route>
+                        <Route path="orderreviews/:id_order" element={<OrderReviews />}></Route>
                     </Route>
                 </Route>
                 <Route element={<PrivateRoutes allowedRoles={[roles.admin]} />}>
