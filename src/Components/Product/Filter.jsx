@@ -21,26 +21,22 @@ function Filter() {
         fetchCategories();
     }, []);
     const handlePanelClick = (id) => {
-        console.log(id);
-        navigate(`/product/${id}`);
-        window.location.reload();
+        window.location.href = `/product/${id}`;
 
         // Thực hiện các hành động khác ở đây
     };
     const handleClick = (id) => {
-        console.log(id);
-        navigate(`/product/${id}`);
-        window.location.reload();
+        window.location.href = `/product/${id}`;
         // Thực hiện các hành động khác ở đây
     };
     return (
-        <div className="">
-            <p className="text-[14px] font-semibold mb-3">DANH MỤC SẢN PHẨM</p>
+        <div>
+            <p className=" w-[180px] text-[14px] font-semibold mb-3">DANH MỤC SẢN PHẨM</p>
 
             <Collapse
                 style={{
                     background: 'none',
-                    height: '830px', // Giới hạn chiều cao
+                    height: '900px', // Giới hạn chiều cao
                     overflowY: 'auto', // Thêm cuộn dọc
                 }}
                 collapsible="icon"

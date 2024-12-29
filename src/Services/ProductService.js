@@ -16,7 +16,7 @@ export const fetchProductsFromAPI = async (page, size) => {
 
 export const fetchCategoriesForProductFromAPI = async () => {
     try {
-        const response = await axiosInstance.get(`categories/all`);
+        const response = await axiosInstance.get(`categories/getAllCategories`);
         return {
             data: response.result,
         };

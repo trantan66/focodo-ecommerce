@@ -99,7 +99,7 @@ const RelatedProductList = () => {
     };
     return (
         <div>
-            {relatedProducts.length > 0 && (
+            {relatedProducts.length > 1 && (
                 <div className="mt-[30px]">
                     <div className="text-[28px] mb-[30px] font-semibold flex items-center justify-center ">
                         Sản phẩm liên quan

@@ -11,7 +11,7 @@ function ListProduct() {
             label: 'Bán chạy',
         },
         {
-            key: '8',
+            key: '3',
             label: 'Khuyến mãi',
         },
     ];

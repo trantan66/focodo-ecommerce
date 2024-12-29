@@ -63,42 +63,47 @@ function Footer() {
                 </div>
                 <div className="mt-[20px]">
                     <div className="w-[225px] mx-auto">
-                        <TwitterOutlined
-                            style={{
-                                backgroundColor: '#1DA1F2',
-                                color: '#ffffff',
-                                padding: '10px',
-                                borderRadius: '50%',
-                                margin: '10px',
-                            }}
-                        />
-                        <FacebookOutlined
-                            style={{
-                                backgroundColor: '#1877F2',
-                                color: '#ffffff',
-                                padding: '10px',
-                                borderRadius: '50%',
-                                margin: '10px',
-                            }}
-                        />
-                        <TikTokOutlined
-                            style={{
-                                backgroundColor: '#000000',
-                                color: '#ffffff',
-                                padding: '10px',
-                                borderRadius: '50%',
-                                margin: '10px',
-                            }}
-                        />
-                        <InstagramOutlined
-                            style={{
-                                backgroundColor: '#E1306C',
-                                color: '#ffffff',
-                                padding: '10px',
-                                borderRadius: '50%',
-                                margin: '10px',
-                            }}
-                        />
+                        <a
+                            href="https://www.facebook.com/profile.php?id=61570908876111"
+                            target="_blank"
+                            rel="noreferrer"
+                        >
+                            <FacebookOutlined
+                                style={{
+                                    backgroundColor: '#1877F2',
+                                    color: '#ffffff',
+                                    padding: '10px',
+                                    borderRadius: '50%',
+                                    margin: '10px',
+                                }}
+                            />
+                        </a>
+                        <a href="https://www.tiktok.com/@dacsanhue.focodo" target="_blank" rel="noreferrer">
+                            <TikTokOutlined
+                                style={{
+                                    backgroundColor: '#000000',
+                                    color: '#ffffff',
+                                    padding: '10px',
+                                    borderRadius: '50%',
+                                    margin: '10px',
+                                }}
+                            />
+                        </a>
+                        <a
+                            href="https://www.facebook.com/profile.php?id=61570908876111"
+                            target="_blank"
+                            rel="noreferrer"
+                        >
+                            <InstagramOutlined
+                                style={{
+                                    backgroundColor: '#E1306C',
+                                    color: '#ffffff',
+                                    padding: '10px',
+                                    borderRadius: '50%',
+                                    margin: '10px',
+                                }}
+                            />
+                        </a>
                     </div>
                 </div>
             </div>

@@ -69,6 +69,7 @@ function Order() {
     const handleProvinceChange = (e) => {
         setSelectedProvince(e.target.value);
         setSelectedDistrict('');
+        setSelectedCommune('');
     };
     // Change district
     const handleDistrictChange = (e) => {
@@ -243,7 +244,13 @@ function Order() {
         const fullName = document.querySelector('input[name="full_name"]').value;
         const phone = document.querySelector('input[name="phone"]').value;
         const address = document.querySelector('input[name="address"]').value;
-
+        if (!fullName || !phone || !address) {
+            notification.error({
+                message: 'Lỗi!',
+                description: 'Vui lòng điền đầy đủ thông tin giao hàng.',
+            });
+            return;
+        }
         const Customer = {
             full_name: fullName,
             phone: phone,

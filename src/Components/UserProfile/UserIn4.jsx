@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Input, Upload, Button, notification, Spin } from 'antd';
 import { UploadOutlined } from '@ant-design/icons';
-import homelander from '../image/avatar/homelander.jpg';
+import default_avatar from '../image/avatar/default_avatar.png';
 import './Style.css';
 import axios from 'axios';
 import { updateAvatarToAPI, updateProfileToAPI } from '../../Services/UserService';
@@ -13,7 +13,7 @@ function UserIn4({ data }) {
     const [name, setName] = useState('');
     const [email, setEmail] = useState('');
     const [phone, setPhone] = useState('');
-    const [avatar, setAvatar] = useState('');
+    const [avatar, setAvatar] = useState();
     const [address, setAddress] = useState('');
     const [loading, setLoading] = useState(false);
     const [provinces, setProvinces] = useState([]); // State để lưu danh sách tỉnh/thành phố
@@ -29,7 +29,7 @@ function UserIn4({ data }) {
             setName(data.full_name || '');
             setEmail(data.email || '');
             setPhone(data.phone || '');
-            setAvatar(data.avatar || homelander);
+            setAvatar(data.avatar || default_avatar);
             setAddress(data.address || '');
             setSelectedProvince(data.province || '');
             setSelectedDistrict(data.district || '');
@@ -117,7 +117,9 @@ function UserIn4({ data }) {
         // console.log(UserProfileRequest);
         try {
             await updateProfileToAPI(UserProfileRequest);
-            if (avatar && avatar !== data.avatar) {
+            if (avatar && avatar !== default_avatar) {
+                console.log(avatar !== default_avatar);
+                console.log(data.avatar);
                 await updateAvatarToAPI(avatar);
             }
         } catch (error) {

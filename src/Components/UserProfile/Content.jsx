@@ -5,7 +5,7 @@ import { Orders, ProductList } from './OrderList';
 import './Style.css';
 import { fetchOrderByStatus } from '../../Services/OrderService';
 import useAuth from '../../Hooks/useAuth';
-import homelander from '../image/avatar/homelander.jpg';
+import default_avatar from '../image/avatar/default_avatar.png';
 import { checkPassword, updatePasswordToAPI } from '../../Services/UserService';
 import order from '../Shared/image/shipping_3900732.png';
 import { fetchReviewsOfUserFromAPI, updateReview } from '../../Services/ReviewService';
@@ -298,7 +298,11 @@ function Content() {
                             reviews.map((item, index) => (
                                 <div key={index} className="flex flex-col gap-3 my-4 mx-2  pt-3">
                                     <div className="flex">
-                                        <img className="h-[100px] w-[150px]" src={item.product.image} alt="" />
+                                        <img
+                                            className="h-[100px] w-[100px] object-cover"
+                                            src={item.product.image}
+                                            alt=""
+                                        />
                                         <p className="text-[16px] italic font-semibold mx-2">{item.product.name}</p>
                                         <button
                                             onClick={() => {
@@ -434,10 +438,10 @@ function Content() {
                                             </div>
                                         </Modal>
                                     </div>
-                                    <div className="flex flex-col mb-3 rounded-md border-t border-gray-400">
-                                        <div className="flex ml-2 pb-3">
+                                    <div className="flex flex-col mb-3 border-t border-gray-400">
+                                        <div className="flex ml-2 py-3">
                                             <img
-                                                src={item.user.avatar}
+                                                src={item.user.avatar || default_avatar}
                                                 alt=""
                                                 className="max-w-[56px] max-h-[56px] rounded-full"
                                             />
@@ -494,7 +498,7 @@ function Content() {
     return (
         <div>
             <div className="flex mx-5 my-3 gap-3">
-                <img src={auth.user.avatar || homelander} alt="" className="w-12 h-12 rounded-full " />
+                <img src={auth.user.avatar || default_avatar} alt="" className="w-12 h-12 rounded-full " />
                 <div className="">
                     <p className="text-[16px] font-semibold ">{auth.user.full_name}</p>
                     <p className="text-[14px]  ">{auth.user.username}</p>

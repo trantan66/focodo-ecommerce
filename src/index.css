@@ -1,6 +1,11 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+ul,
+ol,
+menu {
+    list-style: disc;
+}
 .slick-slider {
     max-width: 100% !important;
 }
@@ -63,4 +68,42 @@
 
 .image-gallery.fullscreen-modal {
     z-index: 100 !important;
+}
+
+.main_content ul li,
+.main_content ol li {
+    margin-left: 30px;
+    margin-bottom: 8px;
+}
+
+.sub_content ul li,
+.sub_content ol li {
+    margin-left: 20px;
+}
+
+.main_content p,
+.main_content div,
+.main_content h2,
+.main_content h3,
+.main_content h4 {
+    margin-bottom: 15px;
+}
+
+.sub_content p,
+.sub_content h3,
+.sub_content h4 {
+    margin-bottom: 8px;
+}
+
+.main_content h2 {
+    font-size: 24px;
+}
+
+.main_content figcaption {
+    padding: 6px;
+    text-align: center;
+    font-size: 14px;
+    font-style: italic;
+    background-color: rgba(0, 0, 0, 0.05);
+    margin-bottom: 15px;
 }

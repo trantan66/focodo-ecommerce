@@ -9,8 +9,7 @@ import {
     fetchProductByIdFromAPI,
     updateProductToAPI,
 } from '../../../Services/ProductService';
-import { CKEditor } from '@ckeditor/ckeditor5-react';
-import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
+import { Editor } from '@tinymce/tinymce-react';
 import { notification, Select } from 'antd';
 import { FiLoader } from 'react-icons/fi';
 import { fetchAllCategoriesFromAPI } from '../../../Services/CategoryService';
@@ -44,7 +43,7 @@ function ProductDetail() {
     const fetchCategories = async () => {
         try {
             const { data } = await fetchAllCategoriesFromAPI();
-            const filteredCategories = data.filter((category) => category.id !== 1 && category.id !== 2);
+            const filteredCategories = data.filter((category) => category.id !== 1);
             setCategories(filteredCategories);
         } catch (error) {
             console.error('Lỗi khi lấy danh mục:', error);
@@ -57,7 +56,7 @@ function ProductDetail() {
     const fetchProductById = async (productId) => {
         try {
             const { data } = await fetchProductByIdFromAPI(productId);
-            const filteredCategories = data.categories.filter((category) => category.id !== 1 && category.id !== 2);
+            const filteredCategories = data.categories.filter((category) => category.id !== 1);
             setSelectedCategories(filteredCategories);
 
             setCurrentImages(data.images);
@@ -423,28 +422,72 @@ function ProductDetail() {
                                 </div>
                             </div>
 
-                            {/* Descriptions and CKEditor */}
+                            {/* Descriptions and TinyMCE Editor */}
                             <div className="mb-4">
                                 <span className="block text-white mb-2">Mô tả ngắn gọn</span>
-                                <textarea
+                                <Editor
+                                    apiKey="xt97k43424bn6qhuy4nv8v4ufuf1z5tz8y8e0vp38yn8a01g"
                                     value={sub_description}
-                                    onChange={(e) => setSubDescription(e.target.value)}
-                                    className="w-full p-3 border rounded-sm bg-[#282941] text-white focus:outline-none"
-                                    placeholder="Nhập mô tả sản phẩm"
-                                    rows="4"
-                                    required
+                                    onEditorChange={(content) => setSubDescription(content)}
+                                    init={{
+                                        height: 200,
+                                        menubar: false,
+                                        plugins: [
+                                            'advlist autolink lists link image charmap print preview anchor',
+                                            'searchreplace visualblocks code fullscreen',
+                                            'insertdatetime media table paste code help wordcount',
+                                        ],
+                                        toolbar:
+                                            'undo redo | formatselect | bold italic backcolor | \
+                                            alignleft aligncenter alignright alignjustify | \
+                                            bullist numlist outdent indent | removeformat | help',
+                                        content_style:
+                                            'body { font-family:Helvetica,Arial,sans-serif; font-size:14px }',
+                                    }}
                                 />
                             </div>
                             <div className="mb-4">
                                 <span className="block text-white mb-2">Mô tả chi tiết</span>
-                                <CKEditor
-                                    editor={ClassicEditor}
-                                    data={main_description || ''}
-                                    onChange={(event, editor) => {
-                                        const data = editor.getData();
-                                        setMainDescription(data);
+                                <Editor
+                                    apiKey="xt97k43424bn6qhuy4nv8v4ufuf1z5tz8y8e0vp38yn8a01g"
+                                    value={main_description}
+                                    onEditorChange={(content) => setMainDescription(content)}
+                                    init={{
+                                        height: 500,
+                                        menubar: true,
+                                        toolbar_mode: 'wrap',
+                                        plugins: [
+                                            'a11ychecker',
+                                            'advlist',
+                                            'advcode',
+                                            'advtable',
+                                            'autolink',
+                                            'checklist',
+                                            'markdown',
+                                            'lists',
+                                            'link',
+                                            'image',
+                                            'charmap',
+                                            'preview',
+                                            'anchor',
+                                            'searchreplace',
+                                            'visualblocks',
+                                            'powerpaste',
+                                            'fullscreen',
+                                            'formatpainter',
+                                            'insertdatetime',
+                                            'media',
+                                            'table',
+                                            'help',
+                                            'wordcount',
+                                        ],
+                                        toolbar:
+                                            'undo redo | casechange blocks | bold italic backcolor | ' +
+                                            'alignleft aligncenter alignright alignjustify | ' +
+                                            'bullist numlist checklist outdent indent | removeformat | a11ycheck code table help',
+                                        content_style:
+                                            'body { font-family:Helvetica,Arial,sans-serif; font-size:14px }',
                                     }}
-                                    className="w-full p-3 border rounded-sm bg-[#282941] text-white focus:outline-none"
                                 />
                             </div>
 
