@@ -10,6 +10,7 @@ import { MdCancel, MdOutlinePhoneInTalk } from 'react-icons/md';
 import { RiCommunityFill } from 'react-icons/ri';
 import { GiModernCity } from 'react-icons/gi';
 import { GoCheckCircleFill } from 'react-icons/go';
+import { isValidImageType } from '../../../utils/IsValidImageType';
 
 function ProfileUpdate({ data }) {
     const navigate = useNavigate();
@@ -138,9 +139,18 @@ function ProfileUpdate({ data }) {
     const handleFileChange = (event) => {
         const file = event.target.files[0];
         if (file) {
-            setAvatar(file);
-            const fileURL = URL.createObjectURL(file);
-            setPreview(fileURL);
+            if (isValidImageType(file)) {
+                setAvatar(file);
+                const fileURL = URL.createObjectURL(file);
+                setPreview(fileURL);
+            }else{
+                event.target.value = null;
+                notification.error({
+                    message: 'Cập nhập thất bại!',
+                    description: 'Vui lòng chọn một file ảnh hợp lệ (JPEG, PNG, GIF, WEBP)',
+                    duration: 3,
+                });
+            }
         }
     };
     const handleConfirm = async (e) => {

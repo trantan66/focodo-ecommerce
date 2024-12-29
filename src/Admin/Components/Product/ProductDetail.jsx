@@ -14,6 +14,8 @@ import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
 import { notification, Select } from 'antd';
 import { FiLoader } from 'react-icons/fi';
 import { fetchAllCategoriesFromAPI } from '../../../Services/CategoryService';
+import { isValidImageType } from '../../../utils/IsValidImageType';
+import CustomModal from '../../../utils/CustomModal';
 
 function ProductDetail() {
     const { productId } = useParams();
@@ -83,6 +85,49 @@ function ProductDetail() {
         setLoadingScreen(true);
 
         e.preventDefault();
+
+        const isValidInteger = (value) => /^\d+$/.test(value);
+
+        if (!isValidInteger(quantity)) {
+            notification.error({
+                message: 'Lỗi đầu vào!',
+                description: 'Số lượng sản phẩm phải là số nguyên hợp lệ.',
+            });
+            setLoadingIcon(false);
+            setLoadingScreen(false);
+            return;
+        }
+
+        if (!isValidInteger(package_quantity) || parseInt(package_quantity, 10) <= 0) {
+            notification.error({
+                message: 'Lỗi đầu vào!',
+                description: 'Số lượng đóng gói phải là số nguyên lớn hơn 0.',
+            });
+            setLoadingIcon(false);
+            setLoadingScreen(false);
+            return;
+        }
+
+        if (!isValidInteger(original_price)) {
+            notification.error({
+                message: 'Lỗi đầu vào!',
+                description: 'Giá gốc phải là số nguyên hợp lệ.',
+            });
+            setLoadingIcon(false);
+            setLoadingScreen(false);
+            return;
+        }
+
+        if (!isValidInteger(sell_price)) {
+            notification.error({
+                message: 'Lỗi đầu vào!',
+                description: 'Giá bán phải là số nguyên hợp lệ.',
+            });
+            setLoadingIcon(false);
+            setLoadingScreen(false);
+            return;
+        }
+
         const categoryIds = selectedCategories.map((category) => category.id);
         categoryIds.unshift(1);
 
@@ -123,12 +168,21 @@ function ProductDetail() {
 
     const handleImageUpload = (e) => {
         const files = Array.from(e.target.files);
-        setImages(files);
-
-        const previewUrls = files.map((file) => URL.createObjectURL(file));
-        setImagePreviews(previewUrls);
-
-        e.target.value = null;
+        files.forEach((element) => {
+            if (isValidImageType(element)) {
+                setImages(files);
+                const previewUrls = files.map((file) => URL.createObjectURL(file));
+                setImagePreviews(previewUrls);
+                e.target.value = null;
+            } else {
+                e.target.value = null;
+                notification.error({
+                    message: 'Cập nhập thất bại!',
+                    description: 'Vui lòng chọn một file ảnh hợp lệ (JPEG, PNG, GIF, WEBP)',
+                    duration: 3,
+                });
+            }
+        });
     };
 
     const handleRemoveImage = (indexToRemove) => {
@@ -159,48 +213,55 @@ function ProductDetail() {
         setCurrentImages((prevImages) => prevImages.filter((image) => image !== imageToRemove));
     };
     const handleRemoveProduct = async (productId) => {
-        const confirmed = window.confirm('Bạn có chắc chắn muốn ngừng bán sản phẩm này?');
-        if (confirmed) {
-            try {
-                await DeleteProduct(productId);
-                notification.success({
-                    message: 'Cập nhập thành công!',
-                    description: 'Sản phẩm đã được xóa khỏi danh sách.',
-                });
-            } catch (error) {
-                console.error('Error deleting the product:', error);
-                notification.error({
-                    message: 'Có lỗi xảy ra!',
-                    description: 'Không thể xóa sản phẩm. Vui lòng thử lại.',
-                });
-            } finally {
-                await fetchProductById(productId);
-                setIsDelete(!isDelete);
-            }
+        try {
+            await DeleteProduct(productId);
+            notification.success({
+                message: 'Cập nhập thành công!',
+                description: 'Sản phẩm đã bị ngừng bán.',
+            });
+        } catch (error) {
+            console.error('Error deleting the product:', error);
+            notification.error({
+                message: 'Có lỗi xảy ra!',
+                description: 'Không thể ngừng bán sản phẩm. Vui lòng thử lại.',
+            });
+        } finally {
+            await fetchProductById(productId);
+            setIsDelete(!isDelete);
         }
     };
     const handleActiveProduct = async (productId) => {
-        const confirmed = window.confirm('Bạn có chắc chắn muốn bán lại sản phẩm này?');
-        if (confirmed) {
-            try {
-                await ActiveProduct(productId);
-                notification.success({
-                    message: 'Cập nhập thành công!',
-                    description: 'Sản phẩm đã được xóa khỏi danh sách.',
-                });
-            } catch (error) {
-                console.error('Error deleting the product:', error);
-                notification.error({
-                    message: 'Có lỗi xảy ra!',
-                    description: 'Không thể xóa sản phẩm. Vui lòng thử lại.',
-                });
-            } finally {
-                await fetchProductById(productId);
-                setIsDelete(!isDelete);
-            }
+        try {
+            await ActiveProduct(productId);
+            notification.success({
+                message: 'Cập nhập thành công!',
+                description: 'Sản phẩm đã được bán lại.',
+            });
+        } catch (error) {
+            console.error('Error deleting the product:', error);
+            notification.error({
+                message: 'Có lỗi xảy ra!',
+                description: 'Không thể bán lại sản phẩm. Vui lòng thử lại.',
+            });
+        } finally {
+            await fetchProductById(productId);
+            setIsDelete(!isDelete);
         }
     };
+    const [isModalOpen, setIsModalOpen] = useState(false);
 
+    const showModal = () => {
+        setIsModalOpen(true);
+    };
+
+    const handleOk = () => {
+        !isDelete ? handleRemoveProduct(productId) : handleActiveProduct(productId);
+        setIsModalOpen(false);
+    };
+
+    const handleCancel = () => {
+        setIsModalOpen(false);
+    };
     return (
         <div className="relative">
             {loadingScreen && (
@@ -214,7 +275,7 @@ function ProductDetail() {
                         <span className="text-white text-3xl mb-4">Sản phẩm #{productId}</span>
                         <button
                             className="text-red-500  bg-[#4D2F3A] px-6 mb-3 rounded-md hover:bg-red-800"
-                            onClick={() => handleRemoveProduct(productId)}
+                            onClick={() => showModal()}
                         >
                             Ngừng bán
                         </button>
@@ -224,7 +285,7 @@ function ProductDetail() {
                         <span className="text-white text-3xl mb-4">Sản phẩm #{productId}</span>
                         <button
                             className="text-[#03C3EC]  bg-[#25445C] px-6 mb-3 rounded-md hover:bg-cyan-800"
-                            onClick={() => handleActiveProduct(productId)}
+                            onClick={() => showModal()}
                         >
                             Bán lại
                         </button>
@@ -436,6 +497,13 @@ function ProductDetail() {
                     </div>
                 </div>
             </div>
+            <CustomModal isOpen={isModalOpen} title="Basic Modal" onOk={handleOk} onCancel={handleCancel}>
+                {!isDelete ? (
+                    <span>Bạn có chắc chắn muốn ngừng bán sản phẩm này?</span>
+                ) : (
+                    <span>Bạn có chắc chắn muốn bán lại sản phẩm này?</span>
+                )}
+            </CustomModal>
         </div>
     );
 }

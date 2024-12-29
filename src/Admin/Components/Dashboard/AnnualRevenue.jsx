@@ -172,14 +172,14 @@ function AnnualRevenue() {
                                     as="div"
                                     className="px-4 py-2 hover:bg-gray-700 text-gray-300"
                                 >
-                                    {currentYear}
+                                    {new Date().getFullYear()}
                                 </MenuItem>
                                 <MenuItem
                                     onClick={handlePreYear}
                                     as="div"
                                     className="px-4 py-2 hover:bg-gray-700 text-gray-300"
                                 >
-                                    {currentYear - 1}
+                                    {new Date().getFullYear() - 1}
                                 </MenuItem>
                             </div>
                         </MenuItems>

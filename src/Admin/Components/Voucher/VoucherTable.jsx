@@ -72,6 +72,38 @@ function VoucherTable() {
         setLoadingIcon(true);
         setLoadingScreen(true);
 
+        const isValidInteger = (value) => /^\d+$/.test(value);
+
+        if (!isValidInteger(minTotal)) {
+            notification.error({
+                message: 'Lỗi đầu vào!',
+                description: 'Đơn từ phải là số nguyên hợp lệ.',
+            });
+            setLoadingIcon(false);
+            setLoadingScreen(false);
+            return;
+        }
+
+        if (!isValidInteger(quantity)) {
+            notification.error({
+                message: 'Lỗi đầu vào!',
+                description: 'Số lượng sản phẩm phải là số nguyên hợp lệ.',
+            });
+            setLoadingIcon(false);
+            setLoadingScreen(false);
+            return;
+        }
+
+        if (!isValidInteger(discountPrice)) {
+            notification.error({
+                message: 'Lỗi đầu vào!',
+                description: 'Giá phải là số nguyên hợp lệ.',
+            });
+            setLoadingIcon(false);
+            setLoadingScreen(false);
+            return;
+        }
+
         const voucher = {
             id_voucher: voucherId,
             start_date: startDate,
@@ -122,6 +154,38 @@ function VoucherTable() {
         }
         setLoadingIcon(true);
         setLoadingScreen(true);
+
+        const isValidInteger = (value) => /^\d+$/.test(value);
+
+        if (!isValidInteger(minTotal)) {
+            notification.error({
+                message: 'Lỗi đầu vào!',
+                description: 'Đơn từ phải là số nguyên hợp lệ.',
+            });
+            setLoadingIcon(false);
+            setLoadingScreen(false);
+            return;
+        }
+
+        if (!isValidInteger(quantity)) {
+            notification.error({
+                message: 'Lỗi đầu vào!',
+                description: 'Số lượng sản phẩm phải là số nguyên hợp lệ.',
+            });
+            setLoadingIcon(false);
+            setLoadingScreen(false);
+            return;
+        }
+
+        if (!isValidInteger(discountPrice)) {
+            notification.error({
+                message: 'Lỗi đầu vào!',
+                description: 'Giá phải là số nguyên hợp lệ.',
+            });
+            setLoadingIcon(false);
+            setLoadingScreen(false);
+            return;
+        }
 
         const voucher = {
             id_voucher: voucherIdUpdate,
@@ -319,7 +383,7 @@ function VoucherTable() {
                     <div className="flex min-h-full items-center justify-center p-4">
                         <DialogPanel className="w-[40rem] space-y-4 p-12 bg-[#282941] backdrop-blur-2xl rounded-xl">
                             <DialogTitle as="h3" className="text-lg font-medium leading-6 text-white">
-                                Thêm voucher mới
+                                Cập nhật voucher
                             </DialogTitle>
                             <form onSubmit={handleUpdateSubmit}>
                                 <div className="space-y-4">

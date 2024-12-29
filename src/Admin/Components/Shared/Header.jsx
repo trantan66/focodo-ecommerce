@@ -7,11 +7,15 @@ import { RiLogoutBoxRLine } from 'react-icons/ri';
 import { Link } from 'react-router-dom';
 import useAuth from '../../../Hooks/useAuth';
 import { fetchAllNotification, updateNotification } from '../../../Services/NotificationService';
+import { DASHBOARD_SIDEBAR_LINKS } from '../../Lib/Const/Navigation';
 
 function Header() {
     const { auth, logout } = useAuth();
     const [notifications, setNotification] = useState([]);
     const [notificationPerPage, setNotificationPerPage] = useState(4);
+
+    const [searchValue, setSearchValue] = useState('');
+    const [filteredLinks, setFilteredLinks] = useState([]);
 
     const handleLogout = () => {
         logout();
@@ -64,6 +68,14 @@ function Header() {
             await fetchNotification(notificationPerPage);
         }
     };
+
+    useEffect(() => {
+        const results = DASHBOARD_SIDEBAR_LINKS.filter((link) =>
+            link.label.toLowerCase().includes(searchValue.toLowerCase()),
+        );
+        setFilteredLinks(results);
+    }, [searchValue]);
+
     return (
         <div className="bg-[#282941] mr-4 ml-4 mb-4 mt-3 rounded-md h-16 px-4 flex justify-between items-center ">
             <div className="relative">
@@ -72,7 +84,30 @@ function Header() {
                     type="text"
                     placeholder="Tìm kiếm..."
                     className="bg-[#282941] text-sm text-white focus:outline-none w-[24rem] h-10 pl-10 pr-4 rounded-sm"
+                    value={searchValue}
+                    onChange={(e) => setSearchValue(e.target.value)}
                 />
+                {searchValue && (
+                    <div className="absolute bg-[#494850] w-[24rem] mt-2 rounded-md shadow-lg z-50 max-h-60 overflow-y-auto">
+                        {filteredLinks.length > 0 ? (
+                            filteredLinks.map((link) => (
+                                <Link
+                                    key={link.key}
+                                    to={link.path}
+                                    onClick={() => setSearchValue('')}
+                                    className="block px-4 py-2 text-white hover:bg-[#434463] rounded-md"
+                                >
+                                    <div className="flex items-center gap-2">
+                                        {link.icon}
+                                        {link.label}
+                                    </div>
+                                </Link>
+                            ))
+                        ) : (
+                            <div className="px-4 py-2 text-gray-300">Không tìm thấy kết quả</div>
+                        )}
+                    </div>
+                )}
             </div>
 
             <div className="flex items-center gap-4 mr-2">
@@ -91,6 +126,7 @@ function Header() {
                                     <strong className="text-white text-xl pl-4">Thông báo</strong>
                                     <Link
                                         to={'/admin/notification'}
+                                        onClick={() => close()}
                                         className="bg-[#223A53] text-[#74B4FD] text-sm text-center w-24 hover:bg-[#384E64] hover:no-underline mx-4 mt-2 p-2 rounded-2xl"
                                     >
                                         <span className="hover:no-underline">Tất cả</span>

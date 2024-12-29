@@ -6,6 +6,7 @@ import { notification, Select } from 'antd';
 import { FiLoader } from 'react-icons/fi';
 import '../CustomCss/CustomSelect.css';
 import { fetchAllCategoriesFromAPI } from '../../../Services/CategoryService';
+import { isValidImageType } from '../../../utils/IsValidImageType';
 
 const AddProduct = () => {
     // const navigate = useNavigate();
@@ -43,6 +44,49 @@ const AddProduct = () => {
         e.preventDefault();
         setLoadingIcon(true);
         setLoadingScreen(true);
+
+        const isValidInteger = (value) => /^\d+$/.test(value);
+
+        if (!isValidInteger(quantity)) {
+            notification.error({
+                message: 'Lỗi đầu vào!',
+                description: 'Số lượng sản phẩm phải là số nguyên hợp lệ.',
+            });
+            setLoadingIcon(false);
+            setLoadingScreen(false);
+            return;
+        }
+
+        if (!isValidInteger(package_quantity) || parseInt(package_quantity, 10) <= 0) {
+            notification.error({
+                message: 'Lỗi đầu vào!',
+                description: 'Số lượng đóng gói phải là số nguyên lớn hơn 0.',
+            });
+            setLoadingIcon(false);
+            setLoadingScreen(false);
+            return;
+        }
+
+        if (!isValidInteger(original_price)) {
+            notification.error({
+                message: 'Lỗi đầu vào!',
+                description: 'Giá gốc phải là số nguyên hợp lệ.',
+            });
+            setLoadingIcon(false);
+            setLoadingScreen(false);
+            return;
+        }
+
+        if (!isValidInteger(sell_price)) {
+            notification.error({
+                message: 'Lỗi đầu vào!',
+                description: 'Giá bán phải là số nguyên hợp lệ.',
+            });
+            setLoadingIcon(false);
+            setLoadingScreen(false);
+            return;
+        }
+
         const categoryIds = selectedCategories.map((category) => category.id);
         categoryIds.unshift(1);
 
@@ -76,16 +120,25 @@ const AddProduct = () => {
             setLoadingScreen(false);
         }
     };
+
     const handleImageUpload = (e) => {
         const files = Array.from(e.target.files);
-        setImages(files);
-    
-        const previewUrls = files.map((file) => URL.createObjectURL(file));
-        setImagePreviews(previewUrls);
-    
-        e.target.value = null;
+        files.forEach((element) => {
+            if (isValidImageType(element)) {
+                setImages(files);
+                const previewUrls = files.map((file) => URL.createObjectURL(file));
+                setImagePreviews(previewUrls);
+                e.target.value = null;
+            } else {
+                e.target.value = null;
+                notification.error({
+                    message: 'Cập nhập thất bại!',
+                    description: 'Vui lòng chọn một file ảnh hợp lệ (JPEG, PNG, GIF, WEBP)',
+                    duration: 3,
+                });
+            }
+        });
     };
-    
 
     const handleRemoveImage = (indexToRemove) => {
         setImages((prevImages) => prevImages.filter((_, index) => index !== indexToRemove));

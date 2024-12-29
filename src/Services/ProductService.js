@@ -250,3 +250,15 @@ export const getRelatedProducts = async (id) => {
         throw error;
     }
 };
+export const searchProductsFromAPI = async (key, page, size) => {
+    try {
+        const response = await axiosInstance.get(`products/search?query=${key}&page=${page - 1}&size=${size}`);
+        return {
+            data: response.result.data,
+            total: response.result.pagination.total_records,
+        };
+    } catch (error) {
+        console.error('Error fetching products:', error);
+        throw error;
+    }
+};

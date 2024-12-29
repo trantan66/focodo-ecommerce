@@ -5,7 +5,6 @@ import {
   HiOutlineUsers,
   HiOutlineDocumentText,
   HiOutlineAnnotation,
-  HiOutlineCog,
 } from "react-icons/hi";
 import { IoNotificationsCircleOutline, IoTicketOutline } from "react-icons/io5";
 
@@ -61,12 +60,12 @@ export const DASHBOARD_SIDEBAR_LINKS = [
 ];
 
 export const DASHBOARD_SIDEBAR_BOTTOM_LINKS = [
-  {
-    key: "settings",
-    label: "Cài đặt",
-    path: "setting",
-    icon: <HiOutlineCog />,
-  },
+  // {
+  //   key: "settings",
+  //   label: "Cài đặt",
+  //   path: "setting",
+  //   icon: <HiOutlineCog />,
+  // },
   // {
   //   key: "support",
   //   label: "Help & Support",

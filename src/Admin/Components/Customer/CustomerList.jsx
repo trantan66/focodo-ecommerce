@@ -1,8 +1,8 @@
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import CustomerTableHeader from './CustomerTableHeader';
 import { Link } from 'react-router-dom';
 import { Pagination } from 'antd';
-import { fetchUsersFromAPI } from '../../../Services/UserService';
+import { fetchUsersFromAPI, searchUsersFromAPI } from '../../../Services/UserService';
 import { formatCurrency } from '../../../utils/FormatCurrency';
 import { formatPhoneNumber } from '../../../utils/FormatPhoneNumber';
 
@@ -12,34 +12,31 @@ function CustomerList() {
     const [searchTerm, setSearchTerm] = useState('');
     const [customersPerPage, setCustomersPerPage] = useState(6);
     const [totalUsers, setTotalUsers] = useState(0);
-    const [cachedUsers, setCachedUsers] = useState({});
 
     const fetchUsers = useCallback(async () => {
-        const cacheKey = `${currentPage}-${customersPerPage}`;
-
-        if (cachedUsers[cacheKey]) {
-            setUsers(cachedUsers[cacheKey]);
-        } else {
-            try {
+        try {
+            if (searchTerm) {
+                const { data, total } = await searchUsersFromAPI(searchTerm, currentPage, customersPerPage);
+                setUsers(data);
+                setTotalUsers(total);
+            } else {
                 const { data, total } = await fetchUsersFromAPI(currentPage, customersPerPage);
                 setUsers(data);
                 setTotalUsers(total);
-
-                setCachedUsers((prev) => ({
-                    ...prev,
-                    [cacheKey]: data,
-                }));
-            } catch (error) {
-                console.error('Lỗi khi lấy người dùng:', error);
             }
+        } catch (error) {
+            console.error('Lỗi khi lấy hóa đơn:', error);
         }
-    }, [currentPage, customersPerPage, cachedUsers]);
+    }, [currentPage, customersPerPage, searchTerm]);
 
     useEffect(() => {
         fetchUsers();
     }, [fetchUsers]);
 
-    const filteredData = useMemo(() => users.filter((user) => user.phone.includes(searchTerm)), [users, searchTerm]);
+    const handleSearch = useCallback((term) => {
+        setSearchTerm(term);
+        setCurrentPage(1);
+    }, []);
 
     const handlePageChange = useCallback((page) => {
         setCurrentPage(page);
@@ -53,7 +50,7 @@ function CustomerList() {
             <div className="mx-4 bg-[#282941] p-4 rounded-md flex flex-col flex-1">
                 <CustomerTableHeader
                     searchTerm={searchTerm}
-                    onSearchChange={setSearchTerm}
+                    onSearchChange={handleSearch}
                     CustomersPerPage={customersPerPage}
                     onCustomersPerPageChange={handleProductsPerPageChange}
                 />
@@ -72,7 +69,7 @@ function CustomerList() {
                                 </tr>
                             </thead>
                             <tbody className="h-[50vh]">
-                                {filteredData.map((customer, index) => (
+                                {users.map((customer, index) => (
                                     <tr key={index} className="border-b-2 max-h-14">
                                         <td>
                                             <Link to={`customerdetail/${customer.id}`} className="text-[#787BFF]">
@@ -105,7 +102,11 @@ function CustomerList() {
                                         </td>
                                         <td>{formatPhoneNumber(customer.phone)}</td>
                                         <td className="text-center">{customer.quantity_order}</td>
-                                        <td>{customer.total_money?formatCurrency(customer.total_money) : formatCurrency(0)}</td>
+                                        <td>
+                                            {customer.total_money
+                                                ? formatCurrency(customer.total_money)
+                                                : formatCurrency(0)}
+                                        </td>
                                     </tr>
                                 ))}
                             </tbody>

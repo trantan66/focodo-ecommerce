@@ -173,3 +173,15 @@ export const updateAvatarToAPI = async (avatar) => {
         throw error;
     }
 };
+export const searchUsersFromAPI = async (key, page, size) => {
+    try {
+        const response = await axiosInstance.get(`/users/search?query=${key}&page=${page - 1}&size=${size}`);
+        return {
+            data: response.result.data,
+            total: response.result.pagination.total_records,
+        };
+    } catch (error) {
+        console.error('Error fetching users:', error);
+        throw error;
+    }
+};

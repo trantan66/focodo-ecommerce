@@ -1,10 +1,10 @@
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { fetchReviewsByIdUserFromAPI } from '../../../Services/UserService';
 import { Pagination, Rate } from 'antd';
 import { Link, useParams } from 'react-router-dom';
+import { searchReviewsOfUserFromAPI } from '../../../Services/ReviewService';
 
 function CustomerReviewTable() {
-
     const { customerId } = useParams();
 
     const [reviews, setReviews] = useState([]);
@@ -12,42 +12,30 @@ function CustomerReviewTable() {
     const [searchTerm, setSearchTerm] = useState('');
     const [reviewsPerPage, setReviewsPerPage] = useState(6);
     const [totalReviews, setTotalReviews] = useState(0);
-    const [cachedReviews, setCachedReviews] = useState({});
 
     const fetchReviews = useCallback(async () => {
-        const cacheKey = `${currentPage}-${reviewsPerPage}`;
-
-        if (cachedReviews[cacheKey]) {
-            setReviews(cachedReviews[cacheKey]);
-        } else {
-            try {
-                const { data, total } = await fetchReviewsByIdUserFromAPI(customerId, currentPage, reviewsPerPage);
-                console.log(total)
+        try {
+            if (searchTerm) {
+                const { data, total } = await searchReviewsOfUserFromAPI(searchTerm, currentPage, reviewsPerPage, customerId);
                 setReviews(data);
                 setTotalReviews(total);
-
-                setCachedReviews((prev) => ({
-                    ...prev,
-                    [cacheKey]: data,
-                }));
-            } catch (error) {
-                console.error('Lỗi khi lấy đánh giá:', error);
+            } else {
+                const { data, total } = await fetchReviewsByIdUserFromAPI(customerId, currentPage, reviewsPerPage);
+                setReviews(data);
+                setTotalReviews(total);
             }
+        } catch (error) {
+            console.error('Lỗi khi lấy hóa đơn:', error);
         }
-    }, [currentPage, reviewsPerPage, cachedReviews, customerId]);
-
+    }, [currentPage, reviewsPerPage, searchTerm, customerId]);
     useEffect(() => {
         fetchReviews();
     }, [fetchReviews]);
 
-    const filteredData = useMemo(
-        () =>
-            reviews.filter(
-                (review) =>
-                    review.content.toLowerCase().includes(searchTerm.toLowerCase()),
-            ),
-        [reviews, searchTerm],
-    );
+    const handleSearch = useCallback((term) => {
+        setSearchTerm(term);
+        setCurrentPage(1);
+    }, []);
 
     const handlePageChange = useCallback((page) => {
         setCurrentPage(page);
@@ -72,7 +60,7 @@ function CustomerReviewTable() {
                         type="text"
                         id="search"
                         value={searchTerm}
-                        onChange={(e) => setSearchTerm(e.target.value)}
+                        onChange={(e) => handleSearch(e.target.value)}
                         className="ext-sm focus:outline-none border border-gray-300 w-[20rem] h-10 pl-10 pr-4 rounded-sm bg-[#282941] text-white"
                         placeholder="Tìm kiếm đánh giá"
                     />
@@ -106,7 +94,7 @@ function CustomerReviewTable() {
                             </tr>
                         </thead>
                         <tbody className="h-[50vh]">
-                            {filteredData.map((review, index) => (
+                            {reviews.map((review, index) => (
                                 <tr key={index} className="border-b-2">
                                     <td>
                                         <div className="bg-[#282941] rounded-sm flex-1 flex items-center">

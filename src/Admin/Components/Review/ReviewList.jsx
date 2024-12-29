@@ -1,8 +1,8 @@
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import ReviewTableHeader from './ReviewTableHeader';
 import { Link } from 'react-router-dom';
 import { notification, Pagination, Popconfirm } from 'antd';
-import { DeleteReview, fetchReviewsFromAPI } from '../../../Services/ReviewService';
+import { DeleteReview, fetchReviewsFromAPI, searchReviewsFromAPI } from '../../../Services/ReviewService';
 import { FaTrashAlt } from 'react-icons/fa';
 import Rating from 'react-rating';
 import { StarFilled, StarOutlined } from '@ant-design/icons';
@@ -14,42 +14,29 @@ function ReviewList() {
     const [searchTerm, setSearchTerm] = useState('');
     const [reviewsPerPage, setReviewsPerPage] = useState(6);
     const [totalReviews, setTotalReviews] = useState(0);
-    const [cachedReviews, setCachedReviews] = useState({});
-
     const fetchReviews = useCallback(async () => {
-        const cacheKey = `${currentPage}-${reviewsPerPage}`;
-
-        if (cachedReviews[cacheKey]) {
-            setReviews(cachedReviews[cacheKey]);
-        } else {
-            try {
+        try {
+            if (searchTerm) {
+                const { data, total } = await searchReviewsFromAPI(searchTerm, currentPage, reviewsPerPage);
+                setReviews(data);
+                setTotalReviews(total);
+            } else {
                 const { data, total } = await fetchReviewsFromAPI(currentPage, reviewsPerPage);
                 setReviews(data);
                 setTotalReviews(total);
-
-                setCachedReviews((prev) => ({
-                    ...prev,
-                    [cacheKey]: data,
-                }));
-            } catch (error) {
-                console.error('Lỗi khi lấy đánh giá:', error);
             }
+        } catch (error) {
+            console.error('Lỗi khi lấy hóa đơn:', error);
         }
-    }, [currentPage, reviewsPerPage, cachedReviews]);
-
+    }, [currentPage, reviewsPerPage, searchTerm]);
     useEffect(() => {
         fetchReviews();
     }, [fetchReviews]);
 
-    const filteredData = useMemo(
-        () =>
-            reviews.filter(
-                (review) =>
-                    review.user.phone.includes(searchTerm) ||
-                    review.content.toLowerCase().includes(searchTerm.toLowerCase()),
-            ),
-        [reviews, searchTerm],
-    );
+    const handleSearch = useCallback((term) => {
+        setSearchTerm(term);
+        setCurrentPage(1);
+    }, []);
 
     const handlePageChange = useCallback((page) => {
         setCurrentPage(page);
@@ -94,7 +81,7 @@ function ReviewList() {
             <div className="mx-4 bg-[#282941] p-4 rounded-md flex flex-col flex-1">
                 <ReviewTableHeader
                     searchTerm={searchTerm}
-                    onSearchChange={setSearchTerm}
+                    onSearchChange={handleSearch}
                     reviewsPerPage={reviewsPerPage}
                     onReviewsPerPageChange={handleProductsPerPageChange}
                 />
@@ -113,7 +100,7 @@ function ReviewList() {
                                 </tr>
                             </thead>
                             <tbody className="h-[50vh]">
-                                {filteredData.map((review, index) => (
+                                {reviews.map((review, index) => (
                                     <tr key={index} className="border-b-2">
                                         <td>
                                             <div className="bg-[#282941] rounded-sm flex-1 flex items-center">

@@ -1,10 +1,11 @@
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import { getPaymentStatus } from '../../Lib/Utils/PaymentStatus';
 import { getOrderStatus } from '../../Lib/Utils/OrderStatus';
 import { Pagination } from 'antd';
 import { fetchOrdersOfUserByIdFromAPI } from '../../../Services/UserService';
 import { formatCurrency } from '../../../utils/FormatCurrency';
+import { searchOrdersOfUserFromAPI } from '../../../Services/OrderService';
 
 function CustomerOrderedTable({ data }) {
     const { customerId } = useParams();
@@ -15,37 +16,36 @@ function CustomerOrderedTable({ data }) {
     const [ordersPerPage, setOrdersPerPage] = useState(6);
 
     const [totalOrders, setTotalOrders] = useState(0);
-    const [cachedOrders, setCachedOrders] = useState({});
 
     const fetchOrders = useCallback(async () => {
-        const cacheKey = `${currentPage}-${ordersPerPage}`;
-
-        if (cachedOrders[cacheKey]) {
-            setOrders(cachedOrders[cacheKey]);
-        } else {
-            try {
+        try {
+            if (searchTerm) {
+                const { data, total } = await searchOrdersOfUserFromAPI(
+                    searchTerm,
+                    currentPage,
+                    ordersPerPage,
+                    customerId,
+                );
+                setOrders(data);
+                setTotalOrders(total);
+            } else {
                 const { data, total } = await fetchOrdersOfUserByIdFromAPI(customerId, currentPage, ordersPerPage);
                 setOrders(data);
                 setTotalOrders(total);
-
-                setCachedOrders((prev) => ({
-                    ...prev,
-                    [cacheKey]: data,
-                }));
-            } catch (error) {
-                console.error('Error fetching orders:', error);
             }
+        } catch (error) {
+            console.error('Lỗi khi lấy hóa đơn:', error);
         }
-    }, [customerId, currentPage, ordersPerPage, cachedOrders]);
+    }, [currentPage, ordersPerPage, searchTerm, customerId]);
 
     useEffect(() => {
         fetchOrders();
     }, [fetchOrders]);
 
-    const filteredData = useMemo(
-        () => orders.filter((order) => order.id_order.includes(searchTerm)),
-        [orders, searchTerm],
-    );
+    const handleSearch = useCallback((term) => {
+        setSearchTerm(term);
+        setCurrentPage(1);
+    }, []);
 
     const handlePageChange = (page) => {
         setCurrentPage(page);
@@ -58,7 +58,7 @@ function CustomerOrderedTable({ data }) {
                         type="text"
                         id="search"
                         value={searchTerm}
-                        onChange={(e) => setSearchTerm(e.target.value)}
+                        onChange={(e) => handleSearch(e.target.value)}
                         className="ext-sm focus:outline-none border border-gray-300 w-[20rem] h-10 pl-10 pr-4 rounded-sm bg-[#282941] text-white"
                         placeholder="Tìm kiếm đơn hàng"
                     />
@@ -93,8 +93,8 @@ function CustomerOrderedTable({ data }) {
                             </tr>
                         </thead>
                         <tbody className="h-[50vh] ">
-                            {filteredData.length > 0 ? (
-                                filteredData.map((order) => (
+                            {orders.length > 0 ? (
+                                orders.map((order) => (
                                     <tr key={order.id_order} className="border-b-2">
                                         <td>
                                             <Link

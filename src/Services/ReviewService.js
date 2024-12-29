@@ -1,4 +1,3 @@
-import { json } from 'react-router-dom';
 import axiosInstance from './Customize-Axios';
 import { getHeader } from './GetHeader';
 
@@ -127,6 +126,32 @@ export const updateReview = async (id, review, files, images) => {
         } else {
             console.error('Error setting up request:', error.message);
         }
+        throw error;
+    }
+};
+export const searchReviewsFromAPI = async (key, page, size) => {
+    try {
+        const response = await axiosInstance.get(`reviews/search?query=${key}&page=${page - 1}&size=${size}`);
+        return {
+            data: response.result.data,
+            total: response.result.pagination.total_records,
+        };
+    } catch (error) {
+        console.error('Error fetching reviews:', error);
+        throw error;
+    }
+};
+export const searchReviewsOfUserFromAPI = async (key, page, size, id) => {
+    try {
+        const response = await axiosInstance.get(
+            `reviews/search?query=${key}&page=${page - 1}&size=${size}&id_user=${id}`,
+        );
+        return {
+            data: response.result.data,
+            total: response.result.pagination.total_records,
+        };
+    } catch (error) {
+        console.error('Error fetching reviews:', error);
         throw error;
     }
 };

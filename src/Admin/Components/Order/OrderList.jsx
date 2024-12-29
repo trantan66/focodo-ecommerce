@@ -1,10 +1,10 @@
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import OrderTableHeader from './OrderTableHeader';
 import { Link } from 'react-router-dom';
 import { Pagination } from 'antd';
 import { getPaymentStatus } from '../../Lib/Utils/PaymentStatus';
 import { getOrderStatus } from '../../Lib/Utils/OrderStatus';
-import { fetchOrdersFromAPI } from '../../../Services/OrderService';
+import { fetchOrdersFromAPI, searchOrdersFromAPI } from '../../../Services/OrderService';
 import { formatPhoneNumber } from '../../../utils/FormatPhoneNumber';
 
 function OrderList() {
@@ -14,38 +14,30 @@ function OrderList() {
     const [ordersPerPage, setOrdersPerPage] = useState(6);
 
     const [totalOrders, setTotalOrders] = useState(0);
-    const [cachedOrders, setCachedOrders] = useState({});
 
     const fetchOrders = useCallback(async () => {
-        const cacheKey = `${currentPage}-${ordersPerPage}`;
-
-        if (cachedOrders[cacheKey]) {
-            setOrders(cachedOrders[cacheKey]);
-        } else {
-            try {
+        try {
+            if (searchTerm) {
+                const { data, total } = await searchOrdersFromAPI(searchTerm, currentPage, ordersPerPage);
+                setOrders(data);
+                setTotalOrders(total);
+            } else {
                 const { data, total } = await fetchOrdersFromAPI(currentPage, ordersPerPage);
                 setOrders(data);
                 setTotalOrders(total);
-
-                setCachedOrders((prev) => ({
-                    ...prev,
-                    [cacheKey]: data,
-                }));
-            } catch (error) {
-                console.error('Error fetching orders:', error);
             }
+        } catch (error) {
+            console.error('Lỗi khi lấy hóa đơn:', error);
         }
-    }, [currentPage, ordersPerPage, cachedOrders]);
-
+    }, [currentPage, ordersPerPage, searchTerm]);
     useEffect(() => {
         fetchOrders();
     }, [fetchOrders]);
 
-    const filteredData = useMemo(
-        () =>
-            orders.filter((order) => order.id_order.includes(searchTerm) || order.customer.phone.includes(searchTerm)),
-        [orders, searchTerm],
-    );
+    const handleSearch = useCallback((term) => {
+        setSearchTerm(term);
+        setCurrentPage(1);
+    }, []);
 
     const handlePageChange = useCallback((page) => {
         setCurrentPage(page);
@@ -60,7 +52,7 @@ function OrderList() {
             <div className="mx-4 bg-[#282941] p-4 rounded-md flex flex-col flex-1">
                 <OrderTableHeader
                     searchTerm={searchTerm}
-                    onSearchChange={setSearchTerm}
+                    onSearchChange={handleSearch}
                     ordersPerPage={ordersPerPage}
                     onOrdersPerPageChange={handleOrdersPerPageChange}
                 />
@@ -79,7 +71,7 @@ function OrderList() {
                                 </tr>
                             </thead>
                             <tbody className="h-[50vh]">
-                                {filteredData.map((order, index) => (
+                                {orders.map((order, index) => (
                                     <tr key={index} className="border-b-2">
                                         <td>
                                             <Link to={`orderdetail/${order.id_order}`} className="text-[#787BFF]">

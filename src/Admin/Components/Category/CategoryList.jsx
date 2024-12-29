@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import CategoryTableHeader from './CategoryTableHeader';
 import { notification, Pagination, Popconfirm, Select } from 'antd';
 import { Dialog, DialogPanel, DialogTitle } from '@headlessui/react';
@@ -8,10 +8,12 @@ import {
     fetchAllCategoriesFromAPI,
     fetchCategoriesFromAPI,
     fetchCategoryByIdFromAPI,
+    searchCategoriesFromAPI,
     updateCategoryToAPI,
 } from '../../../Services/CategoryService';
 import { FaTrashAlt } from 'react-icons/fa';
 import { FiLoader } from 'react-icons/fi';
+import { isValidImageType } from '../../../utils/IsValidImageType';
 
 function CategoryList() {
     const [categories, setCategories] = useState([]);
@@ -72,6 +74,23 @@ function CategoryList() {
             console.error('Lỗi khi lấy danh mục:', error);
         }
     };
+    const fetchCategory = useCallback(async () => {
+        try {
+            if (searchTerm) {
+                const { data, total } = await searchCategoriesFromAPI(searchTerm, currentPage, categoriesPerPage);
+                setCategories(data);
+                setTotalCategories(total);
+            } else {
+                fetchCategories(currentPage, categoriesPerPage);
+            }
+        } catch (error) {
+            console.error('Lỗi khi lấy danh mục:', error);
+        }
+    }, [currentPage, categoriesPerPage, searchTerm]);
+
+    useEffect(() => {
+        fetchCategory();
+    }, [fetchCategory]);
 
     useEffect(() => {
         fetchCategories(currentPage, categoriesPerPage);
@@ -90,10 +109,10 @@ function CategoryList() {
         fetchAllCategories();
     }, []);
 
-    const filteredData = useMemo(
-        () => categories.filter((category) => category?.name?.toLowerCase().includes(searchTerm.toLowerCase())),
-        [categories, searchTerm],
-    );
+    const handleSearch = useCallback((term) => {
+        setSearchTerm(term);
+        setCurrentPage(1);
+    }, []);
 
     const handlePageChange = useCallback((page) => {
         setCurrentPage(page);
@@ -161,21 +180,29 @@ function CategoryList() {
             closeUpdateDialog();
             setImagePreviews('');
             await fetchCategories(currentPage, categoriesPerPage);
-            // setTimeout(() => {
-            //     window.location.reload();
-            // }, 500);
         }
     };
     const handleImageUpload = (e) => {
         const files = Array.from(e.target.files);
-        setNewImages(files);
-        const previewUrls = files.map((file) => URL.createObjectURL(file));
-        setImagePreviews(previewUrls);
+        files.forEach((element) => {
+            if (isValidImageType(element)) {
+                setNewImages(files);
+                const previewUrls = files.map((file) => URL.createObjectURL(file));
+                setImagePreviews(previewUrls);
 
-        setCheckImageQuantity(true);
-        setCheckImageQuantityUpdate(true);
+                setCheckImageQuantity(true);
+                setCheckImageQuantityUpdate(true);
 
-        e.target.value = null;
+                e.target.value = null;
+            } else {
+                e.target.value = null;
+                notification.error({
+                    message: 'Cập nhập thất bại!',
+                    description: 'Vui lòng chọn một file ảnh hợp lệ (JPEG, PNG, GIF, WEBP)',
+                    duration: 3,
+                });
+            }
+        });
     };
 
     const handleRemoveImage = (indexToRemove) => {
@@ -232,13 +259,13 @@ function CategoryList() {
             <div className="mx-4 bg-[#282941] p-4 rounded-md  flex flex-col flex-1">
                 <CategoryTableHeader
                     searchTerm={searchTerm}
-                    onSearchChange={setSearchTerm}
+                    onSearchChange={handleSearch}
                     categoriesPerPage={categoriesPerPage}
                     onCategoriesPerPageChange={handleCategoriesPerPageChange}
                     onSetIsDialogOpen={setIsDialogOpen}
                 />
                 <div className="bg-[#282941] pt-3 pb-4 rounded-sm  flex-1">
-                    <strong className="text-white font-medium">Danh sách sản phẩm</strong>
+                    <strong className="text-white font-medium">Danh mục sản phẩm</strong>
                     <div className="mt-3">
                         <table className="w-full text-white border-x-gray-400">
                             <thead>
@@ -250,7 +277,7 @@ function CategoryList() {
                                 </tr>
                             </thead>
                             <tbody className="h-[50vh]">
-                                {filteredData.map((items, index) => (
+                                {categories.map((items, index) => (
                                     <tr key={index} className="border-b-2">
                                         <td>
                                             <div className="bg-[#282941] rounded-sm flex-1 flex items-center">
@@ -276,17 +303,21 @@ function CategoryList() {
                                         <td className="text-center">{items.number_of_products}</td>
                                         <td className="text-center">{items.subcategories.length}</td>
                                         <td>
-                                            <Popconfirm
-                                                title="Bạn có chắc chắn muốn xóa danh mục này không?"
-                                                onConfirm={() => handleRemoveCategory(items.id)}
-                                                okText="Có"
-                                                cancelText="Không"
-                                                placement="topRight"
-                                            >
-                                                <button className="bg-red-500 p-2 rounded-md">
-                                                    <FaTrashAlt />
-                                                </button>
-                                            </Popconfirm>
+                                            {items.id !== 1 && items.id !== 2 ? (
+                                                <Popconfirm
+                                                    title="Bạn có chắc chắn muốn xóa danh mục này không?"
+                                                    onConfirm={() => handleRemoveCategory(items.id)}
+                                                    okText="Có"
+                                                    cancelText="Không"
+                                                    placement="topRight"
+                                                >
+                                                    <button className="bg-red-500 p-2 rounded-md">
+                                                        <FaTrashAlt />
+                                                    </button>
+                                                </Popconfirm>
+                                            ) : (
+                                                ''
+                                            )}
                                         </td>
                                     </tr>
                                 ))}

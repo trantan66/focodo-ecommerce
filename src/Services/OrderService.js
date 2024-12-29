@@ -167,3 +167,35 @@ export const updatePaymentStatus = async (id, status) => {
         throw error;
     }
 };
+export const searchOrdersFromAPI = async (key, page, size) => {
+    try {
+        const response = await axiosInstance.get(`orders/search?query=${key}&page=${page - 1}&size=${size}`, {
+            headers: {
+                ...getHeader(),
+            },
+        });
+        return {
+            data: response.result.data,
+            total: response.result.pagination.total_records,
+        };
+    } catch (error) {
+        console.error('Error fetching orders:', error);
+        throw error;
+    }
+};
+export const searchOrdersOfUserFromAPI = async (key, page, size, id) => {
+    try {
+        const response = await axiosInstance.get(`orders/search?query=${key}&page=${page - 1}&size=${size}&id_user=${id}`, {
+            headers: {
+                ...getHeader(),
+            },
+        });
+        return {
+            data: response.result.data,
+            total: response.result.pagination.total_records,
+        };
+    } catch (error) {
+        console.error('Error fetching orders:', error);
+        throw error;
+    }
+};

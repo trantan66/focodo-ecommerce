@@ -1,10 +1,10 @@
-import React, { useState, useEffect, useCallback, useMemo } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { Link } from 'react-router-dom';
 import classNames from 'classnames';
 import { Pagination } from 'antd';
 import ProductTableHeader from './ProductTableHeader';
 import '../CustomCss/CustomPagination.css';
-import { fetchProductsByCategoryFromAPI, fetchProductsFromAPI } from '../../../Services/ProductService';
+import { fetchProductsFromAPI, fetchProductsByCategoryFromAPI, searchProductsFromAPI } from '../../../Services/ProductService';
 import { fetchAllCategoriesFromAPI } from '../../../Services/CategoryService';
 import { formatCurrency } from '../../../utils/FormatCurrency';
 
@@ -14,16 +14,13 @@ function ProductList() {
     const [searchTerm, setSearchTerm] = useState('');
     const [productsPerPage, setProductsPerPage] = useState(6);
     const [totalProducts, setTotalProducts] = useState(0);
-    const [cachedProducts, setCachedProducts] = useState({});
-
-    const [categories, setCategories] = useState('');
+    const [categories, setCategories] = useState([]);
     const [selectedCategory, setSelectedCategory] = useState('');
 
     useEffect(() => {
         const fetchCategories = async () => {
             try {
                 const { data } = await fetchAllCategoriesFromAPI();
-                // const filteredCategories = data.filter((category) => category.id !== 1 && category.id !== 2);
                 setCategories(data);
             } catch (error) {
                 console.error('Lỗi khi lấy danh mục:', error);
@@ -33,36 +30,38 @@ function ProductList() {
     }, []);
 
     const fetchProducts = useCallback(async () => {
-        const cacheKey = `${currentPage}-${productsPerPage}`;
-
-        if (cachedProducts[cacheKey]) {
-            setProducts(cachedProducts[cacheKey]);
-        } else {
-            try {
+        try {
+            if (searchTerm) {
+                const { data, total } = await searchProductsFromAPI(searchTerm, currentPage, productsPerPage);
+                setProducts(data);
+                setTotalProducts(total);
+            } else if (selectedCategory) {
+                const { data, total } = await fetchProductsByCategoryFromAPI(selectedCategory, currentPage, productsPerPage);
+                setProducts(data);
+                setTotalProducts(total);
+            } else {
                 const { data, total } = await fetchProductsFromAPI(currentPage, productsPerPage);
                 setProducts(data);
                 setTotalProducts(total);
-
-                setCachedProducts((prev) => ({
-                    ...prev,
-                    [cacheKey]: data,
-                }));
-            } catch (error) {
-                console.error('Lỗi khi lấy sản phẩm:', error);
             }
+        } catch (error) {
+            console.error('Lỗi khi lấy sản phẩm:', error);
         }
-    }, [currentPage, productsPerPage, cachedProducts]);
+    }, [currentPage, productsPerPage, searchTerm, selectedCategory]);
 
     useEffect(() => {
         fetchProducts();
     }, [fetchProducts]);
 
-    const filteredData = useMemo(() => {
-        const result = (Array.isArray(products) ? products : []).filter((product) =>
-            product.name.toLowerCase().includes(searchTerm.toLowerCase()),
-        );
-        return result;
-    }, [products, searchTerm]);
+    const handleSearch = useCallback((term) => {
+        setSearchTerm(term);
+        setCurrentPage(1);
+    }, []);
+
+    const handleCategoryChange = useCallback((categoryId) => {
+        setSelectedCategory(categoryId);
+        setCurrentPage(1);
+    }, []);
 
     const handlePageChange = useCallback((page) => {
         setCurrentPage(page);
@@ -72,51 +71,15 @@ function ProductList() {
         setProductsPerPage(value);
     }, []);
 
-    const fetchProductsByCategory = useCallback(
-        async (categoryId) => {
-            const cacheKey = `${categoryId}-${currentPage}-${productsPerPage}`;
-
-            if (cachedProducts[cacheKey]) {
-                setProducts(cachedProducts[cacheKey]);
-            } else {
-                try {
-                    const { data, total } = await fetchProductsByCategoryFromAPI(
-                        categoryId,
-                        currentPage,
-                        productsPerPage,
-                    );
-                    setProducts(data);
-                    setTotalProducts(total);
-
-                    setCachedProducts((prev) => ({
-                        ...prev,
-                        [cacheKey]: data,
-                    }));
-                } catch (error) {
-                    console.error('Lỗi khi lấy sản phẩm:', error);
-                }
-            }
-        },
-        [currentPage, productsPerPage, cachedProducts],
-    );
-
-    useEffect(() => {
-        if (selectedCategory) {
-            fetchProductsByCategory(selectedCategory);
-        } else {
-            fetchProducts();
-        }
-    }, [fetchProductsByCategory, fetchProducts, selectedCategory]);
-
     return (
         <div className="mx-4 bg-[#282941] p-4 rounded-md flex flex-col flex-1">
             <ProductTableHeader
                 searchTerm={searchTerm}
-                onSearchChange={setSearchTerm}
+                onSearchChange={handleSearch}
                 productsPerPage={productsPerPage}
                 onProductsPerPageChange={handleProductsPerPageChange}
                 selectedCategory={selectedCategory}
-                setSelectedCategory={setSelectedCategory}
+                setSelectedCategory={handleCategoryChange}
                 categories={categories}
             />
 
@@ -136,7 +99,7 @@ function ProductList() {
                             </tr>
                         </thead>
                         <tbody className="h-[50vh]">
-                            {filteredData.map((dataproduct, index) => (
+                            {products.map((dataproduct, index) => (
                                 <tr key={index} className="border-b-2">
                                     <td>
                                         <div className="bg-[#282941] rounded-sm flex-1 flex items-center">
