@@ -89,11 +89,7 @@ function Footer() {
                                 }}
                             />
                         </a>
-                        <a
-                            href="https://www.facebook.com/profile.php?id=61570908876111"
-                            target="_blank"
-                            rel="noreferrer"
-                        >
+                        <a href="https://www.instagram.com/focodo123/" target="_blank" rel="noreferrer">
                             <InstagramOutlined
                                 style={{
                                     backgroundColor: '#E1306C',

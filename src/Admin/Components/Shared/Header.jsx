@@ -18,8 +18,8 @@ function Header() {
     const [filteredLinks, setFilteredLinks] = useState([]);
 
     const handleLogout = () => {
-        logout();
         window.location.href = '/login';
+        logout();
     };
     const fetchNotification = async (notificationPerPage) => {
         try {

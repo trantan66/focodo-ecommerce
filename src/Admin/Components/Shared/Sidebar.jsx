@@ -10,8 +10,8 @@ const linkClass = 'flex item gap-2 font-light px-3 py-2 hover:bg-neutral-700 rou
 function Sidebar() {
     const { logout } = useAuth();
     const handleLogout = () => {
-        logout();
         window.location.href = '/login';
+        logout();
     };
     return (
         <div className="sticky top-0 bg-[#2B2C40] w-60 p-4 flex flex-col text-white">
