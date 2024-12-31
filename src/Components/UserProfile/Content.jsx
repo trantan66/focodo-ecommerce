@@ -11,6 +11,7 @@ import order from '../Shared/image/shipping_3900732.png';
 import { fetchReviewsOfUserFromAPI, updateReview } from '../../Services/ReviewService';
 import TextArea from 'antd/es/input/TextArea';
 import 'reactjs-popup/dist/index.css';
+import { isValidImageType } from '../../utils/IsValidImageType';
 
 function Content() {
     const [password, setPassword] = useState('');
@@ -78,12 +79,26 @@ function Content() {
 
     const handleImageUpload = (e) => {
         const files = Array.from(e.target.files);
-        setImages(files);
+        const newImages = [];
+        const newImagePreviews = [];
 
-        const previewUrls = files.map((file) => URL.createObjectURL(file));
-        setImagePreviews(previewUrls);
+        files.forEach((element) => {
+            if (isValidImageType(element)) {
+                newImages.push(element);
+                const previewUrls = URL.createObjectURL(element);
+                newImagePreviews.push(previewUrls);
+            } else {
+                e.target.value = null;
+                notification.error({
+                    message: 'Thêm ảnh thất bại!',
+                    description: 'Vui lòng chọn một file ảnh hợp lệ (JPEG, PNG, GIF, WEBP)',
+                    duration: 1.5,
+                });
+            }
+        });
 
-        e.target.value = null;
+        setImages([...images, ...newImages]);
+        setImagePreviews([...imagePreviews, ...newImagePreviews]);
     };
 
     const handleRemoveImageUpdate = (itemId, imageIndex) => {

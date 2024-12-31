@@ -78,15 +78,19 @@ function UserIn4({ data }) {
     const handleAvatarChange = async (event) => {
         const file = event.target.files[0]; // Lấy tệp từ input
         if (file) {
-            setAvatar(file); // Cập nhật trạng thái avatar
+            if (validateAvatar(file)) {
+                setAvatar(file); // Cập nhật trạng thái avatar
 
-            // Đọc và hiển thị ảnh bằng FileReader
-            const reader = new FileReader();
-            reader.onload = (e) => {
-                const imageSrc = e.target.result; // Dữ liệu URL của ảnh
-                document.getElementById('avatarPreview').src = imageSrc; // Đặt URL vào thẻ <img> để hiển thị ảnh
-            };
-            reader.readAsDataURL(file); // Đọc file dưới dạng Data URL
+                // Đọc và hiển thị ảnh bằng FileReader
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    const imageSrc = e.target.result; // Dữ liệu URL của ảnh
+                    document.getElementById('avatarPreview').src = imageSrc; // Đặt URL vào thẻ <img> để hiển thị ảnh
+                };
+                reader.readAsDataURL(file); // Đọc file dưới dạng Data URL
+            } else {
+                event.target.value = null;
+            }
         }
     };
     const handleProvinceChange = (e) => {
@@ -100,6 +104,20 @@ function UserIn4({ data }) {
 
     const handleCommuneChange = (e) => {
         setSelectedCommune(e.target.value);
+    };
+
+    const validateAvatar = (file) => {
+        const validTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
+
+        if (!validTypes.includes(file.type)) {
+            notification.error({
+                message: 'Cập nhập thất bại!',
+                description: 'Vui lòng chọn một file ảnh hợp lệ (JPEG, PNG, GIF, WEBP)',
+                duration: 1,
+            });
+            return false;
+        }
+        return true;
     };
 
     const handleSubmit = async (e) => {
@@ -117,18 +135,9 @@ function UserIn4({ data }) {
         // console.log(UserProfileRequest);
         try {
             await updateProfileToAPI(UserProfileRequest);
-            if (avatar && avatar !== default_avatar) {
-                console.log(avatar !== default_avatar);
-                console.log(data.avatar);
+            if (avatar !== data.avatar && validateAvatar(avatar)) {
                 await updateAvatarToAPI(avatar);
             }
-        } catch (error) {
-            console.error('Error updating userprofile:', error);
-            notification.error({
-                message: 'Có lỗi xảy ra!',
-                description: 'Không thể cập nhật hồ sơ. Vui lòng thử lại.',
-            });
-        } finally {
             setLoading(false);
             notification.success({
                 message: 'Cập nhật hồ sơ thành công!',
@@ -137,6 +146,26 @@ function UserIn4({ data }) {
             });
             fetchUser();
             navigate('/userprofile');
+        } catch (e) {
+            setLoading(false);
+            if (e.response.data.code === 1022) {
+                notification.error({
+                    message: 'Có lỗi xảy ra!',
+                    description: 'Email đã tồn tại.',
+                });
+                return;
+            }
+            if (e.response.data.code === 1021) {
+                notification.error({
+                    message: 'Có lỗi xảy ra!',
+                    description: 'Số điện thoại đã tồn tại.',
+                });
+                return;
+            }
+            notification.error({
+                message: 'Có lỗi xảy ra!',
+                description: 'Không thể cập nhật hồ sơ. Vui lòng thử lại.',
+            });
         }
     };
 

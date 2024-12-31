@@ -63,6 +63,14 @@ const Register = () => {
                 setError('Số điện thoại đã được sử dụng');
                 return;
             }
+            if (e.response.data.code === 1022) {
+                setError('Email đã được sử dụng');
+                return;
+            }
+            if (e.response.data.code === 1006) {
+                setError('Tên đăng nhập đã tồn tại');
+                return;
+            }
             console.log(e);
             setError('Đăng ký thất bại, vui lòng thử lại.');
         }
