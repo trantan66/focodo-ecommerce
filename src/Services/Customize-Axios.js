@@ -1,7 +1,7 @@
 import axios from 'axios';
 import { refreshToken } from './AuthService';
 const axiosInstance = axios.create({
-    baseURL: 'http://35.74.67.183:8080/api/v1/',
+    baseURL: 'http://localhost:8080/api/v1/',
 });
 
 const handleRefreshToken = async () => {
