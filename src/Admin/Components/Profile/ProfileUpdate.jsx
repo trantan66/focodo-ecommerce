@@ -60,22 +60,32 @@ function ProfileUpdate({ data }) {
         };
         try {
             await updateProfileToAPI(UserProfileRequest);
-        } catch (error) {
-            console.error('Error updating admin profile:', error);
-            notification.error({
-                message: 'Có lỗi xảy ra!',
-                description: 'Không thể cập nhật hồ sơ. Vui lòng thử lại.',
-            });
-        } finally {
             notification.success({
                 message: 'Cập nhật hồ sơ thành công!',
                 description: 'Hồ sơ đã được cập nhật.',
                 duration: '1',
             });
-            setLoadingIcon(false);
-            setLoadingScreen(false);
-            navigate('/admin/profile');
+        } catch (e) {
+            if (e.response.data.code === 1022) {
+                notification.error({
+                    message: 'Có lỗi xảy ra!',
+                    description: 'Email đã tồn tại.',
+                });
+            } else if (e.response.data.code === 1021) {
+                notification.error({
+                    message: 'Có lỗi xảy ra!',
+                    description: 'Số điện thoại đã tồn tại.',
+                });
+            } else {
+                notification.error({
+                    message: 'Có lỗi xảy ra!',
+                    description: 'Không thể cập nhật hồ sơ. Vui lòng thử lại.',
+                });
+            }
         }
+        setLoadingIcon(false);
+        setLoadingScreen(false);
+        navigate('/admin/profile');
     };
 
     useEffect(() => {
@@ -143,7 +153,7 @@ function ProfileUpdate({ data }) {
                 setAvatar(file);
                 const fileURL = URL.createObjectURL(file);
                 setPreview(fileURL);
-            }else{
+            } else {
                 event.target.value = null;
                 notification.error({
                     message: 'Cập nhập thất bại!',

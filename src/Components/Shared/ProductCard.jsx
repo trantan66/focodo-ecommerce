@@ -5,8 +5,10 @@ import { formatCurrency } from '../../utils/FormatCurrency.js';
 import { Modal, Button, InputNumber, notification } from 'antd';
 import closeButton from '../../Components/Shared/image/closebutton.png';
 import useCart from '../../Hooks/useCart';
+import useAuth from '../../Hooks/useAuth';
 import { addProductToCart } from '../../Services/CartService';
 const ProductCard = ({ product }) => {
+    const { auth } = useAuth();
     const { fetchNumberOfCart, fetchCart } = useCart();
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [value, setValue] = useState(1); // State to hold the value
@@ -28,25 +30,33 @@ const ProductCard = ({ product }) => {
     };
 
     const handleAddProductToCart = async () => {
-        try {
-            const res = await addProductToCart({ id_product: product.id, quantity: value });
-            fetchNumberOfCart();
-            fetchCart();
-            notification.success({
-                message: 'Thêm vào giỏ hàng thành công!',
-                description: 'Sản phẩm đã được thêm vào giỏ',
-                duration: '1',
-            });
-            setIsModalOpen(false);
-        } catch (error) {
-            if (error.response.data.message === 'Product is not enough quantity') {
-                notification.error({
-                    message: 'Lỗi thêm sản phẩm!',
-                    description: 'Số lượng sản phẩm không đủ. Vui lòng thử lại sau!',
-                    duration: '1.5',
+        if (auth.user) {
+            try {
+                const res = await addProductToCart({ id_product: product.id, quantity: value });
+                fetchNumberOfCart();
+                fetchCart();
+                notification.success({
+                    message: 'Thêm vào giỏ hàng thành công!',
+                    description: 'Sản phẩm đã được thêm vào giỏ',
+                    duration: '1',
                 });
+                setIsModalOpen(false);
+            } catch (error) {
+                if (error.response.data.message === 'Product is not enough quantity') {
+                    notification.error({
+                        message: 'Lỗi thêm sản phẩm!',
+                        description: 'Số lượng sản phẩm không đủ. Vui lòng thử lại sau!',
+                        duration: '1.5',
+                    });
+                }
+                console.error('Error addToCart product:', error);
             }
-            console.error('Error addToCart product:', error);
+        } else {
+            notification.error({
+                message: 'Lỗi thêm sản phẩm vào giỏ !',
+                description: 'Vui lòng đăng nhập để thêm sản phẩm vào giỏ hàng!',
+                duration: '1.5',
+            });
         }
     };
 

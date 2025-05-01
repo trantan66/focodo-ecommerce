@@ -4,6 +4,7 @@ import { fetchReviewsOfOrderFromAPI, updateReview } from '../../Services/ReviewS
 import { Button, Modal, Rate, Spin, notification } from 'antd';
 import TextArea from 'antd/es/input/TextArea';
 import default_avatar from '../image/avatar/default_avatar.png';
+import { isValidImageType } from '../../utils/IsValidImageType';
 
 function Content() {
     const [reviews, setReviews] = useState([]);
@@ -23,12 +24,26 @@ function Content() {
     };
     const handleImageUpload = (e) => {
         const files = Array.from(e.target.files);
-        setImages(files);
+        const newImages = [];
+        const newImagePreviews = [];
 
-        const previewUrls = files.map((file) => URL.createObjectURL(file));
-        setImagePreviews(previewUrls);
+        files.forEach((element) => {
+            if (isValidImageType(element)) {
+                newImages.push(element);
+                const previewUrls = URL.createObjectURL(element);
+                newImagePreviews.push(previewUrls);
+            } else {
+                e.target.value = null;
+                notification.error({
+                    message: 'Thêm ảnh thất bại!',
+                    description: 'Vui lòng chọn một file ảnh hợp lệ (JPEG, PNG, GIF, WEBP)',
+                    duration: 1.5,
+                });
+            }
+        });
 
-        e.target.value = null;
+        setImages([...images, ...newImages]);
+        setImagePreviews([...imagePreviews, ...newImagePreviews]);
     };
     const handleRemoveImageUpdate = (itemId, imageIndex) => {
         const updatedReviews = reviews.map((review) => {

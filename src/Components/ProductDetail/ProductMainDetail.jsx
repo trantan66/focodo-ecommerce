@@ -8,9 +8,10 @@ import { fetchProductByIdFromAPI } from '../../Services/ProductService';
 import '../UserProfile/Style.css';
 import { addProductToCart } from '../../Services/CartService';
 import useCart from '../../Hooks/useCart';
+import useAuth from '../../Hooks/useAuth';
 function ProductDetail(props) {
     const { fetchNumberOfCart, fetchCart } = useCart();
-
+    const { auth } = useAuth();
     const renderImage = (item) => (
         <div style={{ width: '500px', height: '300px' }}>
             <img src={item.original} alt="" style={{ width: '100%', height: '100%', objectFit: 'fill ' }} />
@@ -43,24 +44,32 @@ function ProductDetail(props) {
     // const quantityTest = value;
 
     const handleAddToCart = async () => {
-        try {
-            const res = await addProductToCart({ id_product: idProductTest, quantity: value });
-            fetchNumberOfCart();
-            fetchCart();
-            notification.success({
-                message: 'Thêm vào giỏ hàng thành công!',
-                description: 'Sản phẩm đã được thêm vào giỏ',
-                duration: '1',
-            });
-        } catch (error) {
-            if (error.response.data.message === 'Product is not enough quantity') {
-                notification.error({
-                    message: 'Lỗi thêm sản phẩm!',
-                    description: 'Số lượng sản phẩm không đủ. Vui lòng thử lại sau!',
-                    duration: '1.5',
+        if (auth.user) {
+            try {
+                const res = await addProductToCart({ id_product: idProductTest, quantity: value });
+                fetchNumberOfCart();
+                fetchCart();
+                notification.success({
+                    message: 'Thêm vào giỏ hàng thành công!',
+                    description: 'Sản phẩm đã được thêm vào giỏ',
+                    duration: '1',
                 });
+            } catch (error) {
+                if (error.response.data.message === 'Product is not enough quantity') {
+                    notification.error({
+                        message: 'Lỗi thêm sản phẩm!',
+                        description: 'Số lượng sản phẩm không đủ. Vui lòng thử lại sau!',
+                        duration: '1.5',
+                    });
+                }
+                console.error('Error addToCart product:', error);
             }
-            console.error('Error addToCart product:', error);
+        } else {
+            notification.error({
+                message: 'Lỗi thêm sản phẩm vào giỏ !',
+                description: 'Vui lòng đăng nhập để thêm sản phẩm vào giỏ hàng!',
+                duration: '1.5',
+            });
         }
     };
 

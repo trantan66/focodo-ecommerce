@@ -57,7 +57,7 @@ function ErrorOrder() {
                         </p>
                         <p>
                             Để hỗ trợ tốt nhất, nhân viên bán hàng của Focodo Ecommerce sẽ liên hệ với quý khách qua số
-                            điện thoại 0123456789 trong thời gian sớm nhất. Quý khách vui lòng lắng nghe máy để xác nhận
+                            điện thoại 0338649496 trong thời gian sớm nhất. Quý khách vui lòng lắng nghe máy để xác nhận
                             thông tin cần thiết.
                         </p>
                         <p>
@@ -69,7 +69,7 @@ function ErrorOrder() {
                     <div className="flex items-center justify-between">
                         <p>
                             Cần hỗ trợ?{' '}
-                            <a href="#" className="text-blue-500">
+                            <a href="/contact" className="text-blue-500">
                                 Liên hệ chúng tôi
                             </a>
                         </p>
